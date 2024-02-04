@@ -54,8 +54,10 @@ router.route('/playerupdate').post(upload.single('playerLogo'), tournaentry.play
 router.route('/addmatches').post(authmiddlewre, Matches.addmatches); //used
 router.route('/getmatches').post(Matches.getmatches); //used
 router.route('/deletematch').post(Matches.deletematch); //used
-// router.route('/allmatches').post(Matches.allmatches); //used
 
+app.use((req, res, next) => {
+  res.status(404).json({ msg: 'Route not found, kindly Re-Check api End point' });
+});
 
 app.listen(port, () => {
   console.log(`server listening at ${port}`);
