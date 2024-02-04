@@ -9,48 +9,48 @@ const tournaform = new mongo.Schema({
         type: mongo.Schema.Types.ObjectId,
         ref: 'tournament',
     },
-    teamName:{
+    teamName: {
         type: String,
         required: true
     },
-    email:{
+    email: {
         type: String,
-        default:"",
+        default: "",
         required: false
     },
-    mobile:{
+    mobile: {
         type: Number,
-        default:"",
+        default: "",
         required: false
     },
-    discordID:{
+    discordID: {
         type: String,
-        default:"",
+        default: "",
         required: false
     },
-    teamLogo:{
+    teamLogo: {
         type: String,
-        default:"",
+        default: "",
         required: false
     },
-    screenss:{
+    screenss: {
         type: String,
-        default:"",
+        default: "",
         required: false
     },
     player: {
         type: Array,
         required: false
     },
-     status:{
+    status: {
         type: String,
         required: false,
-        default:"pending",
+        default: "pending",
         enum: ["pending", "approved", "rejected"],
     },
-    reason:{
+    reason: {
         type: String,
-        default:"",
+        default: "",
         required: false
     }
 }, { timestamps: true });
