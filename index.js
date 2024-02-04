@@ -12,6 +12,7 @@ const authmiddlewre = require('./middleware/auth_middleware')
 const errorHandle = require('./utils/error_util');
 const upload = require('./middleware/multer_middleware')
 const upload2 = require('./middleware/multer2')
+const emailauth = require('./middleware/email_auth')
 
 app.use(express.json());
 app.use(cors());
@@ -24,8 +25,8 @@ app.get('/', (req, res) => {
   })
 })
 
-router.route('/signup').post(login.signup);    //used
-router.route('/login').post(login.login);      //used
+router.route('/signup').post(login.signup,emailauth);    //used
+router.route('/login').post(emailauth,login.login);      //used
 
 
 router.route('/addtournament').post(authmiddlewre, tournament.addtournament);      //used
