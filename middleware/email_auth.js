@@ -21,7 +21,7 @@ const emailmiddleware = async (req, res,next) => {
                 from: 'Jai kishan',
                 to: query.email,
                 subject: 'Email Verification-Expense Management system',
-                html: `Hi ${query.name}, please <a href="https://backend-exp-man.vercel.app/verify?id=${query._id}" target="_blank">Click Here</a>  to Verify your Email,   Thanks for Joining Us, from Jai kishan(Developer)`
+                html: `Hi ${query.name}, please <a href="https://esport-backend.vercel.app/verify?id=${query._id}" target="_blank">Click Here</a>  to Verify your Email,   Thanks for Joining Us, from Jai kishan(Developer)`
             };
         
             // Send the email

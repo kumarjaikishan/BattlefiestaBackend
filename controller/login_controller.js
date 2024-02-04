@@ -9,7 +9,7 @@ const asyncHandler = require('../utils/asyncHandler')
 
 cloudinary.config({
     cloud_name: 'dusxlxlvm',
-    api_key: process.env.api_key  ,
+    api_key: process.env.api_key,
     api_secret: process.env.api_secret
 });
 
@@ -92,12 +92,28 @@ const signup = asyncHandler(async (req, res, next) => {
     const result = await query.save();
     if (result) {
         myCache.del("allusers");
-       res.status(201).json({
-        msg:"Signup Successsfully"
-       })
+        res.status(201).json({
+            msg: "Signup Successsfully"
+        })
     }
 })
 
+const verify = async (req, res) => {
+    try {
+        const query = await user.findByIdAndUpdate({ _id: req.query.id }, { isverified: true });
+
+        if (!query) {
+            return next({ status: 400, message: "UserId is Not Valid" });
+        }
+        return res.status(201).send(`<html><h2> Hi ${query.name} , Email Verified Successfully, <button onclick="location.href = 'https://frontend-exp-man.vercel.app';">Login Now</button> </h2></html>`)
+    } catch (error) {
+        return res.status(500).json({
+            msg: "User Email not  verified",
+            error: error
+        })
+    }
+}
 
 
-module.exports = { signup, login};
+
+module.exports = { signup, login };
