@@ -10,7 +10,7 @@ const removePhotoBySecureUrl = require('../utils/cloudinaryremove');
 
 cloudinary.config({
     cloud_name: 'dusxlxlvm',
-    api_key: process.env.api_key  ,
+    api_key: process.env.api_key,
     api_secret: process.env.api_secret
 });
 
@@ -41,6 +41,15 @@ const gettournament = asyncHandler(async (req, res, next) => {
         return res.status(201).json({ msg: "success", data: query })
     }
 })
+const getontournament = asyncHandler(async (req, res, next) => {
+    const query = await tournament.findOne({ _id: req.body.tid, userid: req.userid })
+    if (!query) {
+        return next({ status: 400, message: "Either Tid or UserID wrong" });
+    } else {
+        return res.status(201).json({ msg: "success", data: query })
+    }
+})
+
 const getonetournament = asyncHandler(async (req, res, next) => {
     // console.log(req.body);
     let query = await tournament.findOne({ _id: req.body.tid }, { "title": 1, "slots": 1, "tournment_banner": 1, "organiser": 1, "status": 1, "createdAt": 1 })
@@ -53,7 +62,7 @@ const getonetournament = asyncHandler(async (req, res, next) => {
     }
 })
 const getalltournament = asyncHandler(async (req, res, next) => {
-    const query = await tournament.find({visibility:true}).sort({ createdAt: -1 })
+    const query = await tournament.find({ visibility: true }).sort({ createdAt: -1 })
     if (!query) {
         return next({ status: 400, message: "Error Occured" });
     } else {
@@ -214,10 +223,10 @@ const pointsystem = asyncHandler(async (req, res, next) => {
     const query = await tournament.findByIdAndUpdate({ _id: tid }, { tiepreference: tieprefer, killpoints, pointsystem: placepoint })
 
     if (query) {
-       return res.status(200).json({
+        return res.status(200).json({
             msg: "Updated Success"
         })
-    }else{
+    } else {
         return next({ status: 500, message: "Tournament Id not Valid" });
     }
 })
@@ -273,4 +282,4 @@ const torunadelete = async (req, res, next) => {
 }
 
 
-module.exports = { pointsystem, addtournament, getonetournament, getalltournament, torunadelete, gettournament, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };
+module.exports = { pointsystem, addtournament, getonetournament, getontournament, getalltournament, torunadelete, gettournament, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };

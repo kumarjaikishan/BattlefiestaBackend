@@ -31,6 +31,7 @@ router.route('/login').post(login.login);      //used
 router.route('/addtournament').post(authmiddlewre, tournament.addtournament);      //used
 router.route('/torunadelete').post(authmiddlewre, tournament.torunadelete);      //used
 router.route('/gettournament').get(authmiddlewre, tournament.gettournament);      //used
+router.route('/getontournament').post(authmiddlewre,tournament.getontournament);      //used
 router.route('/getonetournament').post(tournament.getonetournament);      //used
 router.route('/getalltournament').get(tournament.getalltournament);      //used
 router.route('/settournament').post(authmiddlewre, tournament.settournament);      //used
