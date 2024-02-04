@@ -10,8 +10,8 @@ const removePhotoBySecureUrl = require('../utils/cloudinaryremove');
 
 cloudinary.config({
     cloud_name: 'dusxlxlvm',
-    api_key: '214119961949842',
-    api_secret: "kAFLEVAA5twalyNYte001m_zFno"
+    api_key: process.env.api_key  ,
+    api_secret: process.env.api_secret
 });
 
 // *--------------------------------------
