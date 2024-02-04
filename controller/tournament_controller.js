@@ -1,0 +1,276 @@
+const tournament = require('../modals/tournament_schema');
+const registrationformsetting = require('../modals/registration-form-setting_schema');
+const Resgistered = require('../modals/register_form');
+const match = require('../modals/match_schema');
+const asyncHandler = require('../utils/asyncHandler');
+const cloudinary = require('cloudinary').v2;
+const fs = require('fs');
+const removePhotoBySecureUrl = require('../utils/cloudinaryremove');
+
+
+cloudinary.config({
+    cloud_name: 'dusxlxlvm',
+    api_key: '214119961949842',
+    api_secret: "kAFLEVAA5twalyNYte001m_zFno"
+});
+
+// *--------------------------------------
+// * User Login 1st method with nodecache Logic
+// *--------------------------------------
+const addtournament = asyncHandler(async (req, res, next) => {
+    const { name, type, slots, organiser } = req.body;
+    if (!name || !type || !slots || !organiser) {
+        return next({ status: 400, message: "All Fields are Required" });
+    }
+
+    const query = new tournament({ userid: req.userid, title: name, type, slots, organiser })
+    const result = await query.save();
+    if (!result) {
+        return next({ status: 400, message: "all input required" });
+    } else {
+        res.status(201).json({ msg: "Tournament Created" })
+    }
+})
+
+
+const gettournament = asyncHandler(async (req, res, next) => {
+    const query = await tournament.find({ userid: req.userid }).sort({ createdAt: -1 })
+    if (!query) {
+        return next({ status: 400, message: "Error Occured" });
+    } else {
+        return res.status(201).json({ msg: "success", data: query })
+    }
+})
+const getonetournament = asyncHandler(async (req, res, next) => {
+    // console.log(req.body);
+    let query = await tournament.findOne({ _id: req.body.tid }, { "title": 1, "slots": 1, "tournment_banner": 1, "organiser": 1, "status": 1, "createdAt": 1 })
+    let query2 = await registrationformsetting.findOne({ tournament_id: req.body.tid }, { "isopen": 1, "links": 1, "publicpost": 1 })
+    // console.log(query2.isopen);
+    if (!query) {
+        return next({ status: 400, message: "Error Occurred: Tournament not found" });
+    } else {
+        res.status(201).json({ data: query, data2: query2 })
+    }
+})
+const getalltournament = asyncHandler(async (req, res, next) => {
+    const query = await tournament.find({visibility:true}).sort({ createdAt: -1 })
+    if (!query) {
+        return next({ status: 400, message: "Error Occured" });
+    } else {
+        res.status(201).json({ msg: "success", data: query })
+    }
+})
+
+
+const settournament = asyncHandler(async (req, res, next) => {
+    const { tid, title, organiser, slots, type, status, visibility, label } = req.body;
+
+    const query = await tournament.findByIdAndUpdate({ _id: tid }, { title, organiser, slots, type, status, visibility, label })
+    if (!query) {
+        return next({ status: 400, message: "Error Occured" });
+    } else {
+        res.status(201).json({ msg: "Successfully Updated", data: query })
+    }
+})
+const settournamentlogos = async (req, res, next) => {
+    // console.log(req.body);
+    const oldurl = req.body.oldimage;
+    const tid = req.body.tid;
+
+    await cloudinary.uploader.upload(req.file.path, async (error, result) => {
+        // console.log(error, result);
+        if (error) {
+            return next({ status: 500, message: "File not Uploaded" });
+        }
+
+        const imageurl = result.secure_url;
+        // console.log("photo upload ho gaya", result.public_id);
+
+        fs.unlink(req.file.path, (err => {
+            if (err) {
+                console.log(err);
+                return next({ status: 500, message: "Error occured while deleting file" });
+            }
+            //   getFilesInDirectory(); 
+            // }
+        }));
+        if (req.body.filed == "tournbanner") {
+            const query = await tournament.findByIdAndUpdate({ _id: tid }, { tournment_banner: imageurl })
+        } else {
+            const query = await tournament.findByIdAndUpdate({ _id: tid }, { tournment_logo: imageurl })
+        }
+
+        if (oldurl != "") {
+            const hu = oldurl.split('/');
+            const lastwala = hu[hu.length - 1].split('.')[0];
+            await cloudinary.uploader.destroy(lastwala, (error, result) => {
+                // console.log(error, result);
+                if (result) {
+                    res.status(201).json({
+                        msg: "photo updated",
+                        url: imageurl
+                    })
+                } else {
+                    return next({ status: 500, message: "error while previous image delete" });
+                }
+            })
+        } else {
+            res.status(201).json({
+                msg: "photo updated",
+                url: imageurl
+            })
+        }
+
+    })
+}
+
+const tournamentform = asyncHandler(async (req, res, next) => {
+    //    console.log(req.body.tid);
+    const tid = req.body.tid;
+    if (tid == "") {
+        return next({ status: 400, message: "Tournament Id not found" });
+    }
+
+    const isformexists = await registrationformsetting.findOne({ tournament_id: tid });
+    const entries = await Resgistered.find({ tournament_id: tid })
+    // const entries = await Resgistered.find({ tournament_id: tid })
+    if (!isformexists) {
+        const query = new registrationformsetting({ userid: req.userid, tournament_id: tid })
+        const result = await query.save();
+        return res.status(201).json({
+            msg: "success",
+            data: result,
+            entry: entries
+        })
+    } else {
+        return res.status(201).json({
+            msg: "success",
+            data: isformexists,
+            entry: entries
+        })
+    }
+})
+
+
+const gettournamentform = asyncHandler(async (req, res, next) => {
+    //    console.log(req.body.tid);
+    const tid = req.body.tid;
+    const isformexists = await registrationformsetting.findOne({ tournament_id: tid });
+    const enteries = await Resgistered.find({ tournament_id: tid })
+    const tournamente = await tournament.findOne({ _id: tid });
+
+    if (!isformexists) {
+        return next({ status: 400, message: "Tournament Id not Valid" });
+    } else {
+        res.status(201).json({
+            msg: "success",
+            data: isformexists,
+            data2: tournamente,
+            enteries
+        })
+    }
+})
+
+
+const updatetournamentform = asyncHandler(async (req, res, next) => {
+    const { tid, id, isopen, description, success_msg, ask_email, ask_phone,
+        ask_discord, ask_team_logo, ask_player_logo,
+        ask_payment_ss, min_player, max_player } = req.body;
+
+    const query = await registrationformsetting.findByIdAndUpdate({ _id: id }, {
+        isopen, description, success_message: success_msg, ask_email, ask_phone,
+        ask_discord, ask_teamlogo: ask_team_logo, ask_playerlogo: ask_player_logo,
+        ask_payment_ss, minimum_players: min_player, maximum_players: max_player
+    })
+    if (!query) {
+        return next({ status: 400, message: "Tournament Id not Valid" });
+    } else {
+        res.status(201).json({
+            msg: "Updated Successfully"
+        })
+    }
+})
+
+const updatetournamentformcontacts = asyncHandler(async (req, res, next) => {
+    const { tid, links, publicpost } = req.body;
+    try {
+        const query = await registrationformsetting.findOneAndUpdate({ tournament_id: tid }, { links, publicpost })
+        if (!query) {
+            return next({ status: 400, message: "Tournament Id not Valid" });
+        } else {
+            res.status(201).json({
+                msg: "Updated Successfully"
+            })
+        }
+    } catch (error) {
+        return next({ status: 500, message: error });
+    }
+
+})
+
+const pointsystem = asyncHandler(async (req, res, next) => {
+    const { tid, tieprefer, killpoints, placepoint } = req.body;
+
+    const query = await tournament.findByIdAndUpdate({ _id: tid }, { tiepreference: tieprefer, killpoints, pointsystem: placepoint })
+
+    if (query) {
+       return res.status(200).json({
+            msg: "Updated Success"
+        })
+    }else{
+        return next({ status: 500, message: "Tournament Id not Valid" });
+    }
+})
+
+const torunadelete = async (req, res, next) => {
+    const { tournaid } = req.body;
+    try {
+        let arraye = [];
+        const logos = await tournament.findOne({ _id: tournaid }, { 'tournment_banner': 1, 'tournment_logo': 1 });
+        // console.log(logos);
+        if (logos) {
+            if (logos.tournment_banner) {
+                arraye.push(logos.tournment_banner);
+            }
+            if (logos.tournment_logo) {
+                arraye.push(logos.tournment_logo);
+            }
+        }
+
+
+        const entry = await Resgistered.find({ tournament_id: tournaid }, { 'teamLogo': 1, 'screenss': 1, 'player': 1 })
+        if (entry) {
+            entry && entry.map((val) => {
+                if (val.teamLogo) {
+                    arraye.push(val.teamLogo);
+                }
+                if (val.screenss) {
+                    arraye.push(val.screenss);
+                }
+                val.player && val.player.map((each) => {
+                    if (each.playerLogo) {
+                        arraye.push(each.playerLogo);
+                    }
+                })
+            })
+        }
+
+
+        await tournament.deleteOne({ _id: tournaid })
+        await registrationformsetting.deleteOne({ tournament_id: tournaid })
+        await match.deleteMany({ tournament_id: tournaid })
+        await Resgistered.deleteMany({ tournament_id: tournaid })
+
+        arraye.length > 0 && await removePhotoBySecureUrl(arraye)
+        // console.log(arraye);
+        res.status(200).json({
+            msg: "Tournament Deleted"
+        })
+    } catch (error) {
+        console.log(error);
+        return next({ status: 500, message: error });
+    }
+}
+
+
+module.exports = { pointsystem, addtournament, getonetournament, getalltournament, torunadelete, gettournament, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };
