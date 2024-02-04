@@ -30,7 +30,7 @@ const emailmiddleware = async (req, res,next) => {
                     console.error('Error sending email:', error);
                 } else {
                     res.status(201).json({
-                        msg: "Email sent, check your inbox",
+                        msg: "Verify Email, check your inbox",
                     })
                     console.log('Email sent:', info.response);
                 }

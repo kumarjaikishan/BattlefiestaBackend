@@ -105,7 +105,7 @@ const verify = async (req, res) => {
         if (!query) {
             return next({ status: 400, message: "UserId is Not Valid" });
         }
-        return res.status(201).send(`<html><h2> Hi ${query.name} , Email Verified Successfully, <button onclick="location.href = 'https://frontend-exp-man.vercel.app';">Login Now</button> </h2></html>`)
+        return res.status(201).send(`<html><h2> Hi ${query.name} , Email Verified Successfully, <button onclick="location.href = 'https://esport-bgmi.vercel.app';">Login Now</button> </h2></html>`)
     } catch (error) {
         return res.status(500).json({
             msg: "User Email not  verified",
