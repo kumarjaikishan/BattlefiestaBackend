@@ -22,6 +22,11 @@ const log = new mongo.Schema({
         type: String,
         required: true
     },
+    userid: {
+        type: String,
+        required: false,
+        default:""
+    },
     imgsrc: {
         type: String,
         default:""
