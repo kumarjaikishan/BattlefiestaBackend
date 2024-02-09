@@ -29,7 +29,7 @@ const getmatches = asyncHandler(async (req, res, next) => {
     const query = await matches.find({ tournament_id: tid }).sort({ "created_at": 1 });
     const teame = await teams.find({ tournament_id: tid ,status:"approved"});
     const pointsystem = await Tournament.findOne({ _id: tid }).select({
-        "pointsystem": 1, "type": 1,
+        "pointsystem": 1, "type": 1, "title":1,
         "killpoints": 1, "tiepreference": 1, "tournment_banner": 1, "tournment_logo": 1, "organiser": 1, "_id": 0
     });
     return res.status(201).json({
