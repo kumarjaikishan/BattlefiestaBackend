@@ -253,7 +253,7 @@ const emailmiddleware = async (req, res, next) => {
                                             <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 55px;font-family:'Cabin',sans-serif;" align="left">
                 
                                               <div style="font-size: 14px; line-height: 160%; text-align: center; word-wrap: break-word;">
-                                                <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 22px; line-height: 35.2px;">Hi, <span style="font-size: 24px; line-height: 38.4px;"><strong><span style="color: #3598db; line-height: 22.4px;">${query.name}</span></strong>
+                                                <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 22px; line-height: 35.2px;">Hi, <span style="font-size: 24px; line-height: 38.4px;"><strong><span style="color: #3598db; line-height: 22.4px; text-transform: uppercase;">${query.name}</span></strong>
                                                   </span>
                                                   </span>
                                                 </p>
