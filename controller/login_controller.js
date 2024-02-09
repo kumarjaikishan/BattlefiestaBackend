@@ -174,6 +174,11 @@ const verify = async (req, res) => {
               margin: 0;
               padding: 0;
               font-family: "Raleway", sans-serif;
+              width: 100%;
+             min-height: calc(100vh - var(--navheight));
+             display: flex;
+             justify-content: center;
+              align-items: center;
             }
         
             a {
@@ -188,7 +193,6 @@ const verify = async (req, res) => {
             }
         
             section {
-              float: left;
               width: 100%;
               padding-bottom: 3em;
             }
@@ -228,44 +232,7 @@ const verify = async (req, res) => {
               line-height: 24px;
             }
         
-            .ScriptHeader h1 {
-              font-family: "brandon-grotesque", "Brandon Grotesque", "Source Sans Pro", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
-              text-rendering: optimizeLegibility;
-              -webkit-font-smoothing: antialiased;
-              color: #6a4aed;
-              font-size: 26px;
-              font-weight: 700;
-              margin: 0;
-              line-height: normal;
-        
-            }
-        
-            .ScriptHeader h2 {
-              color: #312c8f;
-              font-size: 20px;
-              font-weight: 400;
-              margin: 5px 0 0;
-              line-height: normal;
-        
-            }
-        
-            .ScriptHeader h1 span {
-              display: block;
-              padding: 0;
-              font-size: 22px;
-              opacity: 0.7;
-              margin-top: 5px;
-        
-            }
-        
-            .ScriptHeader span {
-              display: block;
-              padding: 0;
-              font-size: 22px;
-              opacity: 0.7;
-              margin-top: 5px;
-            }
-        
+            
         
         
             .rt-container {
@@ -417,9 +384,6 @@ const verify = async (req, res) => {
         
             @media only screen and (min-width:240px) and (max-width: 768px) {
         
-        
-              .ScriptHeader h1,
-              .ScriptHeader h2,
               .scriptnav ul {
                 text-align: center;
               }
