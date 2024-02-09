@@ -215,12 +215,6 @@ const verify = async (req, res) => {
               float: right;
             }
         
-        
-            .ScriptHeader {
-              float: left;
-              width: 100%;
-              padding: 1em 0;
-            }
             #naam{
                 text-transform: uppercase;
             }
@@ -444,16 +438,6 @@ const verify = async (req, res) => {
         </head>
         
         <body>
-        
-          <header class="ScriptHeader">
-            <div class="rt-container">
-              <div class="col-rt-12">
-                <div class="rt-heading">
-                  <h1>Email Verfication is Successfull</h1>
-                </div>
-              </div>
-            </div>
-          </header>
         
           <section>
             <div class="rt-container">
