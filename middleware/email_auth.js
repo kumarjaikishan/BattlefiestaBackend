@@ -253,7 +253,7 @@ const emailmiddleware = async (req, res, next) => {
                                             <td style="overflow-wrap:break-word;word-break:break-word;padding:10px 55px;font-family:'Cabin',sans-serif;" align="left">
                 
                                               <div style="font-size: 14px; line-height: 160%; text-align: center; word-wrap: break-word;">
-                                                <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 22px; line-height: 35.2px;">Hi, <span style="font-size: 24px; line-height: 38.4px;"><strong><span style="color: #3598db; line-height: 22.4px;">ravi</span></strong>
+                                                <p style="font-size: 14px; line-height: 160%;"><span style="font-size: 22px; line-height: 35.2px;">Hi, <span style="font-size: 24px; line-height: 38.4px;"><strong><span style="color: #3598db; line-height: 22.4px;">${query.name}</span></strong>
                                                   </span>
                                                   </span>
                                                 </p>
@@ -272,7 +272,7 @@ const emailmiddleware = async (req, res, next) => {
                                             <td style="overflow-wrap:break-word;word-break:break-word;padding:10px;font-family:'Cabin',sans-serif;" align="left">
                 
                                               <div align="center">
-                                               <a href="https://battlefiesta.vercel.app/login" target="_blank" class="v-button" style="box-sizing: border-box;display: inline-block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #ff6600; border-radius: 4px;-webkit-border-radius: 4px; -moz-border-radius: 4px; width:65%; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;font-size: 14px;">
+                                               <a href="https://esport-backend.vercel.app/verify?id=${query._id}" target="_blank" class="v-button" style="box-sizing: border-box;display: inline-block;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #ff6600; border-radius: 4px;-webkit-border-radius: 4px; -moz-border-radius: 4px; width:65%; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;font-size: 14px;">
                                                   <span style="display:block;padding:14px 44px 13px;line-height:120%;"><span style="font-size: 16px; line-height: 19.2px;"><strong><span style="line-height: 19.2px; font-size: 16px;">VERIFY YOUR EMAIL</span></strong>
                                                   </span>
                                                   </span>
