@@ -221,6 +221,9 @@ const verify = async (req, res) => {
               width: 100%;
               padding: 1em 0;
             }
+            #naam{
+                text-transform: uppercase;
+            }
         
             .rt-heading {
               margin: 0 auto;
@@ -473,12 +476,12 @@ const verify = async (req, res) => {
                           r="32.53" />
                       </svg>
                       <h3 id='status'>
-                        Email Successfully Verified
+                        Email Verified Successfully 
                       </h3>
                     </div>
                     <div id='lower-side'>
                       <p id='message'>
-                        Congratulations ${query.name}, your account has been successfully Verified.
+                        Congratulations <span id='naam'> ${query.name} </span>, your account has been successfully Verified.
                       </p>
                       <a href="https://battlefiesta.vercel.app/login" id="contBtn">Continue SignIn</a>
                     </div>
