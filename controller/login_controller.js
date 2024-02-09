@@ -36,7 +36,7 @@ const login = async (req, res, next) => {
     });
     //    console.log("result",result);
     if (!result) {
-        return next({ status: 400, message: "Email not found" });
+        return next({ status: 400, message: "User not found" });
     }
     // console.log("password match: ", await bcrypt.compare(password, result.password));
     const generateToken = async (result) => {

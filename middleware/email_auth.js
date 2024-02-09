@@ -13,7 +13,10 @@ const transporter = nodemailer.createTransport({
 const emailmiddleware = async (req, res,next) => {
     try {
         const query = await user.findOne({ email: req.body.email });
-        // console.log(query);
+        // console.log("email auth",query);
+        if(!query){
+            return next({ status: 400, message: "User not found" });
+        }
         if (query.isverified) {
             next();
         } else {
