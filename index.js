@@ -39,6 +39,7 @@ router.route('/settournament').post(authmiddlewre, tournament.settournament);   
 router.route('/settournamentlogos').post(authmiddlewre, upload.single('image'), tournament.settournamentlogos);      //used
 router.route('/tournamentform').post(authmiddlewre, tournament.tournamentform);      //used
 router.route('/gettournamentform').post(tournament.gettournamentform);      //used
+router.route('/getenteries').post(tournament.getenteries);      //used
 router.route('/updatetournamentform').post(authmiddlewre, tournament.updatetournamentform); //used
 router.route('/updatetournamentformcontacts').post(authmiddlewre, tournament.updatetournamentformcontacts); //used
 router.route('/pointsystem').post(authmiddlewre, tournament.pointsystem); //used

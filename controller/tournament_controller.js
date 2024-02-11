@@ -179,6 +179,20 @@ const gettournamentform = asyncHandler(async (req, res, next) => {
         })
     }
 })
+const getenteries = asyncHandler(async (req, res, next) => {
+    //    console.log(req.body.tid);
+    const tid = req.body.tid;
+    const enteries = await Resgistered.find({ tournament_id: tid })
+
+    if (!isformexists) {
+        return next({ status: 400, message: "Tournament Id not Valid" });
+    } else {
+        res.status(201).json({
+            msg: "success",
+            enteries
+        })
+    }
+})
 
 
 const updatetournamentform = asyncHandler(async (req, res, next) => {
@@ -282,4 +296,4 @@ const torunadelete = async (req, res, next) => {
 }
 
 
-module.exports = { pointsystem, addtournament, getonetournament, getontournament, getalltournament, torunadelete, gettournament, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };
+module.exports = { pointsystem, addtournament, getonetournament, getontournament, getalltournament, torunadelete, gettournament,getenteries, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };
