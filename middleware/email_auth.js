@@ -21,7 +21,7 @@ const emailmiddleware = async (req, res, next) => {
             next();
         } else {
             const mailOptions = {
-                from: 'BattleFiesta',
+                from: 'BattleFiesta <battlefiesta07@gmail.com>',
                 to: query.email,
                 subject: 'BattleFiesta || Email Verification',
                 // html: `Hi ${query.name}, please <a href="https://esport-backend.vercel.app/verify?id=${query._id}" target="_blank">Click Here</a>  to Verify your Email,   Thanks for Joining Us, from Jai kishan(Developer)`
