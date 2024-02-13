@@ -5,7 +5,6 @@ const user = require('../modals/login_schema');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        // user: 'kumar.jaikishan0@gmail.com',
         user: 'battlefiesta07@gmail.com',
         pass: process.env.gmail_password
     }
