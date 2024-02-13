@@ -13,6 +13,7 @@ const errorHandle = require('./utils/error_util');
 const upload = require('./middleware/multer_middleware')
 const upload2 = require('./middleware/multer2')
 const emailauth = require('./middleware/email_auth')
+const contact = require('./controller/contact_controller')
 
 app.use(express.json());
 app.use(cors());
@@ -57,6 +58,9 @@ router.route('/playerupdate').post(upload.single('playerLogo'), tournaentry.play
 router.route('/addmatches').post(authmiddlewre, Matches.addmatches); //used
 router.route('/getmatches').post(Matches.getmatches); //used
 router.route('/deletematch').post(Matches.deletematch); //used
+
+
+router.route('/contact').post(contact.contact); //used
 
 app.use((req, res, next) => {
   res.status(404).json({ msg: 'Route not found, kindly Re-Check api End point' });
