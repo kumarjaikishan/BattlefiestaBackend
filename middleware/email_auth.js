@@ -5,7 +5,8 @@ const user = require('../modals/login_schema');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'kumar.jaikishan0@gmail.com',
+        // user: 'kumar.jaikishan0@gmail.com',
+        user: 'battlefiesta07@gmail.com',
         pass: process.env.gmail_password
     }
 });
@@ -21,9 +22,9 @@ const emailmiddleware = async (req, res, next) => {
             next();
         } else {
             const mailOptions = {
-                from: 'Jai kishan',
+                from: 'BattleFiesta',
                 to: query.email,
-                subject: 'BattleFiesta Email Verification',
+                subject: 'BattleFiesta || Email Verification',
                 // html: `Hi ${query.name}, please <a href="https://esport-backend.vercel.app/verify?id=${query._id}" target="_blank">Click Here</a>  to Verify your Email,   Thanks for Joining Us, from Jai kishan(Developer)`
                 html: `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
                 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
