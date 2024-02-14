@@ -13,7 +13,18 @@ const log = new mongo.Schema({
         unique: true,
         index:true
     },
+    publicemail: {
+        type: String,
+        required: [true, "Email is required"],
+        unique: true,
+        index:true
+    },
     phone: {
+        type: Number,
+        required: true,
+        unique: true
+    },
+    publicphone: {
         type: Number,
         required: true,
         unique: true
@@ -22,7 +33,7 @@ const log = new mongo.Schema({
         type: String,
         required: true
     },
-    userid: {
+    username: {
         type: String,
         required: false,
         default:""
@@ -30,6 +41,14 @@ const log = new mongo.Schema({
     imgsrc: {
         type: String,
         default:""
+    },
+    bio: {
+        type: String,
+        default:""
+    },
+    sociallinks: {
+        type: Array,
+        default:[]
     },
     isadmin: {
         type: Boolean,
