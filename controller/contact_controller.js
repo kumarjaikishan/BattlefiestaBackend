@@ -27,7 +27,7 @@ const updateprofile = async (req, res, next) => {
             return next({ status: 400, message: "something wrong" });
         }
         return res.status(200).json({
-            msg: "ok"
+            msg: "Update Successfully"
         })
     } catch (error) {
         console.log(error);
