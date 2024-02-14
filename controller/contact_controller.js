@@ -14,6 +14,9 @@ const contact = async (req, res, next) => {
         return next({ status: 400, message: error });
     }
 }
+const profile=async(req,res,next)=>{
+    return  res.status(200).json({data:req.user})
+}
 
 
-module.exports = { contact };
+module.exports = { contact,profile };

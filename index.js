@@ -61,6 +61,7 @@ router.route('/deletematch').post(Matches.deletematch); //used
 
 
 router.route('/contact').post(contact.contact); //used
+router.route('/profile').post(authmiddlewre,contact.profile); //used
 
 app.use((req, res, next) => {
   res.status(404).json({ msg: 'Route not found, kindly Re-Check api End point' });
