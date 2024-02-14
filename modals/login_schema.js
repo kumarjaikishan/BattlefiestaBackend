@@ -15,19 +15,18 @@ const log = new mongo.Schema({
     },
     publicemail: {
         type: String,
-        required: [true, "Email is required"],
-        unique: true,
-        index:true
+        required: false,
+        default:""
     },
     phone: {
         type: Number,
-        required: true,
+        required: false,
         unique: true
     },
     publicphone: {
         type: Number,
-        required: true,
-        unique: true
+        required: false,
+        default:""
     },
     password: {
         type: String,
