@@ -48,8 +48,6 @@ const register = async (req, res, next) => {
                         console.log(err);
                         return next({ status: 500, message: "Error occured while deleting file" });
                     }
-                    //   getFilesInDirectory(); 
-                    // }
                 }));
 
                 const query = await Tournament.findByIdAndUpdate({ _id: savedTournament._id }, { teamLogo: imageurl })
