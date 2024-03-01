@@ -1,7 +1,7 @@
 const mongo = require('mongoose');
 
 const manualmemberschema = new mongo.Schema({
-    userid: {
+    user: {
         type: mongo.Schema.Types.ObjectId,
         ref: 'user',
     },
@@ -19,6 +19,17 @@ const manualmemberschema = new mongo.Schema({
         required: false
     },
     city: {
+        type: String,
+        default:'',
+        required: false
+    },
+    status: {
+        type: String,
+        default:'pending',
+        required: false,
+        enum: ["pending", "approved", "rejected"],
+    },
+    remarks: {
         type: String,
         default:'',
         required: false

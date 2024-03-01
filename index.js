@@ -74,6 +74,7 @@ router.route('/auto').post(member.auto); //used
 
 router.route('/isadmin').get(authmiddlewre,isadmin,admin.falsee);
 router.route('/memshipentry').get(authmiddlewre,isadmin,admin.allmembershipentry);
+router.route('/createmembership').post(authmiddlewre,isadmin,admin.createmembership);
 
 
 app.use((req, res, next) => {

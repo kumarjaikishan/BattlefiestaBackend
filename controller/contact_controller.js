@@ -1,5 +1,6 @@
 const user = require('../modals/contact_schema')
 const login = require('../modals/login_schema')
+const membership = require('../modals/membership_schema')
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const removePhotoBySecureUrl = require('../utils/cloudinaryremove');
@@ -25,7 +26,13 @@ const contact = async (req, res, next) => {
     }
 }
 const profile = async (req, res, next) => {
-    return res.status(200).json({ data: req.user })
+    const query = await membership.find({ userid: req.userid }).sort({ createdAt: -1 });
+    let latestmembership = '';
+    if (query.length > 0) {
+        latestmembership = query[0];
+    }
+    console.log('profile', latestmembership);
+    return res.status(200).json({ data: req.user, member:latestmembership })
 }
 
 const updateprofile = async (req, res, next) => {

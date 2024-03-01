@@ -19,7 +19,7 @@ const manualcheck = asyncHandler(async (req, res, next) => {
     // console.log("final-",body.price);
 
     const query = new manualmember({
-        userid: req.user._id, plan_name: body.duration, txn_no: body.txn_no,
+        user: req.user._id, plan_name: body.duration, txn_no: body.txn_no,
         coupon: body.couponname, city: body.city, price: body.price, finalpricepaid
     });
     const result = await query.save();
