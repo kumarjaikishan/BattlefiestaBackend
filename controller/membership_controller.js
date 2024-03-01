@@ -3,16 +3,24 @@ const manualmember = require('../modals/manual_member_schema');
 const coupon = require('../modals/coupon_schema');
 
 const manualcheck = asyncHandler(async (req, res, next) => {
-    console.log(req.user);
-    console.log(req.body);
+    // console.log(req.user);
+    // console.log(req.body);
 
     const body = req.body;
-    const finalpricepaid = body.price * ((100 - body.coupon) / 100);
+    let couponapplied =0;
+    if(body.couponname != ''){
+        console.log(body.couponname);
+        const findcoupon = await coupon.findOne({ coupon: body.couponname });
+        console.log(findcoupon);
+        couponapplied = findcoupon.percent;
+    }
+
+    const finalpricepaid = body.price * ((100 - couponapplied) / 100);
     // console.log("final-",body.price);
 
     const query = new manualmember({
         userid: req.user._id, plan_name: body.duration, txn_no: body.txn_no,
-        coupon: body.coupon, city: body.city, price: body.price, finalpricepaid
+        coupon: body.couponname, city: body.city, price: body.price, finalpricepaid
     });
     const result = await query.save();
     if (!result) {
@@ -24,10 +32,13 @@ const manualcheck = asyncHandler(async (req, res, next) => {
 })
 
 const checkcoupon = asyncHandler(async (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
     const query = await coupon.findOne({ coupon: req.body.coupon });
     if (!query) {
-        return next({ status: 400, message: "No coupon Found" });
+        return next({ status: 400, message: "Not Found" });
+    }
+    if(query.status=='expired'){
+        return next({ status: 400, message: "Expired" });
     }
     return res.status(200).json({
         data: query

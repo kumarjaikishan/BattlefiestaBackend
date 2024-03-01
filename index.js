@@ -15,6 +15,8 @@ const upload2 = require('./middleware/multer2')
 const emailauth = require('./middleware/email_auth')
 const contact = require('./controller/contact_controller')
 const member = require('./controller/membership_controller')
+const isadmin = require('./middleware/isadmin_middleware')
+const admin = require('./controller/admin_controller')
 
 app.use(express.json());
 app.use(cors());
@@ -27,14 +29,14 @@ app.get('/', (req, res) => {
   })
 })
 
-router.route('/signup').post(login.signup,emailauth);    //used
-router.route('/login').post(emailauth,login.login);      //used
+router.route('/signup').post(login.signup, emailauth);    //used
+router.route('/login').post(emailauth, login.login);      //used
 router.route('/verify').get(login.verify);      //used
 
 router.route('/addtournament').post(authmiddlewre, tournament.addtournament);      //used
 router.route('/torunadelete').post(authmiddlewre, tournament.torunadelete);      //used
 router.route('/gettournament').get(authmiddlewre, tournament.gettournament);      //used
-router.route('/getontournament').post(authmiddlewre,tournament.getontournament);      //used
+router.route('/getontournament').post(authmiddlewre, tournament.getontournament);      //used
 router.route('/getonetournament').post(tournament.getonetournament);      //used
 router.route('/getalltournament').get(tournament.getalltournament);      //used
 router.route('/settournament').post(authmiddlewre, tournament.settournament);      //used
@@ -62,13 +64,17 @@ router.route('/deletematch').post(Matches.deletematch); //used
 
 
 router.route('/contact').post(contact.contact); //used
-router.route('/profile').get(authmiddlewre,contact.profile); //used
-router.route('/updateprofile').post(authmiddlewre,contact.updateprofile); //used
-router.route('/updateprofilepic').post(authmiddlewre,upload.single('profilepic'),contact.updateprofilepic); //used
+router.route('/profile').get(authmiddlewre, contact.profile); //used
+router.route('/updateprofile').post(authmiddlewre, contact.updateprofile); //used
+router.route('/updateprofilepic').post(authmiddlewre, upload.single('profilepic'), contact.updateprofilepic); //used
 
-router.route('/manualcheck').post(authmiddlewre,member.manualcheck); //used
-router.route('/checkcoupon').post(authmiddlewre,member.checkcoupon); //used
+router.route('/manualcheck').post(authmiddlewre, member.manualcheck); //used
+router.route('/checkcoupon').post(member.checkcoupon); //used
 router.route('/auto').post(member.auto); //used
+
+router.route('/isadmin').get(authmiddlewre,isadmin,admin.falsee);
+router.route('/memshipentry').get(authmiddlewre,isadmin,admin.allmembershipentry);
+
 
 app.use((req, res, next) => {
   res.status(404).json({ msg: 'Route not found, kindly Re-Check api End point' });
