@@ -1,6 +1,6 @@
 const mongo = require('mongoose');
 
-const memberschema = new mongo.Schema({
+const manualmemberschema = new mongo.Schema({
     userid: {
         type: mongo.Schema.Types.ObjectId,
         ref: 'user',
@@ -10,14 +10,6 @@ const memberschema = new mongo.Schema({
         required: true
     },
     txn_no: {
-        type: String,
-        required: true
-    },
-    buy_date: {
-        type: String,
-        required: true
-    },
-    expire_date: {
         type: String,
         required: true
     },
@@ -41,5 +33,5 @@ const memberschema = new mongo.Schema({
     }
 }, { timestamps: true });
 
-const membership = new mongo.model("membership", memberschema);
-module.exports = membership;
+const manulamembership = new mongo.model("membershipentry", manualmemberschema);
+module.exports = manulamembership;
