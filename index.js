@@ -70,7 +70,9 @@ router.route('/updateprofilepic').post(authmiddlewre, upload.single('profilepic'
 
 router.route('/manualcheck').post(authmiddlewre, member.manualcheck); //used
 router.route('/checkcoupon').post(member.checkcoupon); //used
+router.route('/plan').get(member.plan); //used
 router.route('/auto').post(member.auto); //used
+router.route('/delmemberentry').post(authmiddlewre,isadmin,member.delmemberentry); //used
 
 router.route('/isadmin').get(authmiddlewre,isadmin,admin.falsee);
 router.route('/memshipentry').get(authmiddlewre,isadmin,admin.allmembershipentry);

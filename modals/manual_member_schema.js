@@ -5,9 +5,14 @@ const manualmemberschema = new mongo.Schema({
         type: mongo.Schema.Types.ObjectId,
         ref: 'user',
     },
-    plan_name: {
+    plan_id: {
+        type: mongo.Schema.Types.ObjectId,
+        ref: 'plan',
+    },
+    membershipId: {
         type: String,
-        required: true
+        required: false,
+        default: ''
     },
     txn_no: {
         type: String,
@@ -15,28 +20,19 @@ const manualmemberschema = new mongo.Schema({
     },
     coupon: {
         type: String,
-        default:'',
-        required: false
-    },
-    city: {
-        type: String,
-        default:'',
+        default: '',
         required: false
     },
     status: {
         type: String,
-        default:'pending',
+        default: 'pending',
         required: false,
         enum: ["pending", "approved", "rejected"],
     },
     remarks: {
         type: String,
-        default:'',
+        default: '',
         required: false
-    },
-    price: {
-        type: Number,
-        required: true
     },
     finalpricepaid: {
         type: Number,

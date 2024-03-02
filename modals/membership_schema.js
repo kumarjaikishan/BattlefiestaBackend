@@ -35,6 +35,11 @@ const memberschema = new mongo.Schema({
         type: Number,
         required: true
     },
+    tournament_no: {
+        type: Number,
+        required: false,
+        default:10000
+    },
     finalpricepaid: {
         type: Number,
         required: true

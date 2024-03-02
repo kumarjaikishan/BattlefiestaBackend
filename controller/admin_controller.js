@@ -7,10 +7,12 @@ const allmembershipentry = asyncHandler(async (req, res, next) => {
     const query = await manualmember.find().populate({
         path: 'user',
         select: 'name username'
-    });
+    }) .populate({
+        path: 'plan_id',
+        select: 'plan_name price'
+    });;
     // console.log(query);
     return res.status(200).json({
-        msg: "ok",
         data: query
     })
 
@@ -36,16 +38,18 @@ const createmembership = asyncHandler(async (req, res, next) => {
 
     if (body.status == 'success') {
         const query = new membership({
-            userid: body.user._id, plan_name: body.plan_name, txn_no: body.txn_no,
+            userid: body.user._id, plan_name: body.plan_id.plan_name, txn_no: body.txn_no,
             buy_date: body.buydate, expire_date: body.expiredate, coupon: body.coupon, city: body.city,
-            price: body.price, finalpricepaid: body.finalpricepaid
+            price: body.plan_id.price, finalpricepaid: body.finalpricepaid
         });
         const result = await query.save();
         if (!result) {
             return next({ status: 400, message: "Error Occured" });
         }
+        const memberidsave = await manualmember.findByIdAndUpdate({ _id: body._id }, { membershipId: query._id,status:body.status })
         return res.status(201).json({
-            msg: 'Membership Created'
+            msg: 'Membership Created',
+            membershipid: query._id
         })
     }
 
