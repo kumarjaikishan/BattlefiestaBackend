@@ -5,9 +5,9 @@ const memberschema = new mongo.Schema({
         type: mongo.Schema.Types.ObjectId,
         ref: 'user',
     },
-    plan_name: {
-        type: String,
-        required: true
+    planid: {
+        type: mongo.Schema.Types.ObjectId,
+        ref: 'plan',
     },
     txn_no: {
         type: String,
@@ -25,15 +25,6 @@ const memberschema = new mongo.Schema({
         type: String,
         default:'',
         required: false
-    },
-    city: {
-        type: String,
-        default:'',
-        required: false
-    },
-    price: {
-        type: Number,
-        required: true
     },
     tournament_no: {
         type: Number,

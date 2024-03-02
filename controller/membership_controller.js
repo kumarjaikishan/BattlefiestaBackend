@@ -6,7 +6,7 @@ const plans = require('../modals/plans_schema')
 
 const manualcheck = asyncHandler(async (req, res, next) => {
     // console.log(req.user);
-    console.log(req.body);
+    // console.log(req.body);
 
     const body = req.body;
     let couponapplied = 0;
@@ -48,7 +48,7 @@ const checkcoupon = asyncHandler(async (req, res, next) => {
 })
 
 const auto = asyncHandler(async (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
 })
 const delmemberentry = asyncHandler(async (req, res, next) => {
     const query = await manualmember.findByIdAndDelete({ _id: req.body.ide });
@@ -66,7 +66,7 @@ const plan = asyncHandler(async (req, res, next) => {
     if (!query) {
         return next({ status: 400, message: "Unable to delete Entry" });
     }
-    console.log(query);
+    // console.log(query);
     return res.status(200).json({
         plans: query
     })

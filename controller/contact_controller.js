@@ -26,7 +26,10 @@ const contact = async (req, res, next) => {
     }
 }
 const profile = async (req, res, next) => {
-    const query = await membership.find({ userid: req.userid }).sort({ createdAt: -1 });
+    const query = await membership.find({ userid: req.userid }).sort({ createdAt: -1 }).populate({
+        path: 'planid',
+        select: 'plan_name price' // Specify the fields you want to select
+    });;
     let latestmembership = '';
     if (query.length > 0) {
         latestmembership = query[0];

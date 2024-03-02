@@ -23,11 +23,11 @@ const falsee = async (req, res, next) => {
     })
 }
 const createmembership = asyncHandler(async (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
     let body = req.body;
 
-    if (body.status == 'pending' || body.status == 'rejected') {
-        const query = await manualmember.findByIdAndUpdate({ _id: body._id }, { status: body.status, remarks:body.remarks })
+    if (body.flag == 'pending' || body.status == 'rejected') {
+        const query = await manualmember.findByIdAndUpdate({ _id: body.id }, { status: body.flag, remarks:body.remarks })
         if (!query) {
             return next({ status: 400, message: "Error Occured" });
         }
@@ -36,17 +36,25 @@ const createmembership = asyncHandler(async (req, res, next) => {
         })
     }
 
-    if (body.status == 'success') {
+    if (body.flag == 'success') {
+        const whichone= await manualmember.findOne({_id:body.id}).populate({
+            path: 'plan_id'
+        });
+        // console.log(whichone);
+       let { todayDate, expiryDate} = calculateDate(whichone.plan_id.duration)
+
+    
         const query = new membership({
-            userid: body.user._id, plan_name: body.plan_id.plan_name, txn_no: body.txn_no,
-            buy_date: body.buydate, expire_date: body.expiredate, coupon: body.coupon, city: body.city,
-            price: body.plan_id.price, finalpricepaid: body.finalpricepaid
+            userid: whichone.user,planid:whichone.plan_id._id,  txn_no: whichone.txn_no,
+            buy_date: todayDate, expire_date: expiryDate, coupon: whichone.coupon,
+             finalpricepaid: whichone.finalpricepaid
         });
         const result = await query.save();
+        console.log(result);
         if (!result) {
             return next({ status: 400, message: "Error Occured" });
         }
-        const memberidsave = await manualmember.findByIdAndUpdate({ _id: body._id }, { membershipId: query._id,status:body.status })
+        const memberidsave = await manualmember.findByIdAndUpdate({ _id: whichone._id }, { membershipId: query._id,status:body.flag })
         return res.status(201).json({
             msg: 'Membership Created',
             membershipid: query._id
@@ -54,6 +62,38 @@ const createmembership = asyncHandler(async (req, res, next) => {
     }
 
 })
+const calculateDate = (offset) => {
+    const currentDate = new Date();
+    const targetDate = new Date(currentDate.getTime()); // Make a copy of currentDate
+
+    if (offset === '1 Week') {
+      targetDate.setDate(targetDate.getDate() + 7); // Add 7 days to targetDate
+    } else if (offset === '1 Month') {
+      targetDate.setMonth(targetDate.getMonth() + 1); // Add 1 month to targetDate
+    } else if (offset === '3 Month') {
+      targetDate.setMonth(targetDate.getMonth() + 3); // Add 3 months to targetDate
+    } else if (offset === '6 Month') {
+      targetDate.setMonth(targetDate.getMonth() + 6); // Add 6 months to targetDate
+    }
+
+    targetDate.setDate(targetDate.getDate() - 1); // Subtract one day from the targetDate
+
+    const day = padZero(currentDate.getDate());
+    const month = padZero(currentDate.getMonth() + 1);
+    const year = currentDate.getFullYear();
+    const todayDate = `${year}-${month}-${day}`;
+
+    const targetDay = padZero(targetDate.getDate());
+    const targetMonth = padZero(targetDate.getMonth() + 1);
+    const targetYear = targetDate.getFullYear();
+    const expiryDate = `${targetYear}-${targetMonth}-${targetDay}`;
+
+    return { todayDate, expiryDate };
+};
+
+  const padZero = (value) => {
+    return value < 10 ? `0${value}` : value;
+  };
 
 
 
