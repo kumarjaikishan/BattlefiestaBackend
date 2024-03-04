@@ -28,6 +28,11 @@ const log = new mongo.Schema({
         required: false,
         default:""
     },
+    tourn_created: {
+        type: Number,
+        required: false,
+        default:0
+    },
     password: {
         type: String,
         required: true

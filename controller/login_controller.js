@@ -67,7 +67,8 @@ const login = async (req, res, next) => {
     return res.status(200).json({
       msg: "Login Successful",
       token: dfg,
-      userId: fbf
+      userId: fbf,
+      userdata:result
     });
 
   } else {

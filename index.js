@@ -5,6 +5,7 @@ const port = process.env.PORT || 5000;
 const router = express.Router();
 const cors = require('cors')
 const login = require('./controller/login_controller')
+const checkmembership = require('./utils/checkmembership')
 const tournament = require('./controller/tournament_controller')
 const tournaentry = require('./controller/tournment_entry_controller')
 const Matches = require('./controller/match_controller')
@@ -33,7 +34,7 @@ router.route('/signup').post(login.signup, emailauth);    //used
 router.route('/login').post(emailauth, login.login);      //used
 router.route('/verify').get(login.verify);      //used
 
-router.route('/addtournament').post(authmiddlewre, tournament.addtournament);      //used
+router.route('/addtournament').post(authmiddlewre,checkmembership, tournament.addtournament);      //used
 router.route('/torunadelete').post(authmiddlewre, tournament.torunadelete);      //used
 router.route('/gettournament').get(authmiddlewre, tournament.gettournament);      //used
 router.route('/getontournament').post(authmiddlewre, tournament.getontournament);      //used

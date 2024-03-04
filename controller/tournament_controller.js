@@ -1,7 +1,9 @@
 const tournament = require('../modals/tournament_schema');
 const registrationformsetting = require('../modals/registration-form-setting_schema');
 const Resgistered = require('../modals/register_form');
+const user = require('../modals/login_schema')
 const match = require('../modals/match_schema');
+const membership = require('../modals/membership_schema')
 const asyncHandler = require('../utils/asyncHandler');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
@@ -23,11 +25,18 @@ const addtournament = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "All Fields are Required" });
     }
 
+    const whichmembershipactive = await membership.find({userid:req.userid}).sort({createdAt:-1});
+
     const query = new tournament({ userid: req.userid, title: name, type, slots, organiser })
     const result = await query.save();
     if (!result) {
-        return next({ status: 400, message: "all input required" });
+        return next({ status: 400, message: "All input required" });
     } else {
+        const tournaupdate = await user.findByIdAndUpdate(
+            {_id:req.userid},
+            { $inc: { tourn_created: 1 } }, // Use $inc operator to increment the field
+            { new: true } // To return the updated document
+        );
         res.status(201).json({ msg: "Tournament Created" })
     }
 })
