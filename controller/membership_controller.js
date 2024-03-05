@@ -3,6 +3,7 @@ const manualmember = require('../modals/manual_member_schema');
 const coupon = require('../modals/coupon_schema');
 const membership = require('../modals/membership_schema');
 const plans = require('../modals/plans_schema')
+const sendemail = require('../utils/sendemail')
 
 const manualcheck = asyncHandler(async (req, res, next) => {
     // console.log(req.user);
@@ -28,6 +29,8 @@ const manualcheck = asyncHandler(async (req, res, next) => {
     if (!result) {
         return next({ status: 400, message: "Error Occured" });
     }
+    await sendemail('kumar.jaikishan0@gmail.com', 'New Membership Request');
+
     return res.status(201).json({
         msg: 'Request Submited'
     })
