@@ -51,6 +51,7 @@ const createmembership = asyncHandler(async (req, res, next) => {
             buy_date: todayDate, expire_date: expiryDate, coupon: whichone.coupon,
             finalpricepaid: whichone.finalpricepaid
         });
+
         const result = await query.save();
         console.log(result);
         if (!result) {
@@ -117,7 +118,20 @@ const emailreply = asyncHandler(async (req, res, next) => {
     })
 
 })
+const contactusdelete = asyncHandler(async (req, res, next) => {
+    if(req.body.id==''){
+        return next({ status: 400, message: "Please send Id to delete" });
+    }
+    const query = await contactus.findByIdAndDelete({_id:req.body.id})
+    if(!query){
+        return next({ status: 400, message: "Entry not Deleted" });
+    }
+    return res.status(200).json({
+        msg: "Deleted Successfully"
+    })
+
+})
 
 
 
-module.exports = { emailreply, allmembershipentry, falsee, createmembership, contactformlist };
+module.exports = { contactusdelete,emailreply, allmembershipentry, falsee, createmembership, contactformlist };

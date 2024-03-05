@@ -80,6 +80,7 @@ router.route('/memshipentry').get(authmiddlewre,isadmin,admin.allmembershipentry
 router.route('/contactformlist').get(authmiddlewre,isadmin,admin.contactformlist);
 router.route('/createmembership').post(authmiddlewre,isadmin,admin.createmembership);
 router.route('/emailreply').post(authmiddlewre,isadmin,admin.emailreply);
+router.route('/contactusdelete').post(authmiddlewre,isadmin,admin.contactusdelete);
 
 
 app.use((req, res, next) => {

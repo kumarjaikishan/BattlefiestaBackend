@@ -1,5 +1,5 @@
 const user = require('../modals/login_schema')
-const NodeCache = require("node-cache");
+const NodeCache = require('node-cache');
 const myCache = new NodeCache();
 const bcrypt = require('bcrypt');
 const fs = require('fs');
