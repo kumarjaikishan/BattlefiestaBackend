@@ -18,6 +18,16 @@ const log = new mongo.Schema({
         required: false,
         default:""
     },
+    city: {
+        type: String,
+        required: false,
+        default:""
+    },
+    state: {
+        type: String,
+        required: false,
+        default:""
+    },
     phone: {
         type: Number,
         required: false,

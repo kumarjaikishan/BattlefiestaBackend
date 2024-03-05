@@ -3,29 +3,49 @@ const user = require('../modals/login_schema');
 
 // Create a transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'battlefiesta07@gmail.com',
-        pass: process.env.gmail_password
-    }
+  service: 'gmail',
+  auth: {
+    user: 'battlefiesta07@gmail.com',
+    pass: process.env.gmail_password
+  }
 });
 
+const sendemail = async (receiver, message) => {
+  const mailOptions = {
+    from: 'BattleFiesta <battlefiesta07@gmail.com>',
+    to: receiver,
+    subject: 'BattleFiesta || Email Verification',
+    text: message
+  }
+
+  // Send the email
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error('Error sending email:', error);
+    } else {
+      res.status(201).json({
+        msg: "Email Sent",
+      })
+    }
+  });
+}
+
 const emailmiddleware = async (req, res, next) => {
-    try {
-        const query = await user.findOne({ email: req.body.email });
-        // console.log("email auth",query);
-        if (!query) {
-            return next({ status: 400, message: "User not found" });
-        }
-        if (query.isverified) {
-            next();
-        } else {
-            const mailOptions = {
-                from: 'BattleFiesta <battlefiesta07@gmail.com>',
-                to: query.email,
-                subject: 'BattleFiesta || Email Verification',
-                // html: `Hi ${query.name}, please <a href="https://esport-backend.vercel.app/verify?id=${query._id}" target="_blank">Click Here</a>  to Verify your Email,   Thanks for Joining Us, from Jai kishan(Developer)`
-                html: `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  try {
+    const query = await user.findOne({ email: req.body.email });
+    // console.log("email auth",query);
+    if (!query) {
+      return next({ status: 400, message: "User not found" });
+    }
+    if (query.isverified) {
+      next();
+    } else {
+      const mailOptions = {
+        from: 'BattleFiesta <battlefiesta07@gmail.com>',
+        to: query.email,
+        subject: 'BattleFiesta || Email Verification',
+        // html: `Hi ${query.name}, please <a href="https://esport-backend.vercel.app/verify?id=${query._id}" target="_blank">Click Here</a>  to Verify your Email,   Thanks for Joining Us, from Jai kishan(Developer)`
+        html: `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
                 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
                 
                 <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -432,26 +452,26 @@ const emailmiddleware = async (req, res, next) => {
                 </body>
                 
                 </html>`,
-            };
+      };
 
-            // Send the email
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.error('Error sending email:', error);
-                } else {
-                    res.status(201).json({
-                        msg: "Verify Email, check your inbox",
-                    })
-                    console.log('Email sent:', info.response);
-                }
-            });
+      // Send the email
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error('Error sending email:', error);
+        } else {
+          res.status(201).json({
+            msg: "Verify Email, check your inbox",
+          })
+          console.log('Email sent:', info.response);
         }
-    } catch (error) {
-        res.status(500).json({
-            msg: "something went wrong",
-            error
-        })
+      });
     }
+  } catch (error) {
+    res.status(500).json({
+      msg: "something went wrong",
+      error
+    })
+  }
 }
 
 

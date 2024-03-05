@@ -68,7 +68,7 @@ const login = async (req, res, next) => {
       msg: "Login Successful",
       token: dfg,
       userId: fbf,
-      userdata:result
+      isadmin:result.isadmin
     });
 
   } else {

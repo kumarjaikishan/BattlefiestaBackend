@@ -34,14 +34,14 @@ const profile = async (req, res, next) => {
     if (query.length > 0) {
         latestmembership = query[0];
     }
-    console.log('profile', latestmembership);
+    // console.log('profile', latestmembership);
     return res.status(200).json({ data: req.user, member:latestmembership })
 }
 
 const updateprofile = async (req, res, next) => {
-    const { name, username, email, phone, bio, publicemail, publicphone, sociallinks } = req.body;
+    const { name, username, email, phone,city,state, bio, publicemail, publicphone, sociallinks } = req.body;
     try {
-        const query = await login.findByIdAndUpdate({ _id: req.userid }, { name, username, email, phone, bio, publicemail, publicphone, sociallinks })
+        const query = await login.findByIdAndUpdate({ _id: req.userid }, { name, username, email, phone,city,state, bio, publicemail, publicphone, sociallinks })
         if (!query) {
             return next({ status: 400, message: "something wrong" });
         }
