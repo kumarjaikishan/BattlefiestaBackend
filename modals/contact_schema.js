@@ -9,6 +9,14 @@ const contactschema = new mongo.Schema({
     },
     message: {
         type: String
+    },
+    resolve: {
+        type: Boolean,
+        default:false
+    },
+    resolvemsg: {
+        type: String,
+        default:''
     }
 }, { timestamps: true })
 

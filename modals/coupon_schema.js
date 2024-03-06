@@ -10,9 +10,9 @@ const couponschema = new mongo.Schema({
         type: Number,
         required: true
     },
-    status: {
-        type: String,
-        default:'active',
+    isactive: {
+        type: Boolean,
+        default:true,
         required: true
     },
 }, { timestamps: true });

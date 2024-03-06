@@ -1,7 +1,8 @@
 const asyncHandler = require('../utils/asyncHandler');
 const manualmember = require('../modals/manual_member_schema');
 const membership = require('../modals/membership_schema');
-const contactus = require('../modals/contact_schema')
+const contactus = require('../modals/contact_schema');
+const voucher = require('../modals/coupon_schema')
 const sendemail = require('../utils/sendemail')
 
 const allmembershipentry = asyncHandler(async (req, res, next) => {
@@ -113,6 +114,7 @@ const emailreply = asyncHandler(async (req, res, next) => {
     if (!response) {
         return next({ status: 400, message: "Email not Sent" });
     }
+    const dfdf= await contactus.findByIdAndUpdate({_id:req.body.contactid},{resolve:true, resolvemsg:req.body.reply})
     return res.status(200).json({
         msg: "Email Sent"
     })
@@ -129,9 +131,50 @@ const contactusdelete = asyncHandler(async (req, res, next) => {
     return res.status(200).json({
         msg: "Deleted Successfully"
     })
+})
+
+const deletevoucher = asyncHandler(async (req, res, next) => {
+    if(req.body.id==''){
+        return next({ status: 400, message: "Please send Id to delete" });
+    }
+    // console.log(req.body.id);
+    const query = await voucher.findByIdAndDelete({_id:req.body.id})
+
+    if(!query){
+        return next({ status: 400, message: "Entry not Deleted" });
+    }
+    return res.status(200).json({
+        msg: "Deleted Successfully"
+    })
+})
+
+const createvoucher = asyncHandler(async (req, res, next) => {
+
+    // console.log(req.body);
+    const query = new voucher({
+        coupon:req.body.name,percent:req.body.percent,isactive:true
+    })
+    const hai = await query.save();
+    if(!hai){
+        return next({ status: 400, message: "Voucher not added" });
+    }
+    return res.status(200).json({
+        msg: "Voucher Created"
+    })
+
+})
+const getvoucher = asyncHandler(async (req, res, next) => {
+    const query = await voucher.find();
+    // console.log(query);
+    if(!query){
+        return next({ status: 400, message: "Voucher not found" });
+    }
+    return res.status(200).json({
+        data: query
+    })
 
 })
 
 
 
-module.exports = { contactusdelete,emailreply, allmembershipentry, falsee, createmembership, contactformlist };
+module.exports = {getvoucher,createvoucher,deletevoucher, contactusdelete,emailreply, allmembershipentry, falsee, createmembership, contactformlist };
