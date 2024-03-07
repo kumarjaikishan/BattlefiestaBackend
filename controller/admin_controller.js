@@ -172,9 +172,19 @@ const getvoucher = asyncHandler(async (req, res, next) => {
     return res.status(200).json({
         data: query
     })
-
+})
+const editvoucher = asyncHandler(async (req, res, next) => {
+    // console.log(req.body);
+    const query = await voucher.findByIdAndUpdate({_id:req.body.id},{coupon:req.body.name , percent:req.body.percent ,isactive:req.body.isactive});
+    // console.log(query);
+    if(!query){
+        return next({ status: 400, message: "Voucher not Edited" });
+    }
+    return res.status(200).json({
+        msg: 'Voucher Edited Successfully'
+    })
 })
 
 
 
-module.exports = {getvoucher,createvoucher,deletevoucher, contactusdelete,emailreply, allmembershipentry, falsee, createmembership, contactformlist };
+module.exports = {getvoucher,editvoucher,createvoucher,deletevoucher, contactusdelete,emailreply, allmembershipentry, falsee, createmembership, contactformlist };

@@ -14,7 +14,9 @@ const manualcheck = asyncHandler(async (req, res, next) => {
     if (body.coupon != '') {
         // console.log('yaha par aaya');
         const findcoupon = await coupon.findOne({ coupon: body.coupon });
-        couponapplied = findcoupon.percent;
+        if (!findcoupon.isactive) {
+            return next({ status: 400, message: "Coupon Expired" });
+        }
     }
     const plane = await plans.findOne({ _id: body.plan_id });
 
@@ -42,7 +44,7 @@ const checkcoupon = asyncHandler(async (req, res, next) => {
     if (!query) {
         return next({ status: 400, message: "Not Found" });
     }
-    if (query.status == 'expired') {
+    if (!query.isactive) {
         return next({ status: 400, message: "Expired" });
     }
     return res.status(200).json({

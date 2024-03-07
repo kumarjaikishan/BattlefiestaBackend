@@ -79,6 +79,7 @@ router.route('/isadmin').get(authmiddlewre,isadmin,admin.falsee);
 router.route('/memshipentry').get(authmiddlewre,isadmin,admin.allmembershipentry);
 router.route('/contactformlist').get(authmiddlewre,isadmin,admin.contactformlist);
 router.route('/getvoucher').get(authmiddlewre,isadmin,admin.getvoucher);
+router.route('/editvoucher').post(authmiddlewre,isadmin,admin.editvoucher);
 router.route('/createvoucher').post(authmiddlewre,isadmin,admin.createvoucher);
 router.route('/deletevoucher').post(authmiddlewre,isadmin,admin.deletevoucher);
 router.route('/createmembership').post(authmiddlewre,isadmin,admin.createmembership);
