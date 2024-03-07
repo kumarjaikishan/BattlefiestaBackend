@@ -59,9 +59,10 @@ const updateprofilepic = async (req, res, next) => {
     let arraye = [];
     let oldimage = req.user.imgsrc;
     oldimage != "" && arraye.push(oldimage);
+    // console.log("old image path",oldimage);
 
     try {
-        req.file && await cloudinary.uploader.upload(req.file.path, async (error, result) => {
+        req.file && await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/profilepic' }, async (error, result) => {
             // console.log(error, result);
             if (error) {
                 return next({ status: 500, message: "File not Uploaded" });

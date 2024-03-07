@@ -34,7 +34,8 @@ const register = async (req, res, next) => {
         // console.log(savedTournament);
         if (savedTournament) {
 
-            teamLogoFile && await cloudinary.uploader.upload(teamLogoFile.path, async (error, result) => {
+            teamLogoFile && await cloudinary.uploader.upload(teamLogoFile.path, { folder: 'battlefiesta/teamlogo' }, async (error, result) => {
+                
                 // console.log(error, result);
                 if (error) {
                     return next({ status: 500, message: "File not Uploaded" });
@@ -53,7 +54,8 @@ const register = async (req, res, next) => {
                 const query = await Tournament.findByIdAndUpdate({ _id: savedTournament._id }, { teamLogo: imageurl })
             })
 
-            paymentScreenshotFile && await cloudinary.uploader.upload(paymentScreenshotFile.path, async (error, result) => {
+            paymentScreenshotFile && await cloudinary.uploader.upload(paymentScreenshotFile.path, { folder: 'battlefiesta/paymentss' }, async (error, result) => {
+                
                 if (error) {
                     return next({ status: 500, message: "File not Uploaded" });
                 }
@@ -88,7 +90,8 @@ const playerregister = async (req, res, next) => {
     const { teamid, inGameName, inGameID, playerId } = req.body;
     let imageurl = "";
     try {
-        req.file && await cloudinary.uploader.upload(req.file.path, async (error, result) => {
+        req.file && await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/playerlogo' }, async (error, result) => {
+            
             // console.log(error, result);
             if (error) {
                 return next({ status: 500, message: "File not Uploaded" });
@@ -175,7 +178,8 @@ const Teamupdate = async (req, res, next) => {
         let fdf = [];
         fdf.push(query.teamLogo);
 
-        req.file && await cloudinary.uploader.upload(req.file.path, async (error, result) => {
+        req.file &&  await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/teamlogo' }, async (error, result) => {
+           
             if (error) {
                 return next({ status: 500, message: "File not Uploaded" });
             }
@@ -216,7 +220,7 @@ const playerupdate = async (req, res, next) => {
 
     try {
         if (req.file) {
-            await cloudinary.uploader.upload(req.file.path, async (error, result) => {
+                await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/playerlogo' }, async (error, result) => {
                 if (error) {
                     return next({ status: 500, message: "File not Uploaded" });
                 }

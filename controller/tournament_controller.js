@@ -95,7 +95,7 @@ const settournamentlogos = async (req, res, next) => {
     const oldurl = req.body.oldimage;
     const tid = req.body.tid;
 
-    await cloudinary.uploader.upload(req.file.path, async (error, result) => {
+    await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/tournlogo' }, async (error, result) => {
         // console.log(error, result);
         if (error) {
             return next({ status: 500, message: "File not Uploaded" });
@@ -119,26 +119,14 @@ const settournamentlogos = async (req, res, next) => {
         }
 
         if (oldurl != "") {
-            const hu = oldurl.split('/');
-            const lastwala = hu[hu.length - 1].split('.')[0];
-            await cloudinary.uploader.destroy(lastwala, (error, result) => {
-                // console.log(error, result);
-                if (result) {
-                    res.status(201).json({
-                        msg: "photo updated",
-                        url: imageurl
-                    })
-                } else {
-                    return next({ status: 500, message: "error while previous image delete" });
-                }
-            })
-        } else {
-            res.status(201).json({
-                msg: "photo updated",
-                url: imageurl
-            })
+            let arraye = [];
+            arraye.push(oldurl);
+            await removePhotoBySecureUrl(arraye);
         }
-
+        res.status(201).json({
+            msg: "photo updated",
+            url: imageurl
+        })
     })
 }
 
