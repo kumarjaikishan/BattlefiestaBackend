@@ -21,6 +21,11 @@ const memberschema = new mongo.Schema({
         type: String,
         required: true
     },
+    isActive: {
+        type: Boolean,
+        required: false,
+        default:true
+    },
     coupon: {
         type: String,
         default:'',

@@ -184,7 +184,21 @@ const editvoucher = asyncHandler(async (req, res, next) => {
         msg: 'Voucher Edited Successfully'
     })
 })
+const getmembership = asyncHandler(async (req, res, next) => {
+    // console.log(req.body);
+    const query = await membership.find().populate({
+        path: 'planid',
+        select: 'plan_name price'
+    });
+    // console.log(query);
+    if(!query){
+        return next({ status: 400, message: "Memberships not found" });
+    }
+    return res.status(200).json({
+        data: query
+    })
+})
 
 
 
-module.exports = {getvoucher,editvoucher,createvoucher,deletevoucher, contactusdelete,emailreply, allmembershipentry, falsee, createmembership, contactformlist };
+module.exports = {getvoucher,getmembership,editvoucher,createvoucher,deletevoucher, contactusdelete,emailreply, allmembershipentry, falsee, createmembership, contactformlist };
