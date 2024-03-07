@@ -12,8 +12,9 @@ const manualcheck = asyncHandler(async (req, res, next) => {
     const body = req.body;
     let couponapplied = 0;
     if (body.coupon != '') {
+        let couponname = body.coupon.trim().toLowerCase();
         // console.log('yaha par aaya');
-        const findcoupon = await coupon.findOne({ coupon: body.coupon });
+        const findcoupon = await coupon.findOne({ coupon: couponname });
         if (!findcoupon.isactive) {
             return next({ status: 400, message: "Coupon Expired" });
         }

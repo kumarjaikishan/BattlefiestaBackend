@@ -149,10 +149,10 @@ const deletevoucher = asyncHandler(async (req, res, next) => {
 })
 
 const createvoucher = asyncHandler(async (req, res, next) => {
-
+      let planname = req.body.name.trim().toLowerCase();
     // console.log(req.body);
     const query = new voucher({
-        coupon:req.body.name,percent:req.body.percent,isactive:true
+        coupon:planname,percent:req.body.percent,isactive:true
     })
     const hai = await query.save();
     if(!hai){
