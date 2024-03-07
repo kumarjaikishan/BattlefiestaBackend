@@ -3,6 +3,7 @@ const manualmember = require('../modals/manual_member_schema');
 const membership = require('../modals/membership_schema');
 const contactus = require('../modals/contact_schema');
 const voucher = require('../modals/coupon_schema')
+const users = require('../modals/login_schema')
 const sendemail = require('../utils/sendemail')
 
 const allmembershipentry = asyncHandler(async (req, res, next) => {
@@ -189,6 +190,9 @@ const getmembership = asyncHandler(async (req, res, next) => {
     const query = await membership.find().populate({
         path: 'planid',
         select: 'plan_name price'
+    }).populate({
+        path: 'userid',
+        select: 'name username'
     });
     // console.log(query);
     if(!query){
@@ -198,7 +202,18 @@ const getmembership = asyncHandler(async (req, res, next) => {
         data: query
     })
 })
+const getusers = asyncHandler(async (req, res, next) => {
+    // console.log(req.body);
+    const query = await users.find().sort({createdAt: -1})
+    // console.log(query);
+    if(!query){
+        return next({ status: 400, message: "users not found" });
+    }
+    return res.status(200).json({
+        data: query
+    })
+})
 
 
 
-module.exports = {getvoucher,getmembership,editvoucher,createvoucher,deletevoucher, contactusdelete,emailreply, allmembershipentry, falsee, createmembership, contactformlist };
+module.exports = {getvoucher,getusers,getmembership,editvoucher,createvoucher,deletevoucher, contactusdelete,emailreply, allmembershipentry, falsee, createmembership, contactformlist };
