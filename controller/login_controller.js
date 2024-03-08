@@ -333,6 +333,7 @@ const verify = async (req, res) => {
             text-transform: uppercase;
             letter-spacing: 2px;
             font-size: 1em;
+            font-weight: 700;
             margin-top: -.2em;
             margin-bottom: 0;
           }
