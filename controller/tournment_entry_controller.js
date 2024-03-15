@@ -76,7 +76,7 @@ const register = async (req, res, next) => {
             })
 
             res.status(201).json({
-                msg: "Team created",
+                message: "Team created",
                 teamid: savedTournament._id
             })
         }
@@ -117,7 +117,7 @@ const playerregister = async (req, res, next) => {
         );
 
         res.status(201).json({
-            msg: "Team Created indivisual players",
+            message: "Team Created indivisual players",
         })
     } catch (error) {
         console.log(error);
@@ -138,7 +138,7 @@ const updateteamstatus = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Team Id not valid" });
     }
     return res.status(200).json({
-        msg: `${value} Successfully`
+        message: `${value} Successfully`
     })
 
 })
@@ -160,7 +160,7 @@ const teamdelete = async (req, res, next) => {
         arraye.length > 0 && await removePhotoBySecureUrl(arraye)
         const deletee = await Tournament.findByIdAndDelete({ _id: teamid });
         return res.status(200).json({
-            msg: "Team Deleted",
+            message: "Team Deleted",
         })
         // console.log(check);
     } catch (error) {
@@ -200,7 +200,7 @@ const Teamupdate = async (req, res, next) => {
         })
 
         res.status(201).json({
-            msg: "Team Updated"
+            message: "Team Updated"
         })
 
     } catch (error) {
@@ -245,7 +245,7 @@ const playerupdate = async (req, res, next) => {
 
                 await Tournament.findByIdAndUpdate({ _id: id }, { $set: { [`player.${index}`]: updatedPlayerData } }, { new: true });
                 res.status(200).json({
-                    msg: "Updated Successfull"
+                    message: "Updated Successfull"
                 })
             })
         } else {
@@ -258,7 +258,7 @@ const playerupdate = async (req, res, next) => {
 
             !req.file && await Tournament.findByIdAndUpdate({ _id: id }, { $set: { [`player.${index}`]: updatedPlayerData } }, { new: true });
             res.status(200).json({
-                msg: "Updated Successfull"
+                message: "Updated Successfull"
             })
         }
     } catch (error) {

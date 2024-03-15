@@ -37,7 +37,7 @@ const addtournament = asyncHandler(async (req, res, next) => {
             { $inc: { tourn_created: 1 } }, // Use $inc operator to increment the field
             { new: true } // To return the updated document
         );
-        res.status(201).json({ msg: "Tournament Created" })
+        res.status(201).json({ message: "Tournament Created" })
     }
 })
 
@@ -47,7 +47,7 @@ const gettournament = asyncHandler(async (req, res, next) => {
     if (!query) {
         return next({ status: 400, message: "Error Occured" });
     } else {
-        return res.status(201).json({ msg: "success", data: query })
+        return res.status(201).json({ message: "success", data: query })
     }
 })
 const getontournament = asyncHandler(async (req, res, next) => {
@@ -55,7 +55,7 @@ const getontournament = asyncHandler(async (req, res, next) => {
     if (!query) {
         return next({ status: 400, message: "Either Tid or UserID wrong" });
     } else {
-        return res.status(201).json({ msg: "success", data: query })
+        return res.status(201).json({ message: "success", data: query })
     }
 })
 
@@ -75,7 +75,7 @@ const getalltournament = asyncHandler(async (req, res, next) => {
     if (!query) {
         return next({ status: 400, message: "Error Occured" });
     } else {
-        res.status(201).json({ msg: "success", data: query })
+        res.status(201).json({ message: "success", data: query })
     }
 })
 
@@ -87,7 +87,7 @@ const settournament = asyncHandler(async (req, res, next) => {
     if (!query) {
         return next({ status: 400, message: "Error Occured" });
     } else {
-        res.status(201).json({ msg: "Successfully Updated", data: query })
+        res.status(201).json({ message: "Successfully Updated", data: query })
     }
 })
 const settournamentlogos = async (req, res, next) => {
@@ -124,7 +124,7 @@ const settournamentlogos = async (req, res, next) => {
             await removePhotoBySecureUrl(arraye);
         }
         res.status(201).json({
-            msg: "photo updated",
+            message: "photo updated",
             url: imageurl
         })
     })
@@ -144,13 +144,13 @@ const tournamentform = asyncHandler(async (req, res, next) => {
         const query = new registrationformsetting({ userid: req.userid, tournament_id: tid })
         const result = await query.save();
         return res.status(201).json({
-            msg: "success",
+            message: "success",
             data: result,
             entry: entries
         })
     } else {
         return res.status(201).json({
-            msg: "success",
+            message: "success",
             data: isformexists,
             entry: entries
         })
@@ -169,7 +169,7 @@ const gettournamentform = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Tournament Id not Valid" });
     } else {
         res.status(201).json({
-            msg: "success",
+            message: "success",
             data: isformexists,
             data2: tournamente,
             enteries
@@ -185,7 +185,7 @@ const getenteries = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Tournament Id not Valid" });
     } else {
         res.status(201).json({
-            msg: "success",
+            message: "success",
             enteries
         })
     }
@@ -206,7 +206,7 @@ const updatetournamentform = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Tournament Id not Valid" });
     } else {
         res.status(201).json({
-            msg: "Updated Successfully"
+            message: "Updated Successfully"
         })
     }
 })
@@ -219,7 +219,7 @@ const updatetournamentformcontacts = asyncHandler(async (req, res, next) => {
             return next({ status: 400, message: "Tournament Id not Valid" });
         } else {
             res.status(201).json({
-                msg: "Updated Successfully"
+                message: "Updated Successfully"
             })
         }
     } catch (error) {
@@ -235,7 +235,7 @@ const pointsystem = asyncHandler(async (req, res, next) => {
 
     if (query) {
         return res.status(200).json({
-            msg: "Updated Success"
+            message: "Updated Success"
         })
     } else {
         return next({ status: 500, message: "Tournament Id not Valid" });
@@ -284,7 +284,7 @@ const torunadelete = async (req, res, next) => {
         arraye.length > 0 && await removePhotoBySecureUrl(arraye)
         // console.log(arraye);
         res.status(200).json({
-            msg: "Tournament Deleted"
+            message: "Tournament Deleted"
         })
     } catch (error) {
         console.log(error);

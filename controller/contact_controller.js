@@ -19,7 +19,7 @@ const contact = async (req, res, next) => {
         const result = await query.save();
 
         return res.status(201).json({
-            msg: "Message registered"
+            message: "Message registered"
         })
     } catch (error) {
         return next({ status: 500, message: error });
@@ -46,7 +46,7 @@ const updateprofile = async (req, res, next) => {
             return next({ status: 400, message: "something wrong" });
         }
         return res.status(200).json({
-            msg: "Update Successfully"
+            message: "Update Successfully"
         })
     } catch (error) {
         console.log(error);
@@ -84,7 +84,7 @@ const updateprofilepic = async (req, res, next) => {
             await login.findByIdAndUpdate({ _id: req.userid }, { imgsrc: imageurl })
 
             return res.status(200).json({
-                msg: "Upload Successfully",
+                message: "Upload Successfully",
                 url: imageurl
             })
         })

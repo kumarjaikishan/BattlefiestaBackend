@@ -6,8 +6,6 @@ const plans = require('../modals/plans_schema')
 const sendemail = require('../utils/sendemail')
 
 const manualcheck = asyncHandler(async (req, res, next) => {
-    // console.log(req.user);
-    // console.log(req.body);
 
     const body = req.body;
     let couponapplied = 0;
@@ -35,7 +33,7 @@ const manualcheck = asyncHandler(async (req, res, next) => {
     await sendemail('kumar.jaikishan0@gmail.com', 'New Membership Request');
 
     return res.status(201).json({
-        msg: 'Request Submited'
+        message: 'Request Submited'
     })
 })
 
@@ -63,7 +61,7 @@ const delmemberentry = asyncHandler(async (req, res, next) => {
     }
     // console.log(query);
     return res.status(200).json({
-        msg: 'Entry Deleted'
+        message: 'Entry Deleted'
     })
 })
 

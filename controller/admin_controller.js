@@ -23,7 +23,7 @@ const allmembershipentry = asyncHandler(async (req, res, next) => {
 })
 const falsee = async (req, res, next) => {
     return res.status(200).json({
-        msg: 'ok'
+        message: 'ok'
     })
 }
 const createmembership = asyncHandler(async (req, res, next) => {
@@ -36,7 +36,7 @@ const createmembership = asyncHandler(async (req, res, next) => {
             return next({ status: 400, message: "Error Occured" });
         }
         return res.status(200).json({
-            msg: "Status Updated"
+            message: "Status Updated"
         })
     }
 
@@ -61,7 +61,7 @@ const createmembership = asyncHandler(async (req, res, next) => {
         }
         const memberidsave = await manualmember.findByIdAndUpdate({ _id: whichone._id }, { membershipId: query._id, status: body.flag })
         return res.status(201).json({
-            msg: 'Membership Created',
+            message: 'Membership Created',
             membershipid: query._id
         })
     }
@@ -115,9 +115,9 @@ const emailreply = asyncHandler(async (req, res, next) => {
     if (!response) {
         return next({ status: 400, message: "Email not Sent" });
     }
-    const dfdf= await contactus.findByIdAndUpdate({_id:req.body.contactid},{resolve:true, resolvemsg:req.body.reply})
+    const dfdf= await contactus.findByIdAndUpdate({_id:req.body.contactid},{resolve:true, resolvemessage:req.body.reply})
     return res.status(200).json({
-        msg: "Email Sent"
+        message: "Email Sent"
     })
 
 })
@@ -130,7 +130,7 @@ const contactusdelete = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Entry not Deleted" });
     }
     return res.status(200).json({
-        msg: "Deleted Successfully"
+        message: "Deleted Successfully"
     })
 })
 
@@ -145,7 +145,7 @@ const deletevoucher = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Entry not Deleted" });
     }
     return res.status(200).json({
-        msg: "Deleted Successfully"
+        message: "Deleted Successfully"
     })
 })
 
@@ -160,7 +160,7 @@ const createvoucher = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Voucher not added" });
     }
     return res.status(200).json({
-        msg: "Voucher Created"
+        message: "Voucher Created"
     })
 
 })
@@ -182,7 +182,7 @@ const editvoucher = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Voucher not Edited" });
     }
     return res.status(200).json({
-        msg: 'Voucher Edited Successfully'
+        message: 'Voucher Edited Successfully'
     })
 })
 const getmembership = asyncHandler(async (req, res, next) => {

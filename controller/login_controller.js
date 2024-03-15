@@ -65,7 +65,7 @@ const login = async (req, res, next) => {
     result._id = undefined;
     result.phone = undefined;
     return res.status(200).json({
-      msg: "Login Successful",
+      message: "Login Successful",
       token: dfg,
       userId: fbf,
       isadmin:result.isadmin
@@ -95,7 +95,7 @@ const signup = asyncHandler(async (req, res, next) => {
   if (result) {
     myCache.del("allusers");
     res.status(201).json({
-      msg: "Signup Successsfully"
+      message: "Signup Successsfully"
     })
   }
 })
@@ -110,7 +110,7 @@ const signup = asyncHandler(async (req, res, next) => {
 //         return res.status(201).send(`<html><h2> Hi ${query.name} , Email Verified Successfully, <button onclick="location.href = 'https://esport-bgmi.vercel.app';">Login Now</button> </h2></html>`)
 //     } catch (error) {
 //         return res.status(500).json({
-//             msg: "User Email not  verified",
+//             message: "User Email not  verified",
 //             error: error
 //         })
 //     }
@@ -502,7 +502,7 @@ const verify = async (req, res) => {
       </html>`)
   } catch (error) {
     return res.status(500).json({
-      msg: "User Email not  verified",
+      message: "User Email not  verified",
       error: error
     })
   }

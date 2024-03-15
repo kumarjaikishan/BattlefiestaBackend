@@ -90,7 +90,7 @@ router.route('/contactusdelete').post(authmiddlewre,isadmin,admin.contactusdelet
 
 
 app.use((req, res, next) => {
-  res.status(404).json({ msg: 'Route not found, kindly Re-Check api End point' });
+  res.status(404).json({ message: 'Route not found, kindly Re-Check api End point' });
 });
 
 app.listen(port, () => {

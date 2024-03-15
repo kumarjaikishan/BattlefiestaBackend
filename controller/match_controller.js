@@ -14,7 +14,7 @@ const addmatches = asyncHandler(async (req, res, next) => {
     }
 
     return res.status(201).json({
-        msg: "Match Added",
+        message: "Match Added",
         data: result
     })
 
@@ -50,7 +50,7 @@ const deletematch = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Match Id not valid" });
     }
     return res.status(200).json({
-        msg: "Match Deleted"
+        message: "Match Deleted"
     })
 })
 
