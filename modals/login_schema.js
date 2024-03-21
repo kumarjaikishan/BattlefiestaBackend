@@ -11,22 +11,22 @@ const log = new mongo.Schema({
         type: String,
         required: [true, "Email is required"],
         unique: true,
-        index:true
+        index: true
     },
     publicemail: {
         type: String,
         required: false,
-        default:""
+        default: ""
     },
     city: {
         type: String,
         required: false,
-        default:""
+        default: ""
     },
     state: {
         type: String,
         required: false,
-        default:""
+        default: ""
     },
     phone: {
         type: Number,
@@ -36,12 +36,12 @@ const log = new mongo.Schema({
     publicphone: {
         type: Number,
         required: false,
-        default:""
+        default: ""
     },
     tourn_created: {
         type: Number,
         required: false,
-        default:0
+        default: 0
     },
     password: {
         type: String,
@@ -50,19 +50,19 @@ const log = new mongo.Schema({
     username: {
         type: String,
         required: false,
-        default:""
+        default: ""
     },
     imgsrc: {
         type: String,
-        default:""
+        default: ""
     },
     bio: {
         type: String,
-        default:""
+        default: ""
     },
     sociallinks: {
         type: Array,
-        default:[]
+        default: []
     },
     isadmin: {
         type: Boolean,
@@ -72,16 +72,20 @@ const log = new mongo.Schema({
         type: Boolean,
         default: false
     },
-},{timestamps: true })
+    createdAt: {
+        type: Date,
+        default: () => new Date(+new Date() + 1 * 60 * 1000)
+    }
+})
 
 
-log.index({ createdAt: 1 }, { expireAfterSeconds: 300, partialFilterExpression: { isverified: false } });
+log.index({ createdAt: 1 }, { expireAfterSeconds: 0, partialFilterExpression: { isverified: false } });
 
 // secure the password
 log.pre("save", async function () {
     const user = this;
     if (!user.isModified("password")) {
-       return next();
+        return next();
     }
     try {
         const saltRound = await bcrypt.genSalt(10);
