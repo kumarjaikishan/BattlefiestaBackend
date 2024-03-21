@@ -71,12 +71,15 @@ const log = new mongo.Schema({
     isverified: {
         type: Boolean,
         default: false
-    }
-}, { timestamps: true })
+    },
+    createdAt: { type: Date, expires: '60s', default: Date.now },
+})
+
+
+log.index({ createdAt: 1 }, { expireAfterSeconds: 0, partialFilterExpression: { isverified: false } });
 
 // secure the password
 log.pre("save", async function () {
-    // console.log(this);
     const user = this;
     if (!user.isModified("password")) {
        return next();
@@ -110,7 +113,6 @@ log.methods.generateToken = async function () {
 
 
 log.methods.checkpassword = async function (hello) {
-    // console.log(hello,this.password );
     try {
         return bcrypt.compare(hello, this.password);
     } catch (error) {
