@@ -72,14 +72,10 @@ const log = new mongo.Schema({
         type: Boolean,
         default: false
     },
-    createdAt: {
-        type: Date,
-        default: () => new Date(+new Date() + 1 * 60 * 1000)
-    }
-})
+},{ timestamps: true })
 
 
-log.index({ createdAt: 1 }, { expireAfterSeconds: 0, partialFilterExpression: { isverified: false } });
+log.index({ createdAt: 1 }, { expireAfterSeconds: 120, partialFilterExpression: { isverified: false } });
 
 // secure the password
 log.pre("save", async function () {
