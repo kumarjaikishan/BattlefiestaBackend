@@ -14,7 +14,7 @@ const sendemail = async (receiver, message) => {
         from: 'BattleFiesta <battlefiesta07@gmail.com>',
         to: receiver,
         subject: 'cutomer support || BattleFiesta ',
-        text: message
+        html: message
     };
 
     // Return a promise

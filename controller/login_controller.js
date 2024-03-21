@@ -4,6 +4,7 @@ const myCache = new NodeCache();
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const cloudinary = require('cloudinary').v2;
+const sendemail = require('../utils/sendemail')
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('../utils/asyncHandler')
 const trialmembership = require('../utils/trial_membership')
@@ -68,7 +69,7 @@ const login = async (req, res, next) => {
       message: "Login Successful",
       token: dfg,
       userId: fbf,
-      isadmin:result.isadmin
+      isadmin: result.isadmin
     });
 
   } else {
@@ -99,6 +100,36 @@ const signup = asyncHandler(async (req, res, next) => {
     })
   }
 })
+const random = (len) => {
+  const rand = 'abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 0; i < len; i++) {
+    const randomIndex = Math.floor(Math.random() * rand.length);
+    result += rand[randomIndex];
+  }
+  return result;
+};
+const passreset = async (req, res,next) => {
+  // console.log(req.user);
+  // console.log(random(20));
+  const temptoken = random(20);
+
+  try {
+    const query = await user.findByIdAndUpdate(req.user._id, { temptoken: temptoken });
+    if (!query) {
+      return next({ status: 400, message: "UserId is Not Valid" });
+    }
+    const msg = `Hi ${req.user.name}, Kindly <a href="https://battlefiesta.vercel.app/setpassword?token=${temptoken}">Click here to Reset Your Password</a>`
+    await sendemail(req.user.email, msg);
+
+    return res.status(200).json({
+      message: 'Reset Link sent to Email'
+    })
+  } catch (error) {
+    console.log(error);
+    return next({ status: 500, message: error });
+  }
+}
 
 // const verify = async (req, res) => {
 //     try {
@@ -510,4 +541,4 @@ const verify = async (req, res) => {
 
 
 
-module.exports = { signup, login, verify };
+module.exports = { signup, login, verify, passreset };
