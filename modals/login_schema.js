@@ -72,7 +72,7 @@ const log = new mongo.Schema({
         type: Boolean,
         default: false
     },
-    createdAt: { type: Date, expires: '2d', default: Date.now },
+    createdAt: { type: Date, expires: '2d', default: new Date() },
 })
 
 
