@@ -72,8 +72,7 @@ const log = new mongo.Schema({
         type: Boolean,
         default: false
     },
-    createdAt: { type: Date, expires: '2d', default: new Date() },
-})
+},{timestamps: true })
 
 
 log.index({ createdAt: 1 }, { expireAfterSeconds: 300, partialFilterExpression: { isverified: false } });
