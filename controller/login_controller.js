@@ -59,16 +59,16 @@ const login = async (req, res, next) => {
   }
 
   if (await bcrypt.compare(password, result.password)) {
-    const dfg = await generateToken(result);
-    const fbf = result._id.toString();
+    const newToken = await generateToken(result);
+    const userIdString = result._id.toString();
     result.password = undefined;
     result.createdAt = undefined;
     result._id = undefined;
     result.phone = undefined;
     return res.status(200).json({
       message: "Login Successful",
-      token: dfg,
-      userId: fbf,
+      token: newToken,
+      userId: userIdString,
       isadmin: result.isadmin
     });
 
@@ -110,6 +110,7 @@ const random = (len) => {
   }
   return result;
 };
+
 const passreset = async (req, res,next) => {
   const temptoken = random(20);
 
@@ -133,14 +134,22 @@ const passreset = async (req, res,next) => {
 const setpassword = async (req, res,next) => {
    const token = req.query.token;
    const password = req.body.password;
-   console.log(token,password);
+  //  console.log(token,password);
   try {
     const query = await user.findOne({temptoken:token});
+
     if(!query){
       return next({ status: 400, message: 'This link has been Expired' });
     }
-    const newpass = 
-    await user.updateOne({_id:query._id},{password:"hai"})
+
+    const saltRound = await bcrypt.genSalt(10);
+    const hash_password = await bcrypt.hash(password, saltRound);
+// console.log(hash_password);
+    await user.updateOne({_id:query._id},{password:hash_password,temptoken:''})
+
+    return res.status(200).json({
+      message:'Password Updated Successfully'
+    })
   } catch (error) {
     console.log(error);
     return next({ status: 500, message: error });
