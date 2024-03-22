@@ -119,7 +119,12 @@ const passreset = async (req, res,next) => {
     if (!query) {
       return next({ status: 400, message: "UserId is Not Valid" });
     }
-    const msg = `Hi ${req.user.name}, Kindly <a href="https://battlefiesta.vercel.app/resetpassword/${temptoken}">Click here to Reset Your Password</a>`
+    const msg = `Hi ${req.user.name},
+    <br>
+    This mail is regards to your password change/reset. 
+    <br>
+    Kindly <a href="https://battlefiesta.vercel.app/resetpassword/${temptoken}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a>
+    `
     await sendemail(req.user.email, msg);
 
     return res.status(200).json({
