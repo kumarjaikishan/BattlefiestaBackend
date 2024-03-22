@@ -111,7 +111,7 @@ const random = (len) => {
   return result;
 };
 
-const passreset = async (req, res,next) => {
+const passreset = async (req, res, next) => {
   const temptoken = random(20);
 
   try {
@@ -119,11 +119,11 @@ const passreset = async (req, res,next) => {
     if (!query) {
       return next({ status: 400, message: "UserId is Not Valid" });
     }
-    const msg = `Hi ${req.user.name},
+    const msg = `Hi <b>${req.user.name}</b>,
     <br>
     This mail is regards to your password change/reset. 
-    <br>
-    Kindly <a href="https://battlefiesta.vercel.app/resetpassword/${temptoken}" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a>
+    <br><br>
+    <a href="https://battlefiesta.vercel.app/resetpassword/${temptoken}" style="display: inline-block; padding: 4px 20px; background-color: #007bff; color: #fff; text-decoration: none; letter-spacing: 1px;; border-radius: 5px;">Reset Password</a>
     `
     await sendemail(req.user.email, msg);
 
@@ -136,24 +136,24 @@ const passreset = async (req, res,next) => {
   }
 }
 
-const setpassword = async (req, res,next) => {
-   const token = req.query.token;
-   const password = req.body.password;
+const setpassword = async (req, res, next) => {
+  const token = req.query.token;
+  const password = req.body.password;
   //  console.log(token,password);
   try {
-    const query = await user.findOne({temptoken:token});
+    const query = await user.findOne({ temptoken: token });
 
-    if(!query){
+    if (!query) {
       return next({ status: 400, message: 'This link has been Expired' });
     }
 
     const saltRound = await bcrypt.genSalt(10);
     const hash_password = await bcrypt.hash(password, saltRound);
-// console.log(hash_password);
-    await user.updateOne({_id:query._id},{password:hash_password,temptoken:''})
+    // console.log(hash_password);
+    await user.updateOne({ _id: query._id }, { password: hash_password, temptoken: '' })
 
     return res.status(200).json({
-      message:'Password Updated Successfully'
+      message: 'Password Updated Successfully'
     })
   } catch (error) {
     console.log(error);
@@ -571,4 +571,4 @@ const verify = async (req, res) => {
 
 
 
-module.exports = { signup, login, verify, passreset,setpassword };
+module.exports = { signup, login, verify, passreset, setpassword };
