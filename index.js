@@ -35,6 +35,7 @@ router.route('/login').post(emailauth, login.login);      //used
 router.route('/verify').get(login.verify);      //used
 router.route('/passreset').get(authmiddlewre,login.passreset);      //used
 router.route('/setpassword').post(login.setpassword);      //used
+router.route('/checkmail').post(login.checkmail);      //used
 
 router.route('/addtournament').post(authmiddlewre,checkmembership, tournament.addtournament);      //used
 router.route('/torunadelete').post(authmiddlewre, tournament.torunadelete);      //used

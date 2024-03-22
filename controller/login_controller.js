@@ -101,7 +101,7 @@ const signup = asyncHandler(async (req, res, next) => {
   }
 })
 
-const random = (len) => {
+const random =async (len) => {
   const rand = 'abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
   for (let i = 0; i < len; i++) {
@@ -112,16 +112,16 @@ const random = (len) => {
 };
 
 const passreset = async (req, res, next) => {
-  const temptoken = random(20);
 
   try {
+    const temptoken =await random(20);
     const query = await user.findByIdAndUpdate(req.user._id, { temptoken: temptoken });
     if (!query) {
       return next({ status: 400, message: "UserId is Not Valid" });
     }
     const msg = `Hi <b>${req.user.name}</b>,
     <br>
-    This mail is regards to your password change/reset. 
+    This mail is regards to your password reset request. 
     <br><br>
     <a href="https://battlefiesta.vercel.app/resetpassword/${temptoken}" style="display: inline-block; padding: 4px 20px; background-color: #007bff; color: #fff; text-decoration: none; letter-spacing: 1px;; border-radius: 5px;">Reset Password</a>
     `
@@ -154,6 +154,34 @@ const setpassword = async (req, res, next) => {
 
     return res.status(200).json({
       message: 'Password Updated Successfully'
+    })
+  } catch (error) {
+    console.log(error);
+    return next({ status: 500, message: error });
+  }
+}
+const checkmail = async (req, res, next) => {
+  // console.log(req.body);
+  if (req.body.email == "") {
+    return next({ status: 400, message: 'Please send Email' });
+  }
+  try {
+    const query = await user.findOne({ email: req.body.email });
+    if (!query) {
+      return next({ status: 400, message: 'Email not Found' });
+    }
+    const temptoken = await random(20);
+    await user.findByIdAndUpdate(query._id, { temptoken: temptoken });
+    const msg = `Hi <b>${query.name}</b>,
+    <br>
+    This mail is regards to your Forget password request. 
+    <br><br>
+    <a href="https://battlefiesta.vercel.app/resetpassword/${temptoken}" style="display: inline-block; padding: 4px 20px; background-color: #007bff; color: #fff; text-decoration: none; letter-spacing: 1px;; border-radius: 5px;">Reset Password</a>
+    `
+    await sendemail(query.email, msg);
+
+    return res.status(200).json({
+      message: 'Reset Link sent to Email'
     })
   } catch (error) {
     console.log(error);
@@ -571,4 +599,4 @@ const verify = async (req, res) => {
 
 
 
-module.exports = { signup, login, verify, passreset, setpassword };
+module.exports = { signup, checkmail, login, verify, passreset, setpassword };
