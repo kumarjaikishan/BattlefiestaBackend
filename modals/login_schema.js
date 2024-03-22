@@ -60,6 +60,10 @@ const log = new mongo.Schema({
         type: String,
         default: ""
     },
+    temptoken: {
+        type: String,
+        default: ""
+    },
     sociallinks: {
         type: Array,
         default: []

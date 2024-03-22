@@ -100,6 +100,7 @@ const signup = asyncHandler(async (req, res, next) => {
     })
   }
 })
+
 const random = (len) => {
   const rand = 'abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
@@ -110,8 +111,6 @@ const random = (len) => {
   return result;
 };
 const passreset = async (req, res,next) => {
-  // console.log(req.user);
-  // console.log(random(20));
   const temptoken = random(20);
 
   try {
@@ -119,12 +118,29 @@ const passreset = async (req, res,next) => {
     if (!query) {
       return next({ status: 400, message: "UserId is Not Valid" });
     }
-    const msg = `Hi ${req.user.name}, Kindly <a href="https://battlefiesta.vercel.app/setpassword?token=${temptoken}">Click here to Reset Your Password</a>`
+    const msg = `Hi ${req.user.name}, Kindly <a href="https://battlefiesta.vercel.app/resetpassword/${temptoken}">Click here to Reset Your Password</a>`
     await sendemail(req.user.email, msg);
 
     return res.status(200).json({
       message: 'Reset Link sent to Email'
     })
+  } catch (error) {
+    console.log(error);
+    return next({ status: 500, message: error });
+  }
+}
+
+const setpassword = async (req, res,next) => {
+   const token = req.query.token;
+   const password = req.body.password;
+   console.log(token,password);
+  try {
+    const query = await user.findOne({temptoken:token});
+    if(!query){
+      return next({ status: 400, message: 'This link has been Expired' });
+    }
+    const newpass = 
+    await user.updateOne({_id:query._id},{password:"hai"})
   } catch (error) {
     console.log(error);
     return next({ status: 500, message: error });
@@ -541,4 +557,4 @@ const verify = async (req, res) => {
 
 
 
-module.exports = { signup, login, verify, passreset };
+module.exports = { signup, login, verify, passreset,setpassword };
