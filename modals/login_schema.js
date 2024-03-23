@@ -75,8 +75,8 @@ const log = new mongo.Schema({
     isverified: {
         type: Boolean,
         default: false
-    }
-},{timestamps:true})
+    },
+},{ timestamps: true })
 
 
 // secure the password
