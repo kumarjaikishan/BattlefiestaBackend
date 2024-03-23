@@ -75,15 +75,9 @@ const log = new mongo.Schema({
     isverified: {
         type: Boolean,
         default: false
-    },
-    createdAt:{
-        type:Date,
-        default: new Date()
     }
-})
+},{timestamps:true})
 
-
-log.index({ createdAt: 1 }, { expireAfterSeconds: 86400, partialFilterExpression: { isverified: false } });
 
 // secure the password
 log.pre("save", async function () {
