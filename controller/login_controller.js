@@ -128,7 +128,8 @@ const passreset = async (req, res, next) => {
     await sendemail(req.user.email, msg);
 
     return res.status(200).json({
-      message: 'Reset Link sent to Email'
+      message: 'Email sent',
+      extramessage:`Email sent successfully to ${req.user.email}, Kindly check inbox or spam to proceed further. Thankyou`
     })
   } catch (error) {
     console.log(error);
