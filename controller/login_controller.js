@@ -209,10 +209,9 @@ const checkmail = async (req, res, next) => {
 //         })
 //     }
 // }
-const verify = async (req, res) => {
+const verify = async (req, res, next) => {
   try {
     const query = await user.findByIdAndUpdate({ _id: req.query.id }, { isverified: true });
-
     if (!query) {
       return next({ status: 400, message: "UserId is Not Valid" });
     }
@@ -602,6 +601,7 @@ const verify = async (req, res) => {
       
       </html>`)
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       message: "User Email not  verified",
       error: error
