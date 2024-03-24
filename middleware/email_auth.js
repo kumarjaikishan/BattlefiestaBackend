@@ -138,10 +138,10 @@ const emailmiddleware = async (req, res, next) => {
         if (error) {
           console.error('Error sending email:', error);
         } else {
-          res.status(201).json({
-            message: "Verify Email, check your inbox",
-          })
           console.log('Email sent:', info.response);
+         return res.status(201).json({
+            message: "Please Verify Email",
+          })
         }
       });
     }

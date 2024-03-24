@@ -1,4 +1,5 @@
 const user = require('../modals/login_schema')
+const membership = require('../modals/membership_schema')
 const NodeCache = require('node-cache');
 const myCache = new NodeCache();
 const bcrypt = require('bcrypt');
@@ -93,15 +94,18 @@ const signup = asyncHandler(async (req, res, next) => {
   }
   const query = new user({ name, email, phone, password });
   const result = await query.save();
-  if (result) {
-    myCache.del("allusers");
-    res.status(201).json({
-      message: "Signup Successsfully"
-    })
+  if (!result) {
+    return next({ status: 400, message: "Something went wrong" });
+
   }
+  myCache.del("allusers");
+  next();
+  // res.status(201).json({
+  //   message: "Verify you Email"
+  // })
 })
 
-const random =async (len) => {
+const random = async (len) => {
   const rand = 'abcdefghijklmnopqrstuvwxyz123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
   for (let i = 0; i < len; i++) {
@@ -114,7 +118,7 @@ const random =async (len) => {
 const passreset = async (req, res, next) => {
 
   try {
-    const temptoken =await random(20);
+    const temptoken = await random(20);
     const query = await user.findByIdAndUpdate(req.user._id, { temptoken: temptoken });
     if (!query) {
       return next({ status: 400, message: "UserId is Not Valid" });
@@ -129,7 +133,7 @@ const passreset = async (req, res, next) => {
 
     return res.status(200).json({
       message: 'Email sent',
-      extramessage:`Email sent successfully to ${req.user.email}, Kindly check inbox or spam to proceed further. Thankyou`
+      extramessage: `Email sent successfully to ${req.user.email}, Kindly check inbox or spam to proceed further. Thankyou`
     })
   } catch (error) {
     console.log(error);
@@ -211,6 +215,13 @@ const verify = async (req, res) => {
 
     if (!query) {
       return next({ status: 400, message: "UserId is Not Valid" });
+    }
+    if (query.isverified) {
+      return next({ status: 400, message: "Already verified" });
+    }
+    const alreadymembership = await membership.findOne({ planid: '65fe7ad58a04a25de33f45b1', userid: req.query.id });
+    if (alreadymembership) {
+      return next({ status: 400, message: "Trail plan already Exists" });
     }
     await trialmembership(req.query.id, '65fe7ad58a04a25de33f45b1');
     // return res.status(201).send(`<html><h2> Hi ${query.name} , Email Verified Successfully, <button onclick="location.href = 'https://esport-bgmi.vercel.app';">Login Now</button> </h2></html>`)
