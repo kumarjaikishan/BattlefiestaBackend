@@ -220,7 +220,7 @@ const verify = async (req, res, next) => {
     }
     const alreadymembership = await membership.findOne({ planid: '65fe7ad58a04a25de33f45b1', userid: req.query.id });
     if (alreadymembership) {
-      return next({ status: 400, message: "Trail plan already Exists" });
+      return next({ status: 400, message: "Trial plan already Exists" });
     }
     await trialmembership(req.query.id, '65fe7ad58a04a25de33f45b1');
     // return res.status(201).send(`<html><h2> Hi ${query.name} , Email Verified Successfully, <button onclick="location.href = 'https://esport-bgmi.vercel.app';">Login Now</button> </h2></html>`)
