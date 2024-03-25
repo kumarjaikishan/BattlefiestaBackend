@@ -5,6 +5,7 @@ const contactus = require('../modals/contact_schema');
 const voucher = require('../modals/coupon_schema')
 const users = require('../modals/login_schema')
 const sendemail = require('../utils/sendemail')
+const addJobToQueue= require('../utils/producer')
 
 const allmembershipentry = asyncHandler(async (req, res, next) => {
     // console.log('yaha par');
@@ -35,6 +36,8 @@ const createmembership = asyncHandler(async (req, res, next) => {
         if (!query) {
             return next({ status: 400, message: "Error Occured" });
         }
+        const message = ` Hey ${query.name}, Your Membership request has been Rejected`
+        await addJobToQueue(query.email,"Customer Support || BattleFiesta",message)
         return res.status(200).json({
             message: "Status Updated"
         })
@@ -60,6 +63,8 @@ const createmembership = asyncHandler(async (req, res, next) => {
             return next({ status: 400, message: "Error Occured" });
         }
         const memberidsave = await manualmember.findByIdAndUpdate({ _id: whichone._id }, { membershipId: query._id, status: body.flag })
+        const message = ` Hey ${whichone.name}, Your Membership request for Rs.${whichone.finalpricepaid} has been Approved having Txn Id- ${whichone.txn_no}`
+        await addJobToQueue(whichone.email,"Customer Support || BattleFiesta",message)
         return res.status(201).json({
             message: 'Membership Created',
             membershipid: query._id
@@ -109,7 +114,8 @@ const contactformlist = asyncHandler(async (req, res, next) => {
 })
 const emailreply = asyncHandler(async (req, res, next) => {
 
-    const response = await sendemail(req.body.email, req.body.reply);
+    // const response = await sendemail(req.body.email, req.body.reply);
+    const response = await addJobToQueue(req.body.email, 'Customer Support || BattleFiesta',req.body.reply)
 
     // console.log('email sent', response);
     if (!response) {

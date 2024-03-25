@@ -4,6 +4,7 @@ const coupon = require('../modals/coupon_schema');
 const membership = require('../modals/membership_schema');
 const plans = require('../modals/plans_schema')
 const sendemail = require('../utils/sendemail')
+const addJobToQueue  = require('../utils/producer')
 
 const manualcheck = asyncHandler(async (req, res, next) => {
 
@@ -30,7 +31,9 @@ const manualcheck = asyncHandler(async (req, res, next) => {
     if (!result) {
         return next({ status: 400, message: "Error Occured" });
     }
-    await sendemail('kumar.jaikishan0@gmail.com', 'New Membership Request');
+    const message = `Hey Admin, ${req.user.name} has applied for membership for Rs.${finalpricepaid}`
+    // await sendemail('kumar.jaikishan0@gmail.com','New Membership Request || BattleFiesta ', message);
+    await addJobToQueue('kumar.jaikishan0@gmail.com','New Membership Request', message)
 
     return res.status(201).json({
         message: 'Request Submited'

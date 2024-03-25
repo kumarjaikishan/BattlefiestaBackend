@@ -96,7 +96,6 @@ const signup = asyncHandler(async (req, res, next) => {
   const result = await query.save();
   if (!result) {
     return next({ status: 400, message: "Something went wrong" });
-
   }
   myCache.del("allusers");
   next();

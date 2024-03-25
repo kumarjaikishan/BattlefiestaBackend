@@ -9,11 +9,11 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const sendemail = async (receiver, message) => {
+const sendemail = async (receiver,subject, message) => {
     const mailOptions = {
         from: 'BattleFiesta <battlefiesta07@gmail.com>',
         to: receiver,
-        subject: 'cutomer support || BattleFiesta ',
+        subject: subject,
         html: message
     };
 
