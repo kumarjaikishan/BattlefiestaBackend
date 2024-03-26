@@ -32,20 +32,32 @@ const createmembership = asyncHandler(async (req, res, next) => {
     let body = req.body;
 
     if (body.flag == 'pending' || body.status == 'rejected') {
-        const query = await manualmember.findByIdAndUpdate({ _id: body.id }, { status: body.flag, remarks: body.remarks })
+        const query = await manualmember.findByIdAndUpdate({ _id: body.id }, { status: body.flag, remarks: body.remarks }).populate({
+            path: 'plan_id',
+            select: 'duration plan_name'
+        }).populate({
+            path: 'user',
+            select: 'name email'
+        });
+    //    console.log(query);
         if (!query) {
             return next({ status: 400, message: "Error Occured" });
         }
-        const message = ` Hey ${query.name}, Your Membership request has been Rejected`
-        await addJobToQueue(query.email,"Customer Support || BattleFiesta",message)
+        const message = ` Hey ${query.user.name}, Your Membership request for plan-${query.plan_id.plan_name} of Rs.${query.finalpricepaid} txn no-${query.txn_no} has been Rejected`
+        await addJobToQueue(query.user.email,"Customer Support || BattleFiesta",message)
         return res.status(200).json({
             message: "Status Updated"
         })
     }
 
     if (body.flag == 'success') {
+        
         const whichone = await manualmember.findOne({ _id: body.id }).populate({
-            path: 'plan_id'
+            path: 'plan_id',
+            select: 'duration plan_name'
+        }).populate({
+            path: 'user',
+            select: 'name email'
         });
         // console.log(whichone);
         let { todayDate, expiryDate } = calculateDate(whichone.plan_id.duration)
@@ -58,13 +70,13 @@ const createmembership = asyncHandler(async (req, res, next) => {
         });
 
         const result = await query.save();
-        console.log(result);
+        // console.log(result);
         if (!result) {
             return next({ status: 400, message: "Error Occured" });
         }
         const memberidsave = await manualmember.findByIdAndUpdate({ _id: whichone._id }, { membershipId: query._id, status: body.flag })
-        const message = ` Hey ${whichone.name}, Your Membership request for Rs.${whichone.finalpricepaid} has been Approved having Txn Id- ${whichone.txn_no}`
-        await addJobToQueue(whichone.email,"Customer Support || BattleFiesta",message)
+        const message = ` Hey ${whichone.user.name}, Your Membership request for Rs.${whichone.finalpricepaid} has been Approved having Txn Id- ${whichone.txn_no}`
+        await addJobToQueue(whichone.user.email,"Customer Support || BattleFiesta",message)
         return res.status(201).json({
             message: 'Membership Created',
             membershipid: query._id
