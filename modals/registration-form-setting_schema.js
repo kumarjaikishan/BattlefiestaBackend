@@ -55,6 +55,11 @@ const tournaform_setting = new mongo.Schema({
         default:false,
         required: false
     },
+    show_payment: {
+        type: Boolean,
+        default:false,
+        required: false
+    },
     minimum_players: {
         type: Number,
         default:1,
@@ -71,6 +76,16 @@ const tournaform_setting = new mongo.Schema({
         required: false
     },
     publicpost: {
+        type: String,
+        default: "",
+        required: false
+    },
+    amount: {
+        type: String,
+        default: "",
+        required: false
+    },
+    upi_id: {
         type: String,
         default: "",
         required: false

@@ -195,12 +195,12 @@ const getenteries = asyncHandler(async (req, res, next) => {
 const updatetournamentform = asyncHandler(async (req, res, next) => {
     const { tid, id, isopen, description, success_msg, ask_email, ask_phone,
         ask_discord, ask_team_logo, ask_player_logo,
-        ask_payment_ss, min_player, max_player } = req.body;
+        ask_payment_ss,show_payment,amount,upi_id, min_player, max_player } = req.body;
 
     const query = await registrationformsetting.findByIdAndUpdate({ _id: id }, {
         isopen, description, success_message: success_msg, ask_email, ask_phone,
         ask_discord, ask_teamlogo: ask_team_logo, ask_playerlogo: ask_player_logo,
-        ask_payment_ss, minimum_players: min_player, maximum_players: max_player
+        ask_payment_ss,show_payment,amount,upi_id, minimum_players: min_player, maximum_players: max_player
     })
     if (!query) {
         return next({ status: 400, message: "Tournament Id not Valid" });

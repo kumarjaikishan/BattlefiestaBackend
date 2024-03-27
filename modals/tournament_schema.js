@@ -15,8 +15,9 @@ const tourna = new mongo.Schema({
         required: true
     },
     type: {
-        type: Number,
-        required: true
+        type: String,
+        required: true,
+        enum: ["classic", "tdm"]
     },
     eachkillcount: {
         type: Boolean,
