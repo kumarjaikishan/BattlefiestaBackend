@@ -43,7 +43,7 @@ const createmembership = asyncHandler(async (req, res, next) => {
         if (!query) {
             return next({ status: 400, message: "Error Occured" });
         }
-        const message = ` Hey ${query.user.name}, Your Membership request for plan-${query.plan_id.plan_name} of Rs.${query.finalpricepaid} txn no-${query.txn_no} has been Rejected`
+        const message = ` Hey ${query.user.name}, Your Membership request for plan-${query.plan_id.plan_name} of Rs.${query.finalpricepaid} txn no-${query.txn_no} has been Rejected😔, Reason-${body.remarks}`
         await addJobToQueue(query.user.email,"Customer Support || BattleFiesta",message)
         return res.status(200).json({
             message: "Status Updated"
@@ -59,7 +59,7 @@ const createmembership = asyncHandler(async (req, res, next) => {
             path: 'user',
             select: 'name email'
         });
-        // console.log(whichone);
+        console.log(whichone);
         let { todayDate, expiryDate } = calculateDate(whichone.plan_id.duration)
 
 
@@ -75,7 +75,7 @@ const createmembership = asyncHandler(async (req, res, next) => {
             return next({ status: 400, message: "Error Occured" });
         }
         const memberidsave = await manualmember.findByIdAndUpdate({ _id: whichone._id }, { membershipId: query._id, status: body.flag })
-        const message = ` Hey ${whichone.user.name}, Your Membership request for Rs.${whichone.finalpricepaid} has been Approved having Txn Id- ${whichone.txn_no}`
+        const message = ` Hey ${whichone.user.name}, Your Membership request for ${whichone.plan_id.plan_name} of Rs.${whichone.finalpricepaid} has been Approved having Txn Id- ${whichone.txn_no}.Thanks for Choosing BattleFiesta.👍`
         await addJobToQueue(whichone.user.email,"Customer Support || BattleFiesta",message)
         return res.status(201).json({
             message: 'Membership Created',

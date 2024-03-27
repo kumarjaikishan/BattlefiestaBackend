@@ -3,11 +3,10 @@ const manualmember = require('../modals/manual_member_schema');
 const coupon = require('../modals/coupon_schema');
 const membership = require('../modals/membership_schema');
 const plans = require('../modals/plans_schema')
-const sendemail = require('../utils/sendemail')
 const addJobToQueue  = require('../utils/producer')
 
 const manualcheck = asyncHandler(async (req, res, next) => {
-
+// console.log(req.body);
     const body = req.body;
     let couponapplied = 0;
     if (body.coupon != '') {
@@ -17,10 +16,12 @@ const manualcheck = asyncHandler(async (req, res, next) => {
         if (!findcoupon.isactive) {
             return next({ status: 400, message: "Coupon Expired" });
         }
+        couponapplied= findcoupon.percent;
     }
     const plane = await plans.findOne({ _id: body.plan_id });
 
-    const finalpricepaid = plane.price * ((100 - couponapplied) / 100);
+    // const finalpricepaid = Math.floor(plane.price * ((100 - couponapplied) / 100));
+    const finalpricepaid = plane.price - Math.ceil((plane.price * couponapplied) / 100);
     // console.log("final-",finalpricepaid);
 
     const query = new manualmember({
@@ -32,7 +33,6 @@ const manualcheck = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Error Occured" });
     }
     const message = `Hey Admin, ${req.user.name} has applied for membership for Rs.${finalpricepaid}`
-    // await sendemail('kumar.jaikishan0@gmail.com','New Membership Request || BattleFiesta ', message);
     await addJobToQueue('kumar.jaikishan0@gmail.com','New Membership Request', message)
 
     return res.status(201).json({
