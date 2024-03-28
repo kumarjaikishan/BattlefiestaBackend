@@ -4,7 +4,6 @@ const membership = require('../modals/membership_schema');
 const contactus = require('../modals/contact_schema');
 const voucher = require('../modals/coupon_schema')
 const users = require('../modals/login_schema')
-const sendemail = require('../utils/sendemail')
 const addJobToQueue= require('../utils/producer')
 
 const allmembershipentry = asyncHandler(async (req, res, next) => {

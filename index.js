@@ -7,12 +7,14 @@ const cors = require('cors')
 const login = require('./controller/login_controller')
 const checkmembership = require('./utils/checkmembership')
 const tournament = require('./controller/tournament_controller')
+const tdm = require('./controller/tdm_controller')
 const tournaentry = require('./controller/tournment_entry_controller')
 const Matches = require('./controller/match_controller')
 const authmiddlewre = require('./middleware/auth_middleware')
 const errorHandle = require('./utils/error_util');
 const upload = require('./middleware/multer_middleware')
 const upload2 = require('./middleware/multer2')
+const upload3 = require('./middleware/multer3')
 const emailauth = require('./middleware/email_auth')
 const contact = require('./controller/contact_controller')
 const member = require('./controller/membership_controller')
@@ -51,6 +53,11 @@ router.route('/getenteries').post(tournament.getenteries);      //used
 router.route('/updatetournamentform').post(authmiddlewre, tournament.updatetournamentform); //used
 router.route('/updatetournamentformcontacts').post(authmiddlewre, tournament.updatetournamentformcontacts); //used
 router.route('/pointsystem').post(authmiddlewre, tournament.pointsystem); //used
+
+router.route('/gettdm').post(authmiddlewre, tdm.gettdm); //used
+router.route('/gettdmtournamentform').post(tdm.gettdmtournamentform); //used
+router.route('/updatetdmtournamentform').post(tdm.updateTdmTournamentForm); //used
+router.route('/TdmTeamregister').post(upload3.fields([{ name: 'paymentss', maxCount: 1 }, {name: 'logo', maxCount: 1 }]),tdm.TdmTeamregister); //used
 
 router.route('/updateteamstatus').post(authmiddlewre, tournaentry.updateteamstatus); //used
 

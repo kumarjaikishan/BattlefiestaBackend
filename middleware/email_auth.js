@@ -1,16 +1,5 @@
-const nodemailer = require('nodemailer');
 const user = require('../modals/login_schema');
 const addJobToQueue = require('../utils/producer')
-
-// Create a transporter using Gmail SMTP
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'battlefiesta07@gmail.com',
-    pass: process.env.gmail_password
-  }
-});
-
 
 const emailmiddleware = async (req, res, next) => {
   try {
@@ -22,7 +11,7 @@ const emailmiddleware = async (req, res, next) => {
     if (query.isverified) {
       next();
     } else {
-       const message= `<!DOCTYPE html>
+      const message = `<!DOCTYPE html>
        <html lang="en">
        
        <head>
@@ -109,7 +98,7 @@ const emailmiddleware = async (req, res, next) => {
        </body>
        
        </html>`
-       await addJobToQueue(query.email,'BattleFiesta || Email Verification',message)
+      await addJobToQueue(query.email, 'BattleFiesta || Email Verification', message)
       return res.status(201).json({
         message: "Email Sent",
       })

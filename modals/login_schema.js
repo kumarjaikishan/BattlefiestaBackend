@@ -50,7 +50,8 @@ const log = new mongo.Schema({
     username: {
         type: String,
         required: false,
-        default: ""
+        default: "",
+        unique: true
     },
     imgsrc: {
         type: String,

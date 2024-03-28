@@ -2,6 +2,7 @@ const tournament = require('../modals/tournament_schema');
 const registrationformsetting = require('../modals/registration-form-setting_schema');
 const Resgistered = require('../modals/register_form');
 const user = require('../modals/login_schema')
+const Tdm_form = require('../modals/tdm_form_schema')
 const match = require('../modals/match_schema');
 const membership = require('../modals/membership_schema')
 const asyncHandler = require('../utils/asyncHandler');
@@ -17,7 +18,7 @@ cloudinary.config({
 });
 
 // *--------------------------------------
-// * User Login 1st method with nodecache Logic
+// * Add new Tournament
 // *--------------------------------------
 const addtournament = asyncHandler(async (req, res, next) => {
     const { name, type, slots, organiser } = req.body;
@@ -25,20 +26,26 @@ const addtournament = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "All Fields are Required" });
     }
 
-    const whichmembershipactive = await membership.find({userid:req.userid}).sort({createdAt:-1});
+    const whichmembershipactive = await membership.find({ userid: req.userid }).sort({ createdAt: -1 });
 
     const query = new tournament({ userid: req.userid, title: name, type, slots, organiser })
     const result = await query.save();
     if (!result) {
         return next({ status: 400, message: "All input required" });
-    } else {
-        const tournaupdate = await user.findByIdAndUpdate(
-            {_id:req.userid},
-            { $inc: { tourn_created: 1 } }, // Use $inc operator to increment the field
-            { new: true } // To return the updated document
-        );
-        res.status(201).json({ message: "Tournament Created" })
     }
+    if (type == 'tdm') {
+        const query = new Tdm_form({ userid: req.userid, tournament_id: result._id })
+        await query.save();
+    } else {
+        const query = new registrationformsetting({ userid: req.userid, tournament_id: result._id })
+        await query.save();
+    }
+    const tournaupdate = await user.findByIdAndUpdate(
+        { _id: req.userid },
+        { $inc: { tourn_created: 1 } }, // Use $inc operator to increment the field
+        { new: true } // To return the updated document
+    );
+    res.status(201).json({ message: "Tournament Created" })
 })
 
 
@@ -50,6 +57,7 @@ const gettournament = asyncHandler(async (req, res, next) => {
         return res.status(201).json({ message: "success", data: query })
     }
 })
+
 const getontournament = asyncHandler(async (req, res, next) => {
     const query = await tournament.findOne({ _id: req.body.tid, userid: req.userid })
     if (!query) {
@@ -195,12 +203,12 @@ const getenteries = asyncHandler(async (req, res, next) => {
 const updatetournamentform = asyncHandler(async (req, res, next) => {
     const { tid, id, isopen, description, success_msg, ask_email, ask_phone,
         ask_discord, ask_team_logo, ask_player_logo,
-        ask_payment_ss,show_payment,amount,upi_id, min_player, max_player } = req.body;
+        ask_payment_ss, show_payment, amount, upi_id, min_player, max_player } = req.body;
 
     const query = await registrationformsetting.findByIdAndUpdate({ _id: id }, {
         isopen, description, success_message: success_msg, ask_email, ask_phone,
         ask_discord, ask_teamlogo: ask_team_logo, ask_playerlogo: ask_player_logo,
-        ask_payment_ss,show_payment,amount,upi_id, minimum_players: min_player, maximum_players: max_player
+        ask_payment_ss, show_payment, amount, upi_id, minimum_players: min_player, maximum_players: max_player
     })
     if (!query) {
         return next({ status: 400, message: "Tournament Id not Valid" });
@@ -293,4 +301,4 @@ const torunadelete = async (req, res, next) => {
 }
 
 
-module.exports = { pointsystem, addtournament, getonetournament, getontournament, getalltournament, torunadelete, gettournament,getenteries, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };
+module.exports = { pointsystem, addtournament, getonetournament, getontournament, getalltournament, torunadelete, gettournament, getenteries, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };
