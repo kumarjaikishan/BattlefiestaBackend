@@ -24,7 +24,7 @@ const gettdmtournamentform = asyncHandler(async (req, res, next) => {
     //    console.log(req.body.tid);
     const tid = req.body.tid;
     const isformexists = await Tdm_form.findOne({ tournament_id: tid });
-    const enteries = await Registered.find({ tournament_id: tid })
+    const enteries = await player.find({ tournament_id: tid }).select('InGameId logo name os status reason');
     const tournamente = await tournament.findOne({ _id: tid });
 
     if (!isformexists) {
@@ -190,5 +190,19 @@ const playerupdate = async (req, res, next) => {
         return next({ status: 500, message: error });
     }
 }
+const getplayerenteries = asyncHandler(async (req, res, next) => {
+    //    console.log(req.body.tid);
+    const tid = req.body.tid;
+    const enteries = await player.find({ tournament_id: tid })
 
-module.exports = { gettdm, gettdmtournamentform, updateTdmTournamentForm,updatetdmtournamentformcontacts, TdmTeamregister,updateplayerstatus,playerdelete,playerupdate }
+    if (!isformexists) {
+        return next({ status: 400, message: "Tournament Id not Valid" });
+    } else {
+        res.status(201).json({
+            message: "success",
+            enteries
+        })
+    }
+})
+
+module.exports = { gettdm,getplayerenteries, gettdmtournamentform, updateTdmTournamentForm,updatetdmtournamentformcontacts, TdmTeamregister,updateplayerstatus,playerdelete,playerupdate }

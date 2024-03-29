@@ -56,6 +56,7 @@ router.route('/pointsystem').post(authmiddlewre, tournament.pointsystem); //used
 
 router.route('/gettdm').post(authmiddlewre, tdm.gettdm); //used
 router.route('/gettdmtournamentform').post(tdm.gettdmtournamentform); //used
+router.route('/getplayerenteries').post(tdm.getplayerenteries);      //used
 router.route('/updatetdmtournamentform').post(tdm.updateTdmTournamentForm); //used
 router.route('/updatetdmtournamentformcontacts').post(tdm.updatetdmtournamentformcontacts); //used
 router.route('/TdmTeamregister').post(upload3.fields([{ name: 'paymentss', maxCount: 1 }, {name: 'logo', maxCount: 1 }]),tdm.TdmTeamregister); //used
