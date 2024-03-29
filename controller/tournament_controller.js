@@ -233,7 +233,6 @@ const updatetournamentformcontacts = asyncHandler(async (req, res, next) => {
     } catch (error) {
         return next({ status: 500, message: error });
     }
-
 })
 
 const pointsystem = asyncHandler(async (req, res, next) => {

@@ -4,16 +4,19 @@ const tournament = require('../modals/tournament_schema')
 const Registered = require('../modals/register_form')
 const player = require('../modals/tdm_player_schema')
 const cloudinary = require('cloudinary').v2;
+const removePhotoBySecureUrl = require('../utils/cloudinaryremove')
 const fs = require('fs');
 
 const gettdm = asyncHandler(async (req, res, next) => {
     // console.log(req.body);
     const query1 = await tournament.findOne({ _id: req.body.tid });
     const query2 = await Tdm_form.findOne({ tournament_id: req.body.tid });
+    const query3 = await player.find({ tournament_id: req.body.tid });
     // console.log(query2);
     res.status(200).json({
         tournament: query1,
-        settings: query2
+        settings: query2,
+        players:query3
     })
 
 })
@@ -45,6 +48,22 @@ const updateTdmTournamentForm = asyncHandler(async (req, res, next) => {
         res.status(201).json({
             message: "Updated Successfully"
         })
+    }
+})
+const updatetdmtournamentformcontacts = asyncHandler(async (req, res, next) => {
+    const { tournament_id, links, publicpost } = req.body;
+    try {
+        const query = await Tdm_form.findOneAndUpdate({ tournament_id }, { links, publicpost })
+        if (!query) {
+            return next({ status: 400, message: "Tournament Id not Valid" });
+        } else {
+            res.status(201).json({
+                message: "Updated Successfully"
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        return next({ status: 500, message: error });
     }
 })
 const TdmTeamregister = async (req, res, next) => {
@@ -117,5 +136,59 @@ const TdmTeamregister = async (req, res, next) => {
         return next({ status: 500, message: error });
     }
 }
+const updateplayerstatus = asyncHandler(async (req, res, next) => {
+    const teamId = req.body.teamID;
+    const value = req.body.value;
+    const reason = req.body.reasone;
+    // console.log(req.body);
 
-module.exports = { gettdm, gettdmtournamentform, updateTdmTournamentForm, TdmTeamregister }
+    const query = await player.findByIdAndUpdate({ _id: teamId }, { status: value, reason })
+
+    if (!query) {
+        return next({ status: 400, message: "Team Id not valid" });
+    }
+    return res.status(200).json({
+        message: `${value} Successfully`
+    })
+
+})
+const playerdelete = async (req, res, next) => {
+    const { playerid } = req.body;
+    const query = await player.findOne({ _id: playerid });
+    // console.log(query);
+    let arraye = [];
+
+    query.logo && arraye.push(query.logo);
+    query.paymentss && arraye.push(query.paymentss);
+
+    // console.log(arraye.length);
+    try {
+        arraye.length > 0 && await removePhotoBySecureUrl(arraye)
+        const deletee = await player.findByIdAndDelete({ _id: playerid });
+        return res.status(200).json({
+            message: "Team Deleted",
+        })
+        // console.log(check);
+    } catch (error) {
+        console.log(error);
+        return next({ status: 500, message: error });
+    }
+}
+const playerupdate = async (req, res, next) => {
+    const { id, name, InGameId, email, mobile,discord ,device,os,fps,utrno} = req.body;
+    if (!name) {
+        return next({ status: 400, message: "All Fields are Required" });
+    }
+    try {
+        const query = await player.findByIdAndUpdate({ _id: id }, { name, InGameId, email, mobile,discord ,device,os,fps,utrno })
+        
+        res.status(201).json({
+            message: "Player Updated"
+        })
+
+    } catch (error) {
+        return next({ status: 500, message: error });
+    }
+}
+
+module.exports = { gettdm, gettdmtournamentform, updateTdmTournamentForm,updatetdmtournamentformcontacts, TdmTeamregister,updateplayerstatus,playerdelete,playerupdate }

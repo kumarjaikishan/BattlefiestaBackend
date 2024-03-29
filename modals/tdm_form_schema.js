@@ -47,7 +47,7 @@ const tdm_setting = new mongo.Schema({
     },
     ask_playerlogo: {
         type: Boolean,
-        default:false,
+        default:true,
         required: false
     },
     ask_devicename: {
@@ -57,12 +57,12 @@ const tdm_setting = new mongo.Schema({
     },
     ask_os: {
         type: Boolean,
-        default:false,
+        default:true,
         required: false
     },
     ask_fps: {
         type: Boolean,
-        default:false,
+        default:true,
         required: false
     },
     show_payment: {
@@ -82,7 +82,7 @@ const tdm_setting = new mongo.Schema({
         required: false
     },
     amount: {
-        type: String,
+        type: Number,
         default: "",
         required: false
     },
