@@ -25,7 +25,7 @@ const gettdmtournamentform = asyncHandler(async (req, res, next) => {
     const tid = req.body.tid;
     const isformexists = await Tdm_form.findOne({ tournament_id: tid });
     const enteries = await player.find({ tournament_id: tid }).select('InGameId logo name os status reason');
-    const tournamente = await tournament.findOne({ _id: tid });
+    const tournamente = await tournament.findOne({ _id: tid }).select('label organiser slots title visibility');
 
     if (!isformexists) {
         return next({ status: 400, message: "Tournament Id not Valid" });
