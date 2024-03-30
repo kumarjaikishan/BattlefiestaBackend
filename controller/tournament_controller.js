@@ -69,14 +69,20 @@ const getontournament = asyncHandler(async (req, res, next) => {
 
 const getonetournament = asyncHandler(async (req, res, next) => {
     // console.log(req.body);
-    let query = await tournament.findOne({ _id: req.body.tid }, { "title": 1, "slots": 1, "tournment_banner": 1, "organiser": 1, "status": 1, "createdAt": 1 })
-    let query2 = await registrationformsetting.findOne({ tournament_id: req.body.tid }, { "isopen": 1, "links": 1, "publicpost": 1 })
-    // console.log(query2.isopen);
+    let query = await tournament.findOne({ _id: req.body.tid }).select('title slots tournment_banner organiser status createdAt type');
+    let query2;
+    // console.log(query);
+    if (query.type == 'tdm') {
+        query2 = await Tdm_form.findOne({ tournament_id: req.body.tid }).select('isopen links publicpost');
+    }
+    if (query.type == 'classic') {
+        query2 = await registrationformsetting.findOne({ tournament_id: req.body.tid }).select('isopen links publicpost');
+    }
     if (!query) {
         return next({ status: 400, message: "Error Occurred: Tournament not found" });
-    } else {
-        res.status(201).json({ data: query, data2: query2 })
     }
+    return res.status(201).json({ data: query, data2: query2 })
+
 })
 const getalltournament = asyncHandler(async (req, res, next) => {
     const query = await tournament.find({ visibility: true }).sort({ createdAt: -1 })

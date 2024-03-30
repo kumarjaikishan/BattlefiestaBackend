@@ -54,7 +54,7 @@ router.route('/updatetournamentform').post(authmiddlewre, tournament.updatetourn
 router.route('/updatetournamentformcontacts').post(authmiddlewre, tournament.updatetournamentformcontacts); //used
 router.route('/pointsystem').post(authmiddlewre, tournament.pointsystem); //used
 
-router.route('/gettdm').post(authmiddlewre, tdm.gettdm); //used
+router.route('/gettdm').post(authmiddlewre, tdm.gettdm); //used    //used
 router.route('/gettdmtournamentform').post(tdm.gettdmtournamentform); //used
 router.route('/getplayerenteries').post(tdm.getplayerenteries);      //used
 router.route('/updatetdmtournamentform').post(tdm.updateTdmTournamentForm); //used

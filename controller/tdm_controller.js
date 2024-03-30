@@ -205,4 +205,5 @@ const getplayerenteries = asyncHandler(async (req, res, next) => {
     }
 })
 
+
 module.exports = { gettdm,getplayerenteries, gettdmtournamentform, updateTdmTournamentForm,updatetdmtournamentformcontacts, TdmTeamregister,updateplayerstatus,playerdelete,playerupdate }
