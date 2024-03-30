@@ -14,7 +14,7 @@ const allmembershipentry = asyncHandler(async (req, res, next) => {
     }).populate({
         path: 'plan_id',
         select: 'plan_name price'
-    });;
+    }).sort({createdAt:-1});
     // console.log(query);
     return res.status(200).json({
         data: query
