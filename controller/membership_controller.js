@@ -7,12 +7,10 @@ const push_notification = require('../utils/push_notification')
 const addJobToQueue  = require('../utils/producer')
 
 const manualcheck = asyncHandler(async (req, res, next) => {
-// console.log(req.body);
     const body = req.body;
     let couponapplied = 0;
     if (body.coupon != '') {
         let couponname = body.coupon.trim().toLowerCase();
-        // console.log('yaha par aaya');
         const findcoupon = await coupon.findOne({ coupon: couponname });
         if (!findcoupon.isactive) {
             return next({ status: 400, message: "Coupon Expired" });
@@ -38,7 +36,7 @@ const manualcheck = asyncHandler(async (req, res, next) => {
     
     const mes = {
         title: 'Membership Request',
-        body: `Hey JaiKishan ${req.user.name} has applied for membership for Rs.${finalpricepaid}`,
+        body: `Hi, ${req.user.name} has applied for membership for Rs.${finalpricepaid}`,
     }
     await push_notification('65fc5697cec618fb1dcbd692', mes)
 
