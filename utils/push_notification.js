@@ -35,10 +35,10 @@ const push_notification = async (userid, mes) => {
 
     admin.messaging().send(message)
         .then((response) => {
-            console.log('Successfully sent message:', response);
+            console.log('Push Notification sent:', response);
         })
         .catch((error) => {
-            console.error('Error sending message:', error);
+            console.error('Push Notification Error:', error);
         });
 }
 module.exports = push_notification;
