@@ -1,6 +1,5 @@
 const { Queue } = require('bullmq');
 const IORedis = require('ioredis');
-const worker = require('./worker')
 
 const emailQueue = new Queue('battlefiesta_queue', { connection: new IORedis(process.env.REDIS_URIfulle),limiter: {
     max: 100, 
