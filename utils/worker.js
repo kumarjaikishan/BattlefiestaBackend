@@ -7,23 +7,25 @@ const sendEmailhelper = async (n) => {
 }
 
 async function sendEmail(job) {
-        const { email, subject, body } = job.data;
-        await sendmail(email, subject, body);
-        await sendEmailhelper(2);
+    const { email, subject, body } = job.data;
+    await sendmail(email, subject, body);
+    await sendEmailhelper(2);
 }
 
 
-const worker = new Worker('battlefiesta_queue', sendEmail, {
-    connection: new IORedis(process.env.REDIS_URIfulle, {
-        maxRetriesPerRequest: null,
-    }),
-});
+const worker = new Worker('battlefiesta_queue',
+    sendEmail,
+    {
+        connection: new IORedis(process.env.REDIS_URIfulle, {
+            maxRetriesPerRequest: null,
+        }),
+    });
 
 worker.on('completed', job => {
     console.log(`${job.id} has completed`);
 })
 
-worker.on('failed', (job,err) => {
+worker.on('failed', (job, err) => {
     console.log('failed');
     console.log(`${job.id} has failed - ${err}`);
 })
