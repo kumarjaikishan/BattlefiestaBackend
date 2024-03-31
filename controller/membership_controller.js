@@ -38,7 +38,7 @@ const manualcheck = asyncHandler(async (req, res, next) => {
         body: `Hi, ${req.user.name} has applied for membership for Rs.${finalpricepaid}`,
     }
     // await push_notification('65fc5697cec618fb1dcbd692', mes)
-    await sendNotification('dUyPxIb4efRoaCZIabYf-j:APA91bHk-eukFaKZKEQ9a6_TX5rJhQ6larnlBUtlJ6jsIi-qpZPjfG_TPlU114O9dfhynCxSMdpaDqNTw1-jGR-NQtgUo74LgygZrG-2FNXGyuyKpozIJ5PcKdYKuIn0E_Yuu5VHFsbR', mes)
+    await sendNotification('eIGnxZoV3QirK7HGm0gbSP:APA91bEf7qeFTpVZxL2v7DlF4zkDpwt74TCDbr3nxUb0NXVsOj2mzpeYQizhalmXODOMZDvzzHyUif4S_N9XZbiH7PmTHcx_AyLBcYuNbWzPCDbs6QtjTaz1zOG4lI3jnRjDUlygdXd3', mes)
 
     return res.status(201).json({
         message: 'Request Submited'
