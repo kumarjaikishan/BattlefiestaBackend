@@ -1,6 +1,5 @@
 const { Queue } = require('bullmq');
 const IORedis = require('ioredis');
-// const worker = require('./worker')
 
 const emailQueue = new Queue('battlefiesta_queue', {
     connection: new IORedis(process.env.REDIS_URIfulle),
@@ -11,11 +10,11 @@ const emailQueue = new Queue('battlefiesta_queue', {
 });
 
 async function addJobToQueue(email, subject, body) {
-    const res = await emailQueue.add('email to retail', {
+    const res = await emailQueue.add('battlefiesta_queue', {
         email,
         subject,
         body
-    })
+    },{delay:2000})
     console.log("job added to queue", res.id);
 }
 

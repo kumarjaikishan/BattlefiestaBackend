@@ -26,6 +26,5 @@ worker.on('completed', job => {
 })
 
 worker.on('failed', (job, err) => {
-    console.log('failed');
     console.log(`${job.id} has failed - ${err}`);
 })
