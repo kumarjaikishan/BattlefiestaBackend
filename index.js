@@ -38,6 +38,8 @@ router.route('/verify').get(login.verify);      //used
 router.route('/passreset').get(authmiddlewre,login.passreset);      //used
 router.route('/setpassword').post(login.setpassword);      //used
 router.route('/checkmail').post(login.checkmail);      //used
+router.route('/notificationToken').post(authmiddlewre,login.notificationToken);      //used
+router.route('/test').get(login.test);      //used
 
 router.route('/addtournament').post(authmiddlewre,checkmembership, tournament.addtournament);      //used
 router.route('/torunadelete').post(authmiddlewre, tournament.torunadelete);      //used

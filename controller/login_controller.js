@@ -5,11 +5,11 @@ const myCache = new NodeCache();
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const cloudinary = require('cloudinary').v2;
-const sendemail = require('../utils/sendemail')
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('../utils/asyncHandler')
 const trialmembership = require('../utils/trial_membership')
-const addJobToQueue = require('../utils/producer')
+const addJobToQueue = require('../utils/producer');
+const push_notification= require('../utils/push_notification')
 
 cloudinary.config({
   cloud_name: 'dusxlxlvm',
@@ -130,7 +130,7 @@ const passreset = async (req, res, next) => {
     <a href="https://battlefiesta.vercel.app/resetpassword/${temptoken}" style="display: inline-block; padding: 4px 20px; background-color: #007bff; color: #fff; text-decoration: none; letter-spacing: 1px;; border-radius: 5px;">Reset Password</a>
     `
     // await sendemail(req.user.email, msg);
-    await addJobToQueue(req.user.email,'Password Reset', msg)
+    await addJobToQueue(req.user.email, 'Password Reset', msg)
 
     return res.status(200).json({
       message: 'Email sent',
@@ -185,7 +185,7 @@ const checkmail = async (req, res, next) => {
     <a href="https://battlefiesta.vercel.app/resetpassword/${temptoken}" style="display: inline-block; padding: 4px 20px; background-color: #007bff; color: #fff; text-decoration: none; letter-spacing: 1px;; border-radius: 5px;">Reset Password</a>
     `
     // await sendemail(query.email, msg);
-    await addJobToQueue(query.email,'Forget Password', msg);
+    await addJobToQueue(query.email, 'Forget Password', msg);
 
     return res.status(200).json({
       message: 'Reset Link sent to Email'
@@ -195,22 +195,32 @@ const checkmail = async (req, res, next) => {
     return next({ status: 500, message: error });
   }
 }
+const test =async(req, res, next)=>{
+  const mes ={
+      title: 'From Node',
+      body: 'new registry',
+  }
+  // push_notification('eF4rwFuai5Ed6Or4rxboZl:APA91bHmZAv3oXVoQnDA_Buk7CrXNLB--xQzg0UP8ycWNRet3V0GWIRAetLZ_zVSZsJNFk7uHq8lYag63YG6cOUJ-P2mc6Ct3aESptY39e7nQytyt39a283V7Y-wG10Av1YXy93zr5GI',mes)
+}
+const notificationToken = async (req, res, next) => {
+  // console.log(req.body);
+  try {
+    if (!req.body.notificationtoken) {
+      return next({ status: 400, message: "Notification Token is empty" });
+    }
+    const query = await user.findByIdAndUpdate({ _id: req.userid }, { notification_token: req.body.notificationtoken })
+    if (!query) {
+      return next({ status: 400, message: "Something went wrong" });
+    }
+    return res.status(200).json({
+      message: "Token Registered"
+    })
+  } catch (error) {
+    console.log(error.message);
+    return next({ status: 500, message: error });
+  }
+}
 
-// const verify = async (req, res) => {
-//     try {
-//         const query = await user.findByIdAndUpdate({ _id: req.query.id }, { isverified: true });
-
-//         if (!query) {
-//             return next({ status: 400, message: "UserId is Not Valid" });
-//         }
-//         return res.status(201).send(`<html><h2> Hi ${query.name} , Email Verified Successfully, <button onclick="location.href = 'https://esport-bgmi.vercel.app';">Login Now</button> </h2></html>`)
-//     } catch (error) {
-//         return res.status(500).json({
-//             message: "User Email not  verified",
-//             error: error
-//         })
-//     }
-// }
 const verify = async (req, res, next) => {
   try {
     const query = await user.findByIdAndUpdate({ _id: req.query.id }, { isverified: true });
@@ -613,4 +623,4 @@ const verify = async (req, res, next) => {
 
 
 
-module.exports = { signup, checkmail, login, verify, passreset, setpassword };
+module.exports = {test, signup, notificationToken, checkmail, login, verify, passreset, setpassword };

@@ -57,6 +57,11 @@ const log = new mongo.Schema({
         type: String,
         default: ""
     },
+    notification_token: {
+        type: String,
+        default: "",
+        required: false,
+    },
     bio: {
         type: String,
         default: ""

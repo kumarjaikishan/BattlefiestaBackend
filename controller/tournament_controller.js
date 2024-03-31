@@ -8,6 +8,7 @@ const membership = require('../modals/membership_schema')
 const asyncHandler = require('../utils/asyncHandler');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
+const push_notification= require('../utils/push_notification')
 const removePhotoBySecureUrl = require('../utils/cloudinaryremove');
 
 
@@ -45,7 +46,8 @@ const addtournament = asyncHandler(async (req, res, next) => {
         { $inc: { tourn_created: 1 } }, // Use $inc operator to increment the field
         { new: true } // To return the updated document
     );
-    res.status(201).json({ message: "Tournament Created" })
+
+   return res.status(201).json({ message: "Tournament Created" })
 })
 
 

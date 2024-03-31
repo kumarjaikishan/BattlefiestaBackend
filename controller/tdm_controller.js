@@ -6,6 +6,7 @@ const player = require('../modals/tdm_player_schema')
 const cloudinary = require('cloudinary').v2;
 const removePhotoBySecureUrl = require('../utils/cloudinaryremove')
 const fs = require('fs');
+const push_notification = require('../utils/push_notification')
 
 const gettdm = asyncHandler(async (req, res, next) => {
     // console.log(req.body);
@@ -16,7 +17,7 @@ const gettdm = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         tournament: query1,
         settings: query2,
-        players:query3
+        players: query3
     })
 
 })
@@ -67,9 +68,9 @@ const updatetdmtournamentformcontacts = asyncHandler(async (req, res, next) => {
     }
 })
 const TdmTeamregister = async (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
 
-    const { tid, userid, name, InGameId, mobile, email, os, discord, utrno,fps, device } = req.body;
+    const { tid, userid, name, InGameId, mobile, email, os, discord, utrno, fps, device } = req.body;
     if (!name || !tid || !userid) {
         return next({ status: 400, message: "All Fields are Required" });
     }
@@ -85,7 +86,7 @@ const TdmTeamregister = async (req, res, next) => {
     }
 
     try {
-        const query = new player({ tournament_id: tid, userid: userid, name, InGameId, mobile, email, os, discord, utrno,fps, device });
+        const query = new player({ tournament_id: tid, userid: userid, name, InGameId, mobile, email, os, discord, utrno, fps, device });
         const savedTournament = await query.save();
         // console.log(savedTournament);
         if (savedTournament) {
@@ -99,7 +100,7 @@ const TdmTeamregister = async (req, res, next) => {
 
                 const imageurl = result.secure_url;
 
-                 fs.unlink(logo.path, (err => {
+                fs.unlink(logo.path, (err => {
                     if (err) {
                         console.log(err);
                         return next({ status: 500, message: "Error occured while deleting file" });
@@ -126,8 +127,13 @@ const TdmTeamregister = async (req, res, next) => {
 
                 const query = await player.findByIdAndUpdate({ _id: savedTournament._id }, { paymentss: imageurl })
             })
+            const mes = {
+                title: 'New Player Registered',
+                body: `hey Creator ${name} has registerd for the tournament`,
+            }
+            await push_notification(userid, mes)
 
-            res.status(201).json({
+            return res.status(201).json({
                 message: "Registered Successfully"
             })
         }
@@ -175,13 +181,13 @@ const playerdelete = async (req, res, next) => {
     }
 }
 const playerupdate = async (req, res, next) => {
-    const { id, name, InGameId, email, mobile,discord ,device,os,fps,utrno} = req.body;
+    const { id, name, InGameId, email, mobile, discord, device, os, fps, utrno } = req.body;
     if (!name) {
         return next({ status: 400, message: "All Fields are Required" });
     }
     try {
-        const query = await player.findByIdAndUpdate({ _id: id }, { name, InGameId, email, mobile,discord ,device,os,fps,utrno })
-        
+        const query = await player.findByIdAndUpdate({ _id: id }, { name, InGameId, email, mobile, discord, device, os, fps, utrno })
+
         res.status(201).json({
             message: "Player Updated"
         })
@@ -206,4 +212,4 @@ const getplayerenteries = asyncHandler(async (req, res, next) => {
 })
 
 
-module.exports = { gettdm,getplayerenteries, gettdmtournamentform, updateTdmTournamentForm,updatetdmtournamentformcontacts, TdmTeamregister,updateplayerstatus,playerdelete,playerupdate }
+module.exports = { gettdm, getplayerenteries, gettdmtournamentform, updateTdmTournamentForm, updatetdmtournamentformcontacts, TdmTeamregister, updateplayerstatus, playerdelete, playerupdate }
