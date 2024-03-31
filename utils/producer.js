@@ -14,7 +14,9 @@ async function addJobToQueue(email, subject, body) {
         email,
         subject,
         body
-    },{delay:500, attempts:1})
+    },
+    // {delay:500, attempts:1}
+    )
     console.log("job added to queue", res.id);
 }
 
