@@ -15,7 +15,7 @@ async function sendEmail(job) {
 
 const worker = new Worker('battlefiesta_queue', sendEmail, {
     connection: new IORedis(process.env.REDIS_URIfulle, {
-        maxRetriesPerRequest: null,
+        maxRetriesPerRequest: 2,
     }),
 });
 
