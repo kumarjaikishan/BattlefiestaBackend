@@ -22,7 +22,6 @@ admin.initializeApp({
 
 const push_notification = async (userid, mes) => {
     
-console.log("json",process.env.firebase);
     const tokenid = await user.findOne({ _id: userid }).select('notification_token');
     // console.log(tokenid);
     const message = {
