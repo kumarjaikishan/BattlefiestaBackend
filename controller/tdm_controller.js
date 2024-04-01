@@ -69,7 +69,6 @@ const updatetdmtournamentformcontacts = asyncHandler(async (req, res, next) => {
 })
 const TdmTeamregister = async (req, res, next) => {
     // console.log(req.body);
-
     const { tid, userid, name, InGameId, mobile, email, os, discord, utrno, fps, device } = req.body;
     if (!name || !tid || !userid) {
         return next({ status: 400, message: "All Fields are Required" });
@@ -88,7 +87,8 @@ const TdmTeamregister = async (req, res, next) => {
     try {
         const query = new player({ tournament_id: tid, userid: userid, name, InGameId, mobile, email, os, discord, utrno, fps, device });
         const savedTournament = await query.save();
-        // console.log(savedTournament);
+       
+        // console.log("getting info", savedTournament);
         if (savedTournament) {
 
             logo && await cloudinary.uploader.upload(logo.path, { folder: 'battlefiesta/tdm' }, async (error, result) => {
@@ -129,9 +129,9 @@ const TdmTeamregister = async (req, res, next) => {
             })
             const mes = {
                 title: 'New Player Registered',
-                body: `hey Creator ${name} has registerd for the tournament`,
+                body: `Hey Creator ${name} has registerd for the tournament`,
             }
-
+            push_notification(savedTournament.userid,mes)
             return res.status(201).json({
                 message: "Registered Successfully"
             })
