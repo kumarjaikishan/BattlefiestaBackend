@@ -83,7 +83,7 @@ const TdmTeamregister = async (req, res, next) => {
     if (req.files['paymentss']) {
         paymentss = req.files['paymentss'][0];
     }
-
+      
     try {
         const query = new player({ tournament_id: tid, userid: userid, name, InGameId, mobile, email, os, discord, utrno, fps, device });
         const savedTournament = await query.save();
