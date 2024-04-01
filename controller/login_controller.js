@@ -9,7 +9,6 @@ const jwt = require('jsonwebtoken');
 const asyncHandler = require('../utils/asyncHandler')
 const trialmembership = require('../utils/trial_membership')
 const addJobToQueue = require('../utils/producer');
-const push_notification= require('../utils/push_notification')
 
 cloudinary.config({
   cloud_name: 'dusxlxlvm',
@@ -79,7 +78,9 @@ const login = async (req, res, next) => {
   }
 }
 
+const test = async (req,res,next)=>{
 
+}
 // *--------------------------------------
 // * User SignUp Logic
 // *--------------------------------------
@@ -195,13 +196,7 @@ const checkmail = async (req, res, next) => {
     return next({ status: 500, message: error });
   }
 }
-const test =async(req, res, next)=>{
-  const mes ={
-      title: 'From Node',
-      body: 'new registry',
-  }
-  // push_notification('eF4rwFuai5Ed6Or4rxboZl:APA91bHmZAv3oXVoQnDA_Buk7CrXNLB--xQzg0UP8ycWNRet3V0GWIRAetLZ_zVSZsJNFk7uHq8lYag63YG6cOUJ-P2mc6Ct3aESptY39e7nQytyt39a283V7Y-wG10Av1YXy93zr5GI',mes)
-}
+
 const notificationToken = async (req, res, next) => {
   // console.log(req.body);
   try {

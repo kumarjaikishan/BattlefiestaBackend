@@ -20,7 +20,7 @@ const contact = require('./controller/contact_controller')
 const member = require('./controller/membership_controller')
 const isadmin = require('./middleware/isadmin_middleware')
 const admin = require('./controller/admin_controller')
-// const worker = require('./utils/worker')
+const worker = require('./utils/worker')
 
 app.use(express.json());
 app.use(cors());

@@ -8,7 +8,6 @@ const membership = require('../modals/membership_schema')
 const asyncHandler = require('../utils/asyncHandler');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
-const push_notification= require('../utils/push_notification')
 const removePhotoBySecureUrl = require('../utils/cloudinaryremove');
 
 

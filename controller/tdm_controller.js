@@ -131,7 +131,6 @@ const TdmTeamregister = async (req, res, next) => {
                 title: 'New Player Registered',
                 body: `hey Creator ${name} has registerd for the tournament`,
             }
-            await push_notification(userid, mes)
 
             return res.status(201).json({
                 message: "Registered Successfully"

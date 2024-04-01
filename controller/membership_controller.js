@@ -3,7 +3,8 @@ const manualmember = require('../modals/manual_member_schema');
 const coupon = require('../modals/coupon_schema');
 const membership = require('../modals/membership_schema');
 const plans = require('../modals/plans_schema')
-const {addJobToQueue,sendNotification}  = require('../utils/producer')
+const {addJobToQueue}  = require('../utils/producer')
+const push_notification = require('../utils/push_notification')
 
 const manualcheck = asyncHandler(async (req, res, next) => {
     const body = req.body;
@@ -37,9 +38,8 @@ const manualcheck = asyncHandler(async (req, res, next) => {
         title: 'Membership Request',
         body: `Hi, ${req.user.name} has applied for membership for Rs.${finalpricepaid}`,
     }
-    // await push_notification('65fc5697cec618fb1dcbd692', mes)
-    await sendNotification('eIGnxZoV3QirK7HGm0gbSP:APA91bEf7qeFTpVZxL2v7DlF4zkDpwt74TCDbr3nxUb0NXVsOj2mzpeYQizhalmXODOMZDvzzHyUif4S_N9XZbiH7PmTHcx_AyLBcYuNbWzPCDbs6QtjTaz1zOG4lI3jnRjDUlygdXd3', mes)
-
+    await push_notification('65fc5697cec618fb1dcbd692', mes)
+    
     return res.status(201).json({
         message: 'Request Submited'
     })

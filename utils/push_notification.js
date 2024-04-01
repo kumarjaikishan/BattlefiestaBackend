@@ -13,24 +13,25 @@ var serviceAccount = {
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-22q59%40learning-df2ab.iam.gserviceaccount.com",
     "universe_domain": "googleapis.com"
-  };
-  
+  }
+
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://learning-df2ab-default-rtdb.firebaseio.com"
 });
 
 const push_notification = async (userid, mes) => {
-    
+
     const tokenid = await user.findOne({ _id: userid }).select('notification_token');
-    // console.log(tokenid);
+    // console.log("searching token no: ", tokenid);
     const message = {
         notification: {
-            title: mes.title, 
+            title: mes.title,
             body: mes.body,
             image: 'https://res.cloudinary.com/dusxlxlvm/image/upload/v1709654642/battlefiesta/assets/logo/logopng250_vuhy4f.webp',
         },
         token: tokenid.notification_token,
+        // token: 'dUyPxIb4efRoaCZIabYf-j:APA91bHk-eukFaKZKEQ9a6_TX5rJhQ6larnlBUtlJ6jsIi-qpZPjfG_TPlU114O9dfhynCxSMdpaDqNTw1-jGR-NQtgUo74LgygZrG-2FNXGyuyKpozIJ5PcKdYKuIn0E_Yuu5VHFsbR',
     };
 
     admin.messaging().send(message)
