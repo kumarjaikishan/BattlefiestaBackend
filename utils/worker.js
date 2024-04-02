@@ -23,7 +23,8 @@ const worker = new Worker('battlefiesta_queue',
     {
         connection: new IORedis(process.env.REDIS_URIfulle,{maxRetriesPerRequest: null}),
         removeOnComplete:{count:20},
-        removeOnFail:{count:10}
+        removeOnFail:{count:10},
+        autorun:true
     });
 
 worker.on('completed', job => {
