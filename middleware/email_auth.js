@@ -1,5 +1,5 @@
 const user = require('../modals/login_schema');
-const addJobToQueue = require('../utils/producer')
+const {addJobToQueue} = require('../utils/producer')
 
 const emailmiddleware = async (req, res, next) => {
   try {
@@ -104,10 +104,8 @@ const emailmiddleware = async (req, res, next) => {
       })
     }
   } catch (error) {
-    res.status(500).json({
-      message: "something went wrong",
-      error
-    })
+    console.log(error);
+    return next({ status: 500, message: error });
   }
 }
 

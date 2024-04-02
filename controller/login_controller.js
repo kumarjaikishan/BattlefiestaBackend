@@ -25,60 +25,64 @@ const login = async (req, res, next) => {
   if (!email || !password) {
     return next({ status: 400, message: "All Fields are Required" });
   }
-
-  let usersdata;
-  if (myCache.has("allusers")) {
-    usersdata = JSON.parse(myCache.get("allusers"));
-  } else {
-    usersdata = await user.find({});
-    myCache.set("allusers", JSON.stringify(usersdata));
-  }
-
-  const result = await usersdata.find((hel) => {
-    return hel.email == req.body.email
-  });
-  //    console.log("result",result);
-  if (!result) {
-    return next({ status: 400, message: "User not found" });
-  }
-  // console.log("password match: ", await bcrypt.compare(password, result.password));
-  const generateToken = async (result) => {
-    try {
-      return jwt.sign({
-        userId: result._id.toString(),
-        email: result.email,
-        isAdmin: result.isadmin
-      },
-        process.env.jwt_token,
-        {
-          expiresIn: "30d",
-        }
-      );
-    } catch (error) {
-      console.error(error);
+  try {
+    let usersdata;
+    if (myCache.has("allusers")) {
+      usersdata = JSON.parse(myCache.get("allusers"));
+    } else {
+      usersdata = await user.find({});
+      myCache.set("allusers", JSON.stringify(usersdata));
     }
-  }
 
-  if (await bcrypt.compare(password, result.password)) {
-    const newToken = await generateToken(result);
-    const userIdString = result._id.toString();
-    result.password = undefined;
-    result.createdAt = undefined;
-    result._id = undefined;
-    result.phone = undefined;
-    return res.status(200).json({
-      message: "Login Successful",
-      token: newToken,
-      userId: userIdString,
-      isadmin: result.isadmin
+    const result = await usersdata.find((hel) => {
+      return hel.email == req.body.email
     });
+    // console.log("result", result);
+    if (!result) {
+      return next({ status: 400, message: "User not found" });
+    }
+    // console.log("password match: ", await bcrypt.compare(password, result.password));
+    const generateToken = async (result) => {
+      try {
+        return jwt.sign({
+          userId: result._id.toString(),
+          email: result.email,
+          isAdmin: result.isadmin
+        },
+          process.env.jwt_token,
+          {
+            expiresIn: "30d",
+          }
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    }
 
-  } else {
-    return next({ status: 400, message: "Incorrect Password" });
+    if (await bcrypt.compare(password, result.password)) {
+      const newToken = await generateToken(result);
+      const userIdString = result._id.toString();
+      result.password = undefined;
+      result.createdAt = undefined;
+      result._id = undefined;
+      result.phone = undefined;
+      return res.status(200).json({
+        message: "Login Successful",
+        token: newToken,
+        userId: userIdString,
+        isadmin: result.isadmin
+      });
+
+    } else {
+      return next({ status: 400, message: "Incorrect Password" });
+    }
+  } catch (error) {
+    console.log(error);
   }
+
 }
 
-const test = async (req,res,next)=>{
+const test = async (req, res, next) => {
 
 }
 // *--------------------------------------
@@ -217,7 +221,7 @@ const notificationToken = async (req, res, next) => {
 }
 
 const verify = async (req, res, next) => {
-  if(!req.query.id){
+  if (!req.query.id) {
     return next({ status: 400, message: "Please Provide Id" });
   }
   try {
@@ -621,4 +625,4 @@ const verify = async (req, res, next) => {
 
 
 
-module.exports = {test, signup, notificationToken, checkmail, login, verify, passreset, setpassword };
+module.exports = { test, signup, notificationToken, checkmail, login, verify, passreset, setpassword };
