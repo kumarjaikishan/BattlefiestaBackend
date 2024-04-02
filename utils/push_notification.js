@@ -29,6 +29,7 @@ const push_notification = async (userid, mes) => {
             title: mes.title,
             body: mes.body,
             image: 'https://res.cloudinary.com/dusxlxlvm/image/upload/v1709654642/battlefiesta/assets/logo/logopng250_vuhy4f.webp',
+            url:'www.youtube.com'
         },
         data:{
             url:'https://accusoft.vercel.app/addexpense'
