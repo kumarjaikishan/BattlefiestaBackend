@@ -123,7 +123,6 @@ const TdmTeamregister = async (req, res, next) => {
                         return next({ status: 500, message: "Error occured while deleting file" });
                     }
                 }));
-
                 const query = await player.findByIdAndUpdate({ _id: savedTournament._id }, { paymentss: imageurl })
             })
             const mes = {
