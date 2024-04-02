@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 require('./conn/conn')
+require('./utils/worker')
+const limiter = require('./config/ratelimiter.js')
 const port = process.env.PORT || 5000;
 const router = express.Router();
 const cors = require('cors')
@@ -20,10 +22,10 @@ const contact = require('./controller/contact_controller')
 const member = require('./controller/membership_controller')
 const isadmin = require('./middleware/isadmin_middleware')
 const admin = require('./controller/admin_controller')
-const worker = require('./utils/worker')
 
 app.use(express.json());
 app.use(cors());
+app.use(limiter);
 app.use(router);
 app.use(errorHandle);
 

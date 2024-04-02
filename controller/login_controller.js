@@ -217,6 +217,9 @@ const notificationToken = async (req, res, next) => {
 }
 
 const verify = async (req, res, next) => {
+  if(!req.query.id){
+    return next({ status: 400, message: "Please Provide Id" });
+  }
   try {
     const query = await user.findByIdAndUpdate({ _id: req.query.id }, { isverified: true });
     if (!query) {
@@ -608,7 +611,7 @@ const verify = async (req, res, next) => {
       
       </html>`)
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     return res.status(500).json({
       message: "User Email not  verified",
       error: error

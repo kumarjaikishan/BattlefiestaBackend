@@ -1,3 +1,4 @@
+
 const { Worker } = require('bullmq');
 const IORedis = require('ioredis');
 const sendmail = require('./sendemail');
@@ -12,12 +13,17 @@ async function sendEmail(job) {
     await sendEmailhelper(2);
 }
 
+const redisConnectionOptions = {
+    maxmemoryPolicy: 'noeviction', // Set the eviction policy to 'noeviction'
+    maxRetriesPerRequest: null,
+};
+
 const worker = new Worker('battlefiesta_queue',
     sendEmail,
     {
-        connection: new IORedis(process.env.REDIS_URIfulle, {
-            maxRetriesPerRequest: null,
-        }),
+        connection: new IORedis(process.env.REDIS_URIfulle,{maxRetriesPerRequest: null}),
+        removeOnComplete:{count:20},
+        removeOnFail:{count:10}
     });
 
 worker.on('completed', job => {
