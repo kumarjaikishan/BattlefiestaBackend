@@ -37,7 +37,7 @@ const manualcheck = asyncHandler(async (req, res, next) => {
         title: 'Membership Request',
         body: `Hi, ${req.user.name} has applied for membership for Rs.${finalpricepaid}`,
     }
-    await push_notification('65fc5697cec618fb1dcbd692', mes)
+    // await push_notification('65fc5697cec618fb1dcbd692', mes)
     
     return res.status(201).json({
         message: 'Request Submited'
