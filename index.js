@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 require('./conn/conn')
-// require('./utils/worker')
+require('./utils/worker')
 const limiter = require('./config/ratelimiter.js')
 const port = process.env.PORT || 5000;
 const router = express.Router();
