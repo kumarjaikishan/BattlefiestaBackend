@@ -33,3 +33,5 @@ worker.on('completed', job => {
 worker.on('failed', (job, err) => {
     console.log(`${job.id} has failed - ${err}`);
 })
+
+console.log('Worker started processing.'); // Add this line for debugging
