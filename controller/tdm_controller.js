@@ -1,7 +1,6 @@
 const asyncHandler = require('../utils/asyncHandler');
 const Tdm_form = require('../modals/tdm_form_schema')
 const tournament = require('../modals/tournament_schema')
-const Registered = require('../modals/register_form')
 const player = require('../modals/tdm_player_schema')
 const cloudinary = require('cloudinary').v2;
 const removePhotoBySecureUrl = require('../utils/cloudinaryremove')
