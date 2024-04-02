@@ -2,18 +2,18 @@ const membership = require('../modals/membership_schema')
 
 const checkmembership = async (req, res, next) => {
     try {
-        const whichmembershipactive = await membership.findOne({ userid: req.userid }).sort({ createdAt: -1 }).populate({
+        const latestmembership = await membership.findOne({ userid: req.userid }).sort({ createdAt: -1 }).populate({
             path: 'planid',
             select: 'create_limit plan_name'
         }).populate({
             path: 'userid',
             select: 'tourn_created'
         });
-        let latestmembership = whichmembershipactive;
         // console.log(latestmembership);
         let today_date = new Date();
-        let expire_date = new Date(latestmembership.expire_date);
-        console.log(today_date);
+        let expire_date = new Date(latestmembership.expire_date)+1;
+        // console.log(today_date);
+        // console.log(expire_date);
         if (expire_date < today_date) {
             return next({ status: 429, message: "Membership Expired" });
         }

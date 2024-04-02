@@ -1,7 +1,6 @@
 const asyncHandler = require('../utils/asyncHandler');
 const manualmember = require('../modals/manual_member_schema');
 const coupon = require('../modals/coupon_schema');
-const membership = require('../modals/membership_schema');
 const plans = require('../modals/plans_schema')
 const {addJobToQueue}  = require('../utils/producer')
 const push_notification = require('../utils/push_notification')

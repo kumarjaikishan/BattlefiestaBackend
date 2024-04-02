@@ -73,7 +73,8 @@ const createmembership = asyncHandler(async (req, res, next) => {
         if (!result) {
             return next({ status: 400, message: "Error Occured" });
         }
-        const memberidsave = await manualmember.findByIdAndUpdate({ _id: whichone._id }, { membershipId: query._id, status: body.flag })
+        await manualmember.findByIdAndUpdate({ _id: whichone._id }, { membershipId: query._id, status: body.flag })
+        await users.findByIdAndUpdate({ _id: whichone._id }, { tourn_created:0 })
         const message = ` Hey ${whichone.user.name}, Your Membership request for ${whichone.plan_id.plan_name} of Rs.${whichone.finalpricepaid} has been Approved having Txn Id- ${whichone.txn_no}.Thanks for Choosing BattleFiesta.👍`
         await addJobToQueue(whichone.user.email,"Customer Support || BattleFiesta",message)
         return res.status(201).json({

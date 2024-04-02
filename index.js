@@ -1,13 +1,13 @@
 const express = require('express');
 const app = express();
 require('./conn/conn')
-require('./utils/worker')
+// require('./utils/worker')
 const limiter = require('./config/ratelimiter.js')
 const port = process.env.PORT || 5000;
 const router = express.Router();
 const cors = require('cors')
 const login = require('./controller/login_controller')
-const checkmembership = require('./utils/checkmembership')
+const checkmembership = require('./middleware/checkmembership.js')
 const tournament = require('./controller/tournament_controller')
 const tdm = require('./controller/tdm_controller')
 const tournaentry = require('./controller/tournment_entry_controller')
