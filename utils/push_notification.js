@@ -20,7 +20,7 @@ admin.initializeApp({
     databaseURL: "https://learning-df2ab-default-rtdb.firebaseio.com"
 });
 
-const push_notification = async (userid, mes) => {
+const push_notification = async (userid, mes,urle) => {
 
     const tokenid = await user.findOne({ _id: userid }).select('notification_token');
     // console.log("searching token no: ", tokenid);
@@ -31,7 +31,7 @@ const push_notification = async (userid, mes) => {
             image: 'https://res.cloudinary.com/dusxlxlvm/image/upload/v1709654642/battlefiesta/assets/logo/logopng250_vuhy4f.webp',
         },
         data:{
-            url:'https://accusoft.vercel.app/addexpense'
+            url: urle || process.env.FrontUrl
         },
         token: tokenid.notification_token,
         // token: 'dUyPxIb4efRoaCZIabYf-j:APA91bHk-eukFaKZKEQ9a6_TX5rJhQ6larnlBUtlJ6jsIi-qpZPjfG_TPlU114O9dfhynCxSMdpaDqNTw1-jGR-NQtgUo74LgygZrG-2FNXGyuyKpozIJ5PcKdYKuIn0E_Yuu5VHFsbR',
