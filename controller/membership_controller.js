@@ -17,8 +17,7 @@ const manualcheck = asyncHandler(async (req, res, next) => {
         couponapplied= findcoupon.percent;
     }
     const plane = await plans.findOne({ _id: body.plan_id });
-
-    // const finalpricepaid = Math.floor(plane.price * ((100 - couponapplied) / 100));
+// console.log(plane);
     const finalpricepaid = plane.price - Math.ceil((plane.price * couponapplied) / 100);
     // console.log("final-",finalpricepaid);
 
@@ -30,12 +29,12 @@ const manualcheck = asyncHandler(async (req, res, next) => {
     if (!result) {
         return next({ status: 400, message: "Error Occured" });
     }
-    const message = `Hey Admin, ${req.user.name} has applied for membership for Rs.${finalpricepaid}`
+    const message = `Hey Admin, ${req.user.name} has applied for ${plane.plan_name} membership for Rs.${finalpricepaid}`
     await addJobToQueue('kumar.jaikishan0@gmail.com','New Membership Request', message)
     
     const mes = {
         title: 'Membership Request',
-        body: `Hi, ${req.user.name} has applied for membership for Rs.${finalpricepaid}`,
+        body: `Hi, ${req.user.name} has applied for ${plane.plan_name} membership for Rs.${finalpricepaid}`,
     }
     await push_notification('65fc5697cec618fb1dcbd692', mes)
     

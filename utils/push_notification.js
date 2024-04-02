@@ -30,6 +30,9 @@ const push_notification = async (userid, mes) => {
             body: mes.body,
             image: 'https://res.cloudinary.com/dusxlxlvm/image/upload/v1709654642/battlefiesta/assets/logo/logopng250_vuhy4f.webp',
         },
+        data:{
+            url:'https://accusoft.vercel.app/addexpense'
+        },
         token: tokenid.notification_token,
         // token: 'dUyPxIb4efRoaCZIabYf-j:APA91bHk-eukFaKZKEQ9a6_TX5rJhQ6larnlBUtlJ6jsIi-qpZPjfG_TPlU114O9dfhynCxSMdpaDqNTw1-jGR-NQtgUo74LgygZrG-2FNXGyuyKpozIJ5PcKdYKuIn0E_Yuu5VHFsbR',
     };
