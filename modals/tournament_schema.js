@@ -10,6 +10,11 @@ const tourna = new mongo.Schema({
         type: mongo.Schema.Types.ObjectId,
         ref: 'user',
     },
+    tournamet_id: {
+        type: String,
+        // required: true,
+        unique:true
+    },
     title: {
         type: String,
         required: true
