@@ -99,8 +99,8 @@ const emailmiddleware = async (req, res, next) => {
        </body>
        
        </html>`
-    //   await addJobToQueue(query.email, 'BattleFiesta || Email Verification', message)
-    await sendmail(query.email, 'BattleFiesta || Email Verification', message) ;
+      await addJobToQueue(query.email, 'BattleFiesta || Email Verification', message)
+    // await sendmail(query.email, 'BattleFiesta || Email Verification', message) ;
     return res.status(201).json({
         message: "Email Sent",
       })
