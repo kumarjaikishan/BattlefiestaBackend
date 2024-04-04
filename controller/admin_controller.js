@@ -125,9 +125,6 @@ const calculateDate = (membershipType) => {
     };
 };
 
-const padZero = (value) => {
-    return value < 10 ? `0${value}` : value;
-};
 const contactformlist = asyncHandler(async (req, res, next) => {
     const query = await contactus.find().sort({ createdAt: -1 });
 
