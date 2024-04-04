@@ -246,7 +246,7 @@ const deleteuser = asyncHandler(async (req, res, next) => {
     const deletemembership =await membership.deleteMany({userid:req.body.userid})
     const tournamentdelete = await tournament.deleteMany({userid:req.body.userid})
     const deleteregister = await register.deleteMany({userid:req.body.userid})
-    // console.log(query);
+    const detetememberrequest = await manualmember.deleteMany({user:req.body.userid})
     if (!query) {
         return next({ status: 400, message: "users not found" });
     }
