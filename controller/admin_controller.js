@@ -1,12 +1,14 @@
 const asyncHandler = require('../utils/asyncHandler');
 const manualmember = require('../modals/manual_member_schema');
+const register = require('../modals/register_form');
 const membership = require('../modals/membership_schema');
 const contactus = require('../modals/contact_schema');
+const tournament = require('../modals/tournament_schema');
 const voucher = require('../modals/coupon_schema')
 const users = require('../modals/login_schema')
-const sendemail= require('../utils/sendemail')
-const push_notification= require('../utils/push_notification')
-const addJobToQueue = require('../utils/producer')
+const sendemail = require('../utils/sendemail')
+const push_notification = require('../utils/push_notification')
+const { addJobToQueue } = require('../utils/producer')
 
 const allmembershipentry = asyncHandler(async (req, res, next) => {
     // console.log('yaha par');
@@ -32,7 +34,7 @@ const createmembership = asyncHandler(async (req, res, next) => {
     // console.log(req.body);
     let body = req.body;
 
-    if (body.flag == 'pending' || body.status == 'rejected') {
+    if (body.flag == 'pending' || body.flag == 'rejected') {
         const query = await manualmember.findByIdAndUpdate({ _id: body.id }, { status: body.flag, remarks: body.remarks }).populate({
             path: 'plan_id',
             select: 'duration plan_name'
@@ -44,8 +46,12 @@ const createmembership = asyncHandler(async (req, res, next) => {
         if (!query) {
             return next({ status: 400, message: "Error Occured" });
         }
-        const message = ` Hey ${query.user.name}, Your Membership request for plan-${query.plan_id.plan_name} of Rs.${query.finalpricepaid} txn no-${query.txn_no} has been Rejected😔, Reason-${body.remarks}`
-        await push_notification(query.user._id,message)
+        const message = ` Hey ${query.user.name}, Your Membership request for plan-${query.plan_id.plan_name} of Rs.${query.finalpricepaid} txn no-${query.txn_no} has been ${body.flag}😔, Reason-${body.remarks}`
+        const mes = {
+            title: `Membership Request ${body.flag}`,
+            body: message,
+        }
+        await push_notification(query.user._id, mes)
         await addJobToQueue(query.user.email, "Customer Support || BattleFiesta", message)
         return res.status(200).json({
             message: "Status Updated"
@@ -53,7 +59,7 @@ const createmembership = asyncHandler(async (req, res, next) => {
     }
 
     if (body.flag == 'success') {
-
+// console.log("success me aaya");
         const whichone = await manualmember.findOne({ _id: body.id }).populate({
             path: 'plan_id',
             select: 'duration plan_name'
@@ -78,44 +84,45 @@ const createmembership = asyncHandler(async (req, res, next) => {
         }
         await manualmember.findByIdAndUpdate({ _id: whichone._id }, { membershipId: query._id, status: body.flag })
         await users.findByIdAndUpdate({ _id: whichone._id }, { $set: { tourn_created: 0 } })
-       
+
         const message = ` Hey ${whichone.user.name}, Your Membership request for ${whichone.plan_id.plan_name} of Rs.${whichone.finalpricepaid} has been Approved having Txn Id- ${whichone.txn_no}.Thanks for Choosing BattleFiesta.👍`
+        const mes = {
+            title: 'Membership Request Approved',
+            body: message,
+        }
         await addJobToQueue(whichone.user.email, "Customer Support || BattleFiesta", message)
-        await push_notification(whichone.user._id,message)
+        await push_notification(whichone.user._id,mes,'https://battlefiesta.vercel.app/profile')
         return res.status(201).json({
             message: 'Membership Created',
             membershipid: query._id
         })
     }
-
 })
-const calculateDate = (offset) => {
-    const currentDate = new Date();
-    const targetDate = new Date(currentDate.getTime()); // Make a copy of currentDate
+const calculateDate = (membershipType) => {
+    let startDate = new Date(); // Current date
+    let endDate = new Date(); // Initialize end date as current date
 
-    if (offset === '1 Week') {
-        targetDate.setDate(targetDate.getDate() + 7); // Add 7 days to targetDate
-    } else if (offset === '1 Month') {
-        targetDate.setMonth(targetDate.getMonth() + 1); // Add 1 month to targetDate
-    } else if (offset === '3 Month') {
-        targetDate.setMonth(targetDate.getMonth() + 3); // Add 3 months to targetDate
-    } else if (offset === '6 Month') {
-        targetDate.setMonth(targetDate.getMonth() + 6); // Add 6 months to targetDate
+    switch (membershipType) {
+        case "1 Week":
+            endDate.setDate(startDate.getDate() + 7); // Add 7 days
+            break;
+        case "1 Month":
+            endDate.setMonth(startDate.getMonth() + 1); // Add 1 month
+            break;
+        case "3 Month":
+            endDate.setMonth(startDate.getMonth() + 3); // Add 3 months
+            break;
+        case "6 Month":
+            endDate.setMonth(startDate.getMonth() + 6); // Add 6 months
+            break;
+        default:
+            throw new Error("Invalid membership type.");
     }
-
-    targetDate.setDate(targetDate.getDate() - 1); // Subtract one day from the targetDate
-
-    const day = padZero(currentDate.getDate());
-    const month = padZero(currentDate.getMonth() + 1);
-    const year = currentDate.getFullYear();
-    const todayDate = `${year}-${month}-${day}`;
-
-    const targetDay = padZero(targetDate.getDate());
-    const targetMonth = padZero(targetDate.getMonth() + 1);
-    const targetYear = targetDate.getFullYear();
-    const expiryDate = `${targetYear}-${targetMonth}-${targetDay}`;
-
-    return { todayDate, expiryDate };
+    // console.log(startDate, endDate);
+    return {
+        todayDate: startDate,
+        expiryDate: endDate
+    };
 };
 
 const padZero = (value) => {
@@ -236,7 +243,21 @@ const getusers = asyncHandler(async (req, res, next) => {
         data: query
     })
 })
+const deleteuser = asyncHandler(async (req, res, next) => {
+    // console.log(req.body);
+    const query = await users.findByIdAndDelete({_id:req.body.userid})
+    const deletemembership =await membership.deleteMany({userid:req.body.userid})
+    const tournamentdelete = await tournament.deleteMany({userid:req.body.userid})
+    const deleteregister = await register.deleteMany({userid:req.body.userid})
+    // console.log(query);
+    if (!query) {
+        return next({ status: 400, message: "users not found" });
+    }
+    return res.status(200).json({
+        message: "User Deleted"
+    })
+})
 
 
 
-module.exports = { getvoucher, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };
+module.exports = { deleteuser,getvoucher, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };

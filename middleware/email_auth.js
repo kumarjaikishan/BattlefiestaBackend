@@ -14,7 +14,7 @@ const emailmiddleware = async (req, res, next) => {
       next();
     } else {
       const message = verificationTemplate(query.name,query._id)
-      await addJobToQueue(query.email, 'BattleFiesta || Email Verification', message)
+      await addJobToQueue(query.email, 'Email Verification || BattleFiesta', message)
     // await sendmail(query.email, 'BattleFiesta || Email Verification', message) ;
     return res.status(201).json({
         message: "Email Sent",

@@ -11,10 +11,10 @@ const checkmembership = async (req, res, next) => {
         });
         // console.log(latestmembership);
         let today_date = new Date();
-        let expire_date = new Date(latestmembership.expire_date)+1;
-        // console.log(today_date);
-        // console.log(expire_date);
-        if (expire_date < today_date) {
+        // let today_date = new Date('2024-05-04T05:28:37.000Z');
+        let expire_date = new Date(latestmembership.expire_date);
+        // console.log(today_date , " : ",expire_date);
+        if (today_date > expire_date ) {
             return next({ status: 429, message: "Membership Expired" });
         }
         if (latestmembership.planid.create_limit <= latestmembership.userid.tourn_created) {

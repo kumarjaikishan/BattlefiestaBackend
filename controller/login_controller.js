@@ -8,7 +8,7 @@ const cloudinary = require('cloudinary').v2;
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('../utils/asyncHandler')
 const trialmembership = require('../utils/trial_membership')
-const addJobToQueue = require('../utils/producer');
+const {addJobToQueue} = require('../utils/producer');
 const success = require('../templates/success')
 
 cloudinary.config({
