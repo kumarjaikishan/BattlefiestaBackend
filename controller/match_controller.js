@@ -17,8 +17,6 @@ const addmatches = asyncHandler(async (req, res, next) => {
         message: "Match Added",
         data: result
     })
-
-
 })
 
 const getmatches = asyncHandler(async (req, res, next) => {
