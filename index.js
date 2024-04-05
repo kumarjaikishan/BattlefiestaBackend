@@ -46,6 +46,7 @@ router.route('/test').get(login.test);      //used
 
 router.route('/addtournament').post(authmiddlewre,checkmembership, tournament.addtournament);      //used
 router.route('/torunadelete').post(authmiddlewre, tournament.torunadelete);      //used
+router.route('/getclassic').post(authmiddlewre, tournament.getclassic);      //used
 router.route('/gettournament').get(authmiddlewre, tournament.gettournament);      //used
 router.route('/getontournament').post(authmiddlewre, tournament.getontournament);      //used
 router.route('/getonetournament').post(tournament.getonetournament);      //used

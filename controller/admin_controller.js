@@ -1,6 +1,6 @@
 const asyncHandler = require('../utils/asyncHandler');
 const manualmember = require('../modals/manual_member_schema');
-const register = require('../modals/register_form');
+const register = require('../modals/classic_player_schema.js');
 const membership = require('../modals/membership_schema');
 const contactus = require('../modals/contact_schema');
 const tournament = require('../modals/tournament_schema');
@@ -134,15 +134,15 @@ const contactformlist = asyncHandler(async (req, res, next) => {
 
 })
 const emailreply = asyncHandler(async (req, res, next) => {
-
+   console.log(req.body);
     // const response = await sendemail(req.body.email, 'Customer Support || BattleFiesta', req.body.reply);
-    const response = await addJobToQueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
+    await addJobToQueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
 
-    // console.log('email sent', response);
-    if (!response) {
-        return next({ status: 400, message: "Email not Sent" });
-    }
-    const dfdf = await contactus.findByIdAndUpdate({ _id: req.body.contactid }, { resolve: true, resolvemessage: req.body.reply })
+    // console.log('email sent check:', response);
+    // if (!response) {
+    //     return next({ status: 400, message: "Email not Sent" });
+    // }
+    const dfdf = await contactus.findByIdAndUpdate({ _id: req.body.contactid }, { resolve: true, resolvemsg: req.body.reply })
     return res.status(200).json({
         message: "Email Sent"
     })

@@ -1,6 +1,6 @@
 const tournament = require('../modals/tournament_schema');
 const registrationformsetting = require('../modals/registration-form-setting_schema');
-const Resgistered = require('../modals/register_form');
+const Resgistered = require('../modals/classic_player_schema.js');
 const user = require('../modals/login_schema')
 const Tdm_form = require('../modals/tdm_form_schema')
 const match = require('../modals/match_schema');
@@ -62,6 +62,17 @@ const getontournament = asyncHandler(async (req, res, next) => {
     } else {
         return res.status(201).json({ message: "success", data: query })
     }
+})
+const getclassic = asyncHandler(async (req, res, next) => {
+    const query1 = await tournament.findOne({ _id: req.body.tid });
+    const query2 = await registrationformsetting.findOne({ tournament_id: req.body.tid });
+    const query3 = await Resgistered.find({ tournament_id: req.body.tid });
+    // console.log(query2);
+    res.status(200).json({
+        tournament: query1,
+        settings: query2,
+        players: query3
+    })
 })
 
 const getonetournament = asyncHandler(async (req, res, next) => {
@@ -299,4 +310,4 @@ const torunadelete = async (req, res, next) => {
 }
 
 
-module.exports = { pointsystem, addtournament, getonetournament, getontournament, getalltournament, torunadelete, gettournament, getenteries, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };
+module.exports = {getclassic, pointsystem, addtournament, getonetournament, getontournament, getalltournament, torunadelete, gettournament, getenteries, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };

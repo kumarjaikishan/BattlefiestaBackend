@@ -1,5 +1,5 @@
 const cloudinary = require('cloudinary').v2;
-const Tournament = require('../modals/register_form');
+const Tournament = require('../modals/classic_player_schema.js');
 const asyncHandler = require('../utils/asyncHandler');
 const fs = require('fs');
 const removePhotoBySecureUrl = require('../utils/cloudinaryremove');

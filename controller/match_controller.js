@@ -1,6 +1,6 @@
 const matches = require('../modals/match_schema')
 const Tournament = require('../modals/tournament_schema')
-const teams = require('../modals/register_form');
+const teams = require('../modals/classic_player_schema.js');
 const asyncHandler = require('../utils/asyncHandler');
 
 const addmatches = asyncHandler(async (req, res, next) => {
