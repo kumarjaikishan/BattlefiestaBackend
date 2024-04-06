@@ -99,7 +99,9 @@ const signup = asyncHandler(async (req, res, next) => {
   if (checkemail) {
     return next({ status: 400, message: "Email Already Exists" });
   }
-  const query = new user({ name, email, phone, password });
+  const username = email.split('@')[0];
+  // console.log(username);
+  const query = new user({ name, email, phone, password, username });
   const result = await query.save();
   if (!result) {
     return next({ status: 400, message: "Something went wrong" });
