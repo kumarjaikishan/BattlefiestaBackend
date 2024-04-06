@@ -24,6 +24,9 @@ const push_notification = async (userid, mes,urle) => {
 
     const tokenid = await user.findOne({ _id: userid }).select('notification_token');
     // console.log("searching token no: ", tokenid);
+    if(!tokenid){
+        return console.log("User not found");
+    }
     if(!tokenid.notification_token){
         return console.log("User have no Firebase Notification Token");
     }
