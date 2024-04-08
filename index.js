@@ -68,7 +68,7 @@ router.route('/updatetdmtournamentformcontacts').post(tdm.updatetdmtournamentfor
 router.route('/TdmTeamregister').post(upload3.fields([{ name: 'paymentss', maxCount: 1 }, {name: 'logo', maxCount: 1 }]),tdm.TdmTeamregister); //used
 router.route('/updateplayerstatus').post(authmiddlewre, tdm.updateplayerstatus); //used
 router.route('/playerdelete').post(authmiddlewre, tdm.playerdelete);      //used
-router.route('/playerupdate').post(upload.single('teamLogo'), tournaentry.playerupdate);      //used
+router.route('/playerupdate').post(upload.single('teamLogo'), tdm.playerupdate);      //used
 
 router.route('/updateteamstatus').post(authmiddlewre, tournaentry.updateteamstatus); //used
 
