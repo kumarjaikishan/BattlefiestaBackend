@@ -6,6 +6,11 @@ const limiter = rateLimit({
   standardHeaders: "draft-7", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
   // store: ... , // Use an external store for consistency across multiple server instances.
+  message: "Too many requests from this IP, please try again later",
+  handler: (req, res, next, options) => {
+    return next({ status: 429, message: "Too Many Request, try after sometime" });
+  },
+
 });
 
 module.exports = limiter
