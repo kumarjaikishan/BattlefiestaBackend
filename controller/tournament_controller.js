@@ -65,13 +65,16 @@ const getontournament = asyncHandler(async (req, res, next) => {
 })
 const getclassic = asyncHandler(async (req, res, next) => {
     const query1 = await tournament.findOne({ _id: req.body.tid });
+    if(req.userid != query1.userid){
+        return res.status(403).json({ message: "It seems this Tournament doesnot belongs to you" })
+    }
     const query2 = await registrationformsetting.findOne({ tournament_id: req.body.tid });
     const query3 = await Resgistered.find({ tournament_id: req.body.tid });
-    // console.log(query2);
     res.status(200).json({
         tournament: query1,
         settings: query2,
-        players: query3
+        players: query3,
+        message:""
     })
 })
 
