@@ -10,13 +10,17 @@ const push_notification = require('../utils/push_notification')
 const gettdm = asyncHandler(async (req, res, next) => {
     // console.log(req.body);
     const query1 = await tournament.findOne({ _id: req.body.tid });
+    if(req.userid != query1.userid){
+        return res.status(403).json({ message: "It seems this Tournament doesnot belongs to you" })
+    }
     const query2 = await Tdm_form.findOne({ tournament_id: req.body.tid });
     const query3 = await player.find({ tournament_id: req.body.tid });
     // console.log(query2);
     res.status(200).json({
         tournament: query1,
         settings: query2,
-        players: query3
+        players: query3,
+        message:""
     })
 
 })
