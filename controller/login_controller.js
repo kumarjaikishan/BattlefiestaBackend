@@ -8,7 +8,8 @@ const cloudinary = require('cloudinary').v2;
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('../utils/asyncHandler')
 const trialmembership = require('../utils/trial_membership')
-const {addJobToQueue} = require('../utils/producer');
+// const {addJobToQueue} = require('../utils/producer');
+const {addtoqueue} = require('../utils/axiosRequest');
 const success = require('../templates/success')
 
 cloudinary.config({
@@ -138,7 +139,8 @@ const passreset = async (req, res, next) => {
     <a href="https://battlefiesta.vercel.app/resetpassword/${temptoken}" style="display: inline-block; padding: 4px 20px; background-color: #007bff; color: #fff; text-decoration: none; letter-spacing: 1px;; border-radius: 5px;">Reset Password</a>
     `
     // await sendemail(req.user.email, 'Password Reset', msg);
-    await addJobToQueue(req.user.email, 'Password Reset', msg)
+    // await addJobToQueue(req.user.email, 'Password Reset', msg)
+    await addtoqueue(req.user.email, 'Password Reset', msg)
 
     return res.status(200).json({
       message: 'Email sent',
@@ -193,7 +195,8 @@ const checkmail = async (req, res, next) => {
     <a href="https://battlefiesta.vercel.app/resetpassword/${temptoken}" style="display: inline-block; padding: 4px 20px; background-color: #007bff; color: #fff; text-decoration: none; letter-spacing: 1px;; border-radius: 5px;">Reset Password</a>
     `
     // await sendemail(query.email, 'Forget Password', msg);
-    await addJobToQueue(query.email, 'Forget Password', msg);
+    // await addJobToQueue(query.email, 'Forget Password', msg);
+    await addtoqueue(query.email, 'Forget Password', msg)
 
     return res.status(200).json({
       message: 'Reset Link sent to Email'

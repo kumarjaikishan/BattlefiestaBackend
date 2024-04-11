@@ -8,7 +8,8 @@ const voucher = require('../modals/coupon_schema')
 const users = require('../modals/login_schema')
 const sendemail = require('../utils/sendemail')
 const push_notification = require('../utils/push_notification')
-const { addJobToQueue } = require('../utils/producer')
+// const { addJobToQueue } = require('../utils/producer')
+const {addtoqueue} = require('../utils/axiosRequest');
 
 const allmembershipentry = asyncHandler(async (req, res, next) => {
     // console.log('yaha par');
@@ -52,7 +53,9 @@ const createmembership = asyncHandler(async (req, res, next) => {
             body: message,
         }
         await push_notification(query.user._id, mes)
-        await addJobToQueue(query.user.email, "Customer Support || BattleFiesta", message)
+        // await addJobToQueue(query.user.email, "Customer Support || BattleFiesta", message)
+        await addtoqueue(query.user.email, "Customer Support || BattleFiesta", message)
+       
         return res.status(200).json({
             message: "Status Updated"
         })
@@ -90,8 +93,9 @@ const createmembership = asyncHandler(async (req, res, next) => {
             title: 'Membership Request Approved',
             body: message,
         }
-        await addJobToQueue(whichone.user.email, "Customer Support || BattleFiesta", message)
         await push_notification(whichone.user._id,mes,'https://battlefiesta.vercel.app/profile')
+        // await addJobToQueue(whichone.user.email, "Customer Support || BattleFiesta", message)
+        await addtoqueue(whichone.user.email, "Customer Support || BattleFiesta", message)
         return res.status(201).json({
             message: 'Membership Created',
             membershipid: query._id
@@ -136,7 +140,8 @@ const contactformlist = asyncHandler(async (req, res, next) => {
 const emailreply = asyncHandler(async (req, res, next) => {
    console.log(req.body);
     // const response = await sendemail(req.body.email, 'Customer Support || BattleFiesta', req.body.reply);
-    await addJobToQueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
+    // await addJobToQueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
+    await addtoqueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
 
     // console.log('email sent check:', response);
     // if (!response) {

@@ -2,7 +2,8 @@ const asyncHandler = require('../utils/asyncHandler');
 const manualmember = require('../modals/manual_member_schema');
 const coupon = require('../modals/coupon_schema');
 const plans = require('../modals/plans_schema')
-const {addJobToQueue}  = require('../utils/producer')
+// const {addJobToQueue}  = require('../utils/producer')
+const {addtoqueue} = require('../utils/axiosRequest');
 const push_notification = require('../utils/push_notification')
 
 const manualcheck = asyncHandler(async (req, res, next) => {
@@ -30,7 +31,8 @@ const manualcheck = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Error Occured" });
     }
     const message = `Hey Admin, ${req.user.name} has applied for ${plane.plan_name} membership for Rs.${finalpricepaid}`
-    await addJobToQueue('kumar.jaikishan0@gmail.com','New Membership Request', message)
+    // await addJobToQueue('kumar.jaikishan0@gmail.com','New Membership Request', message)
+    await addtoqueue('kumar.jaikishan0@gmail.com','New Membership Request', message)
     
     const mes = {
         title: 'Membership Request',
