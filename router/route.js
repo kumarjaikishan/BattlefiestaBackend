@@ -70,7 +70,7 @@ router.route('/playerupdate').post(upload.single('playerLogo'), tournaentry.play
 
 router.route('/addmatches').post(authmiddlewre, Matches.addmatches); //used
 router.route('/getmatches').post(Matches.getmatches); //used
-router.route('/deletematch').post(Matches.deletematch); //used
+router.route('/deletematch').post(Matches.deletematch);  //used
 
 
 router.route('/contact').post(contact.contact); //used
