@@ -42,7 +42,7 @@ const verificationTemplate = (name, id) => {
             <p style="width: 100%;  font-size: 1.2em; text-align: center; letter-spacing: 0.2px; margin-top: 10px;">Hi
                 👋,
                 <span class="name"
-                    style="color: #2f1c6a; text-transform: uppercase; font-size: 1.2em; font-weight: 700; letter-spacing: 0.5px;">${name}</span>
+                    style="color: #02363a; text-transform: uppercase; font-size: 1.2em; font-weight: 700; letter-spacing: 0.5px;">${name}</span>
             </p>
             <p style="width: 100%; font-size: 1.2em; text-align: center; letter-spacing: 0.2px; margin-top: 10px; padding: 5px 10px;">
                 You're
