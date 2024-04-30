@@ -111,7 +111,7 @@ const success =  `<!DOCTYPE html>
           font-family: "brandon-grotesque", "Brandon Grotesque", "Source Sans Pro", "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
           text-rendering: optimizeLegibility;
           -webkit-font-smoothing: antialiased;
-          color:  #2f1c6a;
+          color:  #02363a;
           letter-spacing: 1px;
           font-size: 26px;
           font-weight: 700;
@@ -121,7 +121,7 @@ const success =  `<!DOCTYPE html>
         }
     
         .ScriptHeader h2 {
-          color:  #2f1c6a;
+          color:  #02363a;
           font-size: 20px;
           font-weight: 400;
           margin: 5px 0 0;
@@ -188,7 +188,7 @@ const success =  `<!DOCTYPE html>
         #upper-side {
           padding: 2em;
           background-color: #8BC34A;
-          background-color: #2f1c6a;
+          background-color: #02363a;
           display: block;
           color: #fff;
           border-top-right-radius: 8px;
@@ -230,7 +230,7 @@ const success =  `<!DOCTYPE html>
           top: 1.5em;
           text-decoration: none;
           background: #8bc34a;
-          background:  #2f1c6a;
+          background:  #02363a;
           color: #fff;
           margin: auto;
           padding: .8em 3em;
