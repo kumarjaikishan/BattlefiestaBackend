@@ -20,7 +20,7 @@ const verificationTemplate = (name, id) => {
 
 <body style="width: 100%; padding: 10px;">
     <div class="main" style="width: 600px;  margin: 0 auto;">
-        <div style="color: white; border-radius: 10px; width: 100%; height: 60px; background: #2f1c6a; text-align: center;">
+        <div style="color: white; border-radius: 10px; width: 100%; height: 60px; background: #02363a; text-align: center;">
             <h2 style="display: inline-block; vertical-align: middle; height: 100%; width: 60px; line-height: 60px;">Battle</h2>
             <img src='https://res.cloudinary.com/dusxlxlvm/image/upload/v1709654642/battlefiesta/assets/logo/logopng250_vuhy4f.webp' alt="" style="border-radius: 50%; width: 60px; height: 60px; display: inline-block; vertical-align: middle;">
             <h2 style="display: inline-block; vertical-align: middle; height: 100%; width: 60px; line-height: 60px;">Fiesta</h2>
@@ -28,7 +28,7 @@ const verificationTemplate = (name, id) => {
         <div class="bottomcontent"
             style="overflow: hidden;text-align: center; border: 1px solid grey; box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4); margin-top: 10px; border-radius: 10px;">
             <div class="body"
-                style="width: 100%; background: #2f1c6a; padding: 10px; ">
+                style="width: 100%; background: #02363a; padding: 10px; ">
                 <div
                     style="text-align: center;height: 50px; color: white;">
                     <span style="display: inline-block; height: 100%; vertical-align: middle;">-----------</span>
@@ -50,7 +50,7 @@ const verificationTemplate = (name, id) => {
                 exclusive features with us!</p>
             <a href="https://esport-backend.vercel.app/verify?id=${id}" target="_blank"
                 ><button
-                    style="width: 65%; outline: none; cursor: pointer; border: none; padding: 5px; font-size: 1.2em; font-weight: 700; color: white; cursor: pointer; background: #2f1c6a; border-radius: 5px; margin-top: 20px;">Verify
+                    style="width: 65%; outline: none; cursor: pointer; border: none; padding: 5px; font-size: 1.2em; font-weight: 700; color: white; cursor: pointer; background: #02363a; border-radius: 5px; margin-top: 20px;">Verify
                     Your Email</button></a>
             <p style="width: 100%;font-size: 1.1em; text-align: center; letter-spacing: 0.2px; margin-top: 5px;">
                 Thanks, BattleFiesta</p>
@@ -60,25 +60,25 @@ const verificationTemplate = (name, id) => {
             <div class="links"
                 style="margin-top: 5px; width: 100%; text-align: center; padding: 5px 0px; background: rgba(175, 173, 173, 0.644); ">
                 <a href="http://" target="_blank" rel="noopener noreferrer"  style="cursor: pointer; margin: 0 15px;"><img
-                        style="width: 30px; height: 30px; padding: 2px; border: 1px solid #2f1c6a; border-radius: 50%; background: white;"
+                        style="width: 30px; height: 30px; padding: 2px; border: 1px solid #02363a; border-radius: 50%; background: white;"
                         src="https://res.cloudinary.com/dusxlxlvm/image/upload/v1709879629/battlefiesta/assets/icon/facebook_5968764_aqgopi.png"
                         alt=""></a>
                 <a href="https://www.instagram.com/battlefiesta" target="_blank" rel="noopener noreferrer"
                     style="cursor: pointer; margin: 0 15px;"><img
-                        style="width: 30px; height: 30px; padding: 2px; border: 1px solid #2f1c6a; border-radius: 50%; background: white;"
+                        style="width: 30px; height: 30px; padding: 2px; border: 1px solid #02363a; border-radius: 50%; background: white;"
                         src="https://res.cloudinary.com/dusxlxlvm/image/upload/v1709879531/battlefiesta/assets/icon/instagram_3955024_vjrnvj.png"
                         alt=""></a>
                 <a href="https://www.youtube.com/@Battle_Fiesta" target="_blank" rel="noopener noreferrer"
                 style="cursor: pointer; margin: 0 15px;"><img
-                        style="width: 30px; height: 30px; padding: 2px; border: 1px solid #2f1c6a; border-radius: 50%; background: white;"
+                        style="width: 30px; height: 30px; padding: 2px; border: 1px solid #02363a; border-radius: 50%; background: white;"
                         src="https://res.cloudinary.com/dusxlxlvm/image/upload/v1709879430/battlefiesta/assets/icon/youtube_3670147_sy7gii.png"
                         alt=""></a>
                 <a href="http://" target="_blank" rel="noopener noreferrer"  style="cursor: pointer; margin: 0 15px;"><img
-                        style="width: 30px; height: 30px; padding: 2px; border: 1px solid #2f1c6a; border-radius: 50%; background: white;"
+                        style="width: 30px; height: 30px; padding: 2px; border: 1px solid #02363a; border-radius: 50%; background: white;"
                         src="https://res.cloudinary.com/dusxlxlvm/image/upload/v1709879286/battlefiesta/assets/icon/email_552486_pbfpji.png"
                         alt=""></a>
             </div>
-            <footer style="background: #2f1c6a; width: 100%; text-align: center; padding: 10px 0px; color: white;">
+            <footer style="background: #02363a; width: 100%; text-align: center; padding: 10px 0px; color: white;">
                 <h5 style="margin: 0;">Copyrights © BattleFiesta All Rights Reserved</h5>
             </footer>
         </div>
