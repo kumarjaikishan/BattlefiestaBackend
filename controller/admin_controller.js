@@ -155,14 +155,14 @@ const emailreply = asyncHandler(async (req, res, next) => {
 })
 const contactusdelete = asyncHandler(async (req, res, next) => {
     if (req.body.id == '') {
-        return next({ status: 400, message: "Please send Id to delete" });
+        return next({ status: 400, message: "Id is Empty" });
     }
     const query = await contactus.findByIdAndDelete({ _id: req.body.id })
     if (!query) {
         return next({ status: 400, message: "Entry not Deleted" });
     }
     return res.status(200).json({
-        message: "Deleted Successfully"
+        message: "Entry Deleted"
     })
 })
 
@@ -177,7 +177,7 @@ const deletevoucher = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Entry not Deleted" });
     }
     return res.status(200).json({
-        message: "Deleted Successfully"
+        message: "Deleted"
     })
 })
 
@@ -214,7 +214,7 @@ const editvoucher = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Voucher not Edited" });
     }
     return res.status(200).json({
-        message: 'Voucher Edited Successfully'
+        message: 'Voucher Edited'
     })
 })
 const getmembership = asyncHandler(async (req, res, next) => {

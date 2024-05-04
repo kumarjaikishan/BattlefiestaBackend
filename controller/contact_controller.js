@@ -46,7 +46,7 @@ const updateprofile = async (req, res, next) => {
             return next({ status: 400, message: "something wrong" });
         }
         return res.status(200).json({
-            message: "Update Successfully"
+            message: "Update"
         })
     } catch (error) {
         console.log(error);
@@ -84,7 +84,7 @@ const updateprofilepic = async (req, res, next) => {
             await login.findByIdAndUpdate({ _id: req.userid }, { imgsrc: imageurl })
 
             return res.status(200).json({
-                message: "Upload Successfully",
+                message: "Profile Uploaded",
                 url: imageurl
             })
         })

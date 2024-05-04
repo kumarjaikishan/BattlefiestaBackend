@@ -245,7 +245,7 @@ const playerupdate = async (req, res, next) => {
 
                 await Tournament.findByIdAndUpdate({ _id: id }, { $set: { [`player.${index}`]: updatedPlayerData } }, { new: true });
                 res.status(200).json({
-                    message: "Updated Successfull"
+                    message: "Updated"
                 })
             })
         } else {
@@ -258,7 +258,7 @@ const playerupdate = async (req, res, next) => {
 
             !req.file && await Tournament.findByIdAndUpdate({ _id: id }, { $set: { [`player.${index}`]: updatedPlayerData } }, { new: true });
             res.status(200).json({
-                message: "Updated Successfull"
+                message: "Updated"
             })
         }
     } catch (error) {

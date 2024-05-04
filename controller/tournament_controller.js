@@ -112,7 +112,7 @@ const settournament = asyncHandler(async (req, res, next) => {
     if (!query) {
         return next({ status: 400, message: "Error Occured" });
     } else {
-        res.status(201).json({ message: "Successfully Updated", data: query })
+        res.status(201).json({ message: "Settings Updated", data: query })
     }
 })
 const settournamentlogos = async (req, res, next) => {
@@ -228,7 +228,7 @@ const updatetournamentform = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Tournament Id not Valid" });
     } else {
         res.status(201).json({
-            message: "Updated Successfully"
+            message: "Details Updated"
         })
     }
 })
@@ -241,7 +241,7 @@ const updatetournamentformcontacts = asyncHandler(async (req, res, next) => {
             return next({ status: 400, message: "Tournament Id not Valid" });
         } else {
             res.status(201).json({
-                message: "Updated Successfully"
+                message: "Details Updated"
             })
         }
     } catch (error) {

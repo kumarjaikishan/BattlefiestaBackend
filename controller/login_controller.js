@@ -169,7 +169,7 @@ const setpassword = async (req, res, next) => {
     await user.updateOne({ _id: query._id }, { password: hash_password, temptoken: '' })
 
     return res.status(200).json({
-      message: 'Password Updated Successfully'
+      message: 'Password Updated'
     })
   } catch (error) {
     console.log(error);

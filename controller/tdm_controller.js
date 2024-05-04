@@ -50,7 +50,7 @@ const updateTdmTournamentForm = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Tournament Id not Valid" });
     } else {
         res.status(201).json({
-            message: "Updated Successfully"
+            message: "Details Updated"
         })
     }
 })
@@ -62,7 +62,7 @@ const updatetdmtournamentformcontacts = asyncHandler(async (req, res, next) => {
             return next({ status: 400, message: "Tournament Id not Valid" });
         } else {
             res.status(201).json({
-                message: "Updated Successfully"
+                message: "Details Updated"
             })
         }
     } catch (error) {
@@ -135,7 +135,7 @@ const TdmTeamregister = async (req, res, next) => {
             }
             push_notification(savedTournament.userid,mes,`${process.env.FrontUrl}/tdmsetting/${tid}`)
             return res.status(201).json({
-                message: "Registered Successfully"
+                message: "Registered"
             })
         }
     } catch (error) {
