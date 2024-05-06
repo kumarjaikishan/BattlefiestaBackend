@@ -2,7 +2,7 @@ const axios = require('axios');
 
 async function addtoqueue(email, title, body) {
     try {
-        const response = await axios.post('http://65.1.97.111:5001/producer', {
+        const response = await axios.post('http://sw.battlefiesta.in/producer', {
             // Your request payload/data here
             email, title, body
         });

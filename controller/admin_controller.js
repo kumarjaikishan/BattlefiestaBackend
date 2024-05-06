@@ -138,7 +138,7 @@ const contactformlist = asyncHandler(async (req, res, next) => {
 
 })
 const emailreply = asyncHandler(async (req, res, next) => {
-   console.log(req.body);
+//    console.log("email reply:",req.body);
     // const response = await sendemail(req.body.email, 'Customer Support || BattleFiesta', req.body.reply);
     // await addJobToQueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
     await addtoqueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
