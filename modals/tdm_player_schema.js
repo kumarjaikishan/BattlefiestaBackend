@@ -57,6 +57,10 @@ const playerschema = new mongo.Schema({
         default: "",
         required: false
     },
+    category: {
+        type: Number,
+        required: true
+    },
     logo: {
         type: String,
         default: "",

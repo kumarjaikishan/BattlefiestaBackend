@@ -3,7 +3,7 @@ const app = express();
 require('./conn/conn')
 // require('./utils/worker')
 const limiter = require('./config/ratelimiter.js')
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5002;
 const cors = require('cors');
 const route = require('./router/route');
 const errorHandle = require('./utils/error_util');

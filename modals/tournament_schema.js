@@ -29,6 +29,10 @@ const tourna = new mongo.Schema({
         required: false,
         default: 1
     },
+    slotCategory: {
+        type: Array,
+        required: false
+    },
     tournment_banner: {
         type: String,
         required: false,

@@ -28,8 +28,8 @@ const gettdmtournamentform = asyncHandler(async (req, res, next) => {
     //    console.log(req.body.tid);
     const tid = req.body.tid;
     const isformexists = await Tdm_form.findOne({ tournament_id: tid });
-    const enteries = await player.find({ tournament_id: tid }).select('InGameId logo name os status reason');
-    const tournamente = await tournament.findOne({ _id: tid }).select('label organiser slots title visibility');
+    const enteries = await player.find({ tournament_id: tid }).select('InGameId logo name category os status reason');
+    const tournamente = await tournament.findOne({ _id: tid }).select('label organiser slots slotCategory title visibility');
 
     if (!isformexists) {
         return next({ status: 400, message: "Tournament Id not Valid" });
@@ -72,7 +72,7 @@ const updatetdmtournamentformcontacts = asyncHandler(async (req, res, next) => {
 })
 const TdmTeamregister = async (req, res, next) => {
     // console.log(req.body);
-    const { tid, userid, name, InGameId, mobile, email, os, discord, utrno, fps, device } = req.body;
+    const { tid, userid, name, InGameId,category, mobile, email, os, discord, utrno, fps, device } = req.body;
     if (!name || !tid || !userid) {
         return next({ status: 400, message: "All Fields are Required" });
     }
@@ -88,7 +88,7 @@ const TdmTeamregister = async (req, res, next) => {
     }
       
     try {
-        const query = new player({ tournament_id: tid, userid: userid, name, InGameId, mobile, email, os, discord, utrno, fps, device });
+        const query = new player({ tournament_id: tid, userid: userid, name,category, InGameId, mobile, email, os, discord, utrno, fps, device });
         const savedTournament = await query.save();
        
         // console.log("getting info", savedTournament);

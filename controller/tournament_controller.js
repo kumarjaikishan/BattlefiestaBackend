@@ -25,8 +25,12 @@ const addtournament = asyncHandler(async (req, res, next) => {
     if (!name || !type || !slots || !organiser) {
         return next({ status: 400, message: "All Fields are Required" });
     }
+    let slotCategory =[{
+        category: "All",
+        slots: parseInt(slots)
+    }]
 
-    const query = new tournament({ userid: req.userid, title: name, type, slots, organiser })
+    const query = new tournament({ userid: req.userid, title: name, type, slots, organiser,slotCategory })
     const result = await query.save();
 
     if (type == 'tdm') {
@@ -106,9 +110,9 @@ const getalltournament = asyncHandler(async (req, res, next) => {
 
 
 const settournament = asyncHandler(async (req, res, next) => {
-    const { tid, title, organiser, slots, type, status, visibility, label } = req.body;
+    const { tid, title, organiser, slots, type, status, visibility, label,slotCategory } = req.body;
 
-    const query = await tournament.findByIdAndUpdate({ _id: tid }, { title, organiser, slots, type, status, visibility, label })
+    const query = await tournament.findByIdAndUpdate({ _id: tid }, { title, organiser, slots,slotCategory, type, status, visibility, label })
     if (!query) {
         return next({ status: 400, message: "Error Occured" });
     } else {
