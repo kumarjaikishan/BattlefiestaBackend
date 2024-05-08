@@ -57,7 +57,7 @@ const tdm_setting = new mongo.Schema({
     },
     ask_os: {
         type: Boolean,
-        default:true,
+        default:false,
         required: false
     },
     ask_fps: {
