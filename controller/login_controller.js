@@ -136,7 +136,7 @@ const passreset = async (req, res, next) => {
     <br>
     This mail is regards to your password reset request. 
     <br><br>
-    <a href="https://battlefiesta.vercel.app/resetpassword/${temptoken}" style="display: inline-block; padding: 4px 20px; background-color: #007bff; color: #fff; text-decoration: none; letter-spacing: 1px;; border-radius: 5px;">Reset Password</a>
+    <a href="https://battlefiesta.in/resetpassword/${temptoken}" style="display: inline-block; padding: 4px 20px; background-color: #007bff; color: #fff; text-decoration: none; letter-spacing: 1px;; border-radius: 5px;">Reset Password</a>
     `
     // await sendemail(req.user.email, 'Password Reset', msg);
     // await addJobToQueue(req.user.email, 'Password Reset || BattleFiesta', msg)
