@@ -27,20 +27,10 @@ const login = async (req, res, next) => {
   if (!email || !password) {
     return next({ status: 400, message: "All Fields are Required" });
   }
-  try {
-    let usersdata;
-    if (myCache.has("allusers")) {
-      usersdata = JSON.parse(myCache.get("allusers"));
-    } else {
-      usersdata = await user.find({});
-      myCache.set("allusers", JSON.stringify(usersdata));
-    }
 
-    const result = await usersdata.find((hel) => {
-      return hel.email == req.body.email
-    });
-    // console.log("result", result);
-    if (!result) {
+  try {
+    const isUser = await user.findOne({ email });
+    if (!isUser) {
       return next({ status: 400, message: "User not found" });
     }
     // console.log("password match: ", await bcrypt.compare(password, result.password));
@@ -61,18 +51,18 @@ const login = async (req, res, next) => {
       }
     }
 
-    if (await bcrypt.compare(password, result.password)) {
-      const newToken = await generateToken(result);
-      const userIdString = result._id.toString();
-      result.password = undefined;
-      result.createdAt = undefined;
-      result._id = undefined;
-      result.phone = undefined;
+    if (await bcrypt.compare(password, isUser.password)) {
+      const newToken = await generateToken(isUser);
+      const userIdString = isUser._id.toString();
+      isUser.password = undefined;
+      isUser.createdAt = undefined;
+      isUser._id = undefined;
+      isUser.phone = undefined;
       return res.status(200).json({
         message: "Login Successful",
         token: newToken,
         userId: userIdString,
-        isadmin: result.isadmin
+        isadmin: isUser.isadmin
       });
 
     } else {
@@ -80,8 +70,8 @@ const login = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error);
+    return next({ status: 400, message: error.message });
   }
-
 }
 
 const test = async (req, res, next) => {
