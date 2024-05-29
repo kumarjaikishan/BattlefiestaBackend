@@ -1,3 +1,4 @@
 - axios result url in utils/axiosRequest
 - links in email replyies (email verify)
 - checkmail - in login controller for forget password
+- password reset links check

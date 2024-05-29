@@ -9,7 +9,7 @@ const jwt = require('jsonwebtoken');
 const asyncHandler = require('../utils/asyncHandler')
 const trialmembership = require('../utils/trial_membership')
 // const {addJobToQueue} = require('../utils/producer');
-const {addtoqueue} = require('../utils/axiosRequest');
+const { addtoqueue } = require('../utils/axiosRequest');
 const success = require('../templates/success')
 
 cloudinary.config({
@@ -165,9 +165,13 @@ const setpassword = async (req, res, next) => {
 
     const saltRound = await bcrypt.genSalt(10);
     const hash_password = await bcrypt.hash(password, saltRound);
-    // console.log(hash_password);
-    await user.updateOne({ _id: query._id }, { password: hash_password, temptoken: '' })
+    console.log("hash password:", hash_password);
+    console.log("user id:", query._id);
+    const passupdated = await user.updateOne({ _id: query._id }, { password: hash_password, temptoken: '' })
 
+    if (!passupdated) {
+      return next({ status: 400, message: 'something went wrong' });
+    }
     return res.status(200).json({
       message: 'Password Updated'
     })
