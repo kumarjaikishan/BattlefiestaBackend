@@ -33,7 +33,6 @@ const login = async (req, res, next) => {
     if (!isUser) {
       return next({ status: 400, message: "User not found" });
     }
-    // console.log("password match: ", await bcrypt.compare(password, result.password));
     const generateToken = async (result) => {
       try {
         return jwt.sign({

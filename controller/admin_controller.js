@@ -9,7 +9,7 @@ const users = require('../modals/login_schema')
 const sendemail = require('../utils/sendemail')
 const push_notification = require('../utils/push_notification')
 // const { addJobToQueue } = require('../utils/producer')
-const {addtoqueue} = require('../utils/axiosRequest');
+const { addtoqueue } = require('../utils/axiosRequest');
 
 const allmembershipentry = asyncHandler(async (req, res, next) => {
     // console.log('yaha par');
@@ -55,14 +55,14 @@ const createmembership = asyncHandler(async (req, res, next) => {
         await push_notification(query.user._id, mes)
         // await addJobToQueue(query.user.email, "Customer Support || BattleFiesta", message)
         await addtoqueue(query.user.email, "Customer Support || BattleFiesta", message)
-       
+
         return res.status(200).json({
             message: "Status Updated"
         })
     }
 
     if (body.flag == 'success') {
-// console.log("success me aaya");
+        // console.log("success me aaya");
         const whichone = await manualmember.findOne({ _id: body.id }).populate({
             path: 'plan_id',
             select: 'duration plan_name'
@@ -93,7 +93,7 @@ const createmembership = asyncHandler(async (req, res, next) => {
             title: 'Membership Request Approved',
             body: message,
         }
-        await push_notification(whichone.user._id,mes,'https://battlefiesta.vercel.app/profile')
+        await push_notification(whichone.user._id, mes, 'https://battlefiesta.vercel.app/profile')
         // await addJobToQueue(whichone.user.email, "Customer Support || BattleFiesta", message)
         await addtoqueue(whichone.user.email, "Customer Support || BattleFiesta", message)
         return res.status(201).json({
@@ -138,7 +138,7 @@ const contactformlist = asyncHandler(async (req, res, next) => {
 
 })
 const emailreply = asyncHandler(async (req, res, next) => {
-//    console.log("email reply:",req.body);
+    //    console.log("email reply:",req.body);
     // const response = await sendemail(req.body.email, 'Customer Support || BattleFiesta', req.body.reply);
     // await addJobToQueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
     await addtoqueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
@@ -235,9 +235,7 @@ const getmembership = asyncHandler(async (req, res, next) => {
     })
 })
 const getusers = asyncHandler(async (req, res, next) => {
-    // console.log(req.body);
     const query = await users.find().sort({ createdAt: -1 })
-    // console.log(query);
     if (!query) {
         return next({ status: 400, message: "users not found" });
     }
@@ -245,13 +243,25 @@ const getusers = asyncHandler(async (req, res, next) => {
         data: query
     })
 })
+const editUser = asyncHandler(async (req, res, next) => {
+    const { id, name, phone, isverified, isadmin } = req.body;
+    const query = await users.findByIdAndUpdate({ _id: id }, { name, phone, isverified, isadmin })
+
+    if (!query) {
+        return next({ status: 400, message: "users not found" });
+    }
+    return res.status(200).json({
+        message: "User Updated"
+    })
+})
+
 const deleteuser = asyncHandler(async (req, res, next) => {
     // console.log(req.body);
-    const query = await users.findByIdAndDelete({_id:req.body.userid})
-    const deletemembership =await membership.deleteMany({userid:req.body.userid})
-    const tournamentdelete = await tournament.deleteMany({userid:req.body.userid})
-    const deleteregister = await register.deleteMany({userid:req.body.userid})
-    const detetememberrequest = await manualmember.deleteMany({user:req.body.userid})
+    const query = await users.findByIdAndDelete({ _id: req.body.userid })
+    const deletemembership = await membership.deleteMany({ userid: req.body.userid })
+    const tournamentdelete = await tournament.deleteMany({ userid: req.body.userid })
+    const deleteregister = await register.deleteMany({ userid: req.body.userid })
+    const detetememberrequest = await manualmember.deleteMany({ user: req.body.userid })
     if (!query) {
         return next({ status: 400, message: "users not found" });
     }
@@ -262,4 +272,4 @@ const deleteuser = asyncHandler(async (req, res, next) => {
 
 
 
-module.exports = { deleteuser,getvoucher, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };
+module.exports = { editUser, deleteuser, getvoucher, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };
