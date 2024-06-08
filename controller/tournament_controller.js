@@ -25,12 +25,12 @@ const addtournament = asyncHandler(async (req, res, next) => {
     if (!name || !type || !slots || !organiser) {
         return next({ status: 400, message: "All Fields are Required" });
     }
-    let slotCategory =[{
+    let slotCategory = [{
         category: "All",
         slots: parseInt(slots)
     }]
 
-    const query = new tournament({ userid: req.userid, title: name, type, slots, organiser,slotCategory })
+    const query = new tournament({ userid: req.userid, title: name, type, slots, organiser, slotCategory })
     const result = await query.save();
 
     if (type == 'tdm') {
@@ -69,8 +69,8 @@ const getontournament = asyncHandler(async (req, res, next) => {
 })
 const getclassic = asyncHandler(async (req, res, next) => {
     const query1 = await tournament.findOne({ _id: req.body.tid });
-    if(req.userid != query1.userid){
-        return res.status(403).json({ isowner:false })
+    if (req.userid != query1.userid) {
+        return res.status(403).json({ isowner: false })
     }
     const query2 = await registrationformsetting.findOne({ tournament_id: req.body.tid });
     const query3 = await Resgistered.find({ tournament_id: req.body.tid });
@@ -78,7 +78,7 @@ const getclassic = asyncHandler(async (req, res, next) => {
         tournament: query1,
         settings: query2,
         players: query3,
-        isowner:true
+        isowner: true
     })
 })
 
@@ -110,9 +110,9 @@ const getalltournament = asyncHandler(async (req, res, next) => {
 
 
 const settournament = asyncHandler(async (req, res, next) => {
-    const { tid, title, organiser, slots, type, status, visibility, label,slotCategory } = req.body;
+    const { tid, title, organiser, slots, type, status, visibility, label, slotCategory } = req.body;
 
-    const query = await tournament.findByIdAndUpdate({ _id: tid }, { title, organiser, slots,slotCategory, type, status, visibility, label })
+    const query = await tournament.findByIdAndUpdate({ _id: tid }, { title, organiser, slots, slotCategory, type, status, visibility, label })
     if (!query) {
         return next({ status: 400, message: "Error Occured" });
     } else {
@@ -123,8 +123,9 @@ const settournamentlogos = async (req, res, next) => {
     // console.log(req.body);
     const oldurl = req.body.oldimage;
     const tid = req.body.tid;
-
-    await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/tournlogo' }, async (error, result) => {
+    const folderName = req.body.filed === "tournbanner" ? "battlefiesta/tournbanner" : "battlefiesta/tournlogo";
+    // await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/tournlogo' }, async (error, result) => {
+    await cloudinary.uploader.upload(req.file.path, { folder: folderName }, async (error, result) => {
         // console.log(error, result);
         if (error) {
             return next({ status: 500, message: "File not Uploaded" });
@@ -318,4 +319,4 @@ const torunadelete = async (req, res, next) => {
 }
 
 
-module.exports = {getclassic, pointsystem, addtournament, getonetournament, getontournament, getalltournament, torunadelete, gettournament, getenteries, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };
+module.exports = { getclassic, pointsystem, addtournament, getonetournament, getontournament, getalltournament, torunadelete, gettournament, getenteries, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };
