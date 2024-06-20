@@ -10,16 +10,18 @@ const authmiddlewre = async (req, res, next) => {
     try {
         const token = bearertoken.replace("Bearer", "").trim();
         const verified = jwt.verify(token, process.env.jwt_token);
+        // console.log(verified);
 
-        const userdata = await User.findOne({ email: verified.email }).select({ password: 0 });
-        userdata.date = undefined;
-        req.user = userdata;
-        req.userid = userdata._id.toString();
+        req.user = verified;
+        req.userid = verified.userId;
         req.token = token;
         next();
     } catch (error) {
-        console.log(error);
-        res.status(400).json({ message: error })
+        console.log(error.message);
+         if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({ message: 'Invalid Token' });
+        }
+        res.status(400).json({ message: error.message })
     }
 }
 module.exports = authmiddlewre;

@@ -36,9 +36,11 @@ const login = async (req, res, next) => {
     const generateToken = async (result) => {
       try {
         return jwt.sign({
+          _id: result._id.toString(),
           userId: result._id.toString(),
           email: result.email,
-          isAdmin: result.isadmin
+          isAdmin: result.isadmin,
+          name:result.name
         },
           process.env.jwt_token,
           {
@@ -121,7 +123,7 @@ const passreset = async (req, res, next) => {
     if (!query) {
       return next({ status: 400, message: "UserId is Not Valid" });
     }
-    const msg = `Hi <b>${req.user.name}</b>,
+    const msg = `Hi <b>${query.name}</b>,
     <br>
     This mail is regards to your password reset request. 
     <br><br>

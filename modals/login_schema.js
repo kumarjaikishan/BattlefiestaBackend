@@ -81,7 +81,7 @@ const log = new mongo.Schema({
         type: Boolean,
         default: false
     },
-},{ timestamps: true })
+}, { timestamps: true })
 
 
 // secure the password
@@ -118,9 +118,9 @@ log.methods.generateToken = async function () {
 };
 
 
-log.methods.checkpassword = async function (hello) {
+log.methods.checkpassword = async function (pass) {
     try {
-        return bcrypt.compare(hello, this.password);
+        return await bcrypt.compare(pass, this.password);
     } catch (error) {
         console.error(error);
     }

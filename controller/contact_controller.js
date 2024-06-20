@@ -26,6 +26,7 @@ const contact = async (req, res, next) => {
     }
 }
 const profile = async (req, res, next) => {
+    const profile = await login.findOne({_id:req.userid});
     const query = await membership.find({ userid: req.userid }).sort({ createdAt: -1 }).populate({
         path: 'planid',
         select: 'plan_name price create_limit' // Specify the fields you want to select
@@ -35,7 +36,7 @@ const profile = async (req, res, next) => {
         latestmembership = query[0];
     }
     // console.log('profile', latestmembership);
-    return res.status(200).json({ data: req.user, member:latestmembership })
+    return res.status(200).json({ data: profile, member:latestmembership })
 }
 
 const updateprofile = async (req, res, next) => {
@@ -57,7 +58,8 @@ const updateprofile = async (req, res, next) => {
 const updateprofilepic = async (req, res, next) => {
     // console.log(req.user);
     let arraye = [];
-    let oldimage = req.user.imgsrc;
+    let prev = await login.findOne({_id:req.userid})
+    let oldimage = prev.imgsrc;
     oldimage != "" && arraye.push(oldimage);
     // console.log("old image path",oldimage);
 
