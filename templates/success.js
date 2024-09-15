@@ -360,7 +360,7 @@ const success =  `<!DOCTYPE html>
                   <p id='message'>
                     Congratulations, your account has been successfully Verified.
                   </p>
-                  <a href="#" id="contBtn">Continue SignIn</a>
+                  <a href="/login" id="contBtn">Continue SignIn</a>
                 </div>
               </div>
     
