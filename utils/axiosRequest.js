@@ -2,8 +2,8 @@ const axios = require('axios');
 
 async function addtoqueue(email, title, body) {
     try {
-        const response = await axios.post('http://sw.battlefiesta.in/producer', {
-            // Your request payload/data here
+        // const response = await axios.post('http://sw.battlefiesta.in/producer', {
+        const response = await axios.post('http://localhost:5001/producer', {
             email, title, body
         });
         console.log('Response from axiosRequest:', response.data);
@@ -14,5 +14,5 @@ async function addtoqueue(email, title, body) {
     }
 }
 
-// Call the function to send the POST request
+
 module.exports = {addtoqueue};

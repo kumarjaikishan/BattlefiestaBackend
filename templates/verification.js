@@ -48,7 +48,7 @@ const verificationTemplate = (name, id) => {
                 You're
                 almost ready to get started. Please click on the button below to verify your email address and enjoy
                 exclusive features with us!</p>
-            <a href="https://esport-backend.vercel.app/api/verify?id=${id}" target="_blank"
+            <a href="https://${process.env.baseUrl}/api/verify?id=${id}" target="_blank"
                 ><button
                     style="width: 65%; outline: none; cursor: pointer; border: none; padding: 5px; font-size: 1.2em; font-weight: 700; color: white; cursor: pointer; background: #02363a; border-radius: 5px; margin-top: 20px;">Verify
                     Your Email</button></a>
