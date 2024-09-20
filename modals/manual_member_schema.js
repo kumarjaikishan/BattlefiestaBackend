@@ -23,6 +23,10 @@ const manualmemberschema = new mongo.Schema({
         default: '',
         required: false
     },
+    discount: {
+        type: Number,
+        default: 0,
+    },
     status: {
         type: String,
         default: 'pending',
