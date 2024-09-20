@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 require('./conn/conn')
+require('./utils/nodecron.js')
 // require('./utils/worker')
 const limiter = require('./config/ratelimiter.js')
 const port = process.env.PORT || 5002;

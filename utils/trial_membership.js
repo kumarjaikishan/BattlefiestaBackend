@@ -1,6 +1,5 @@
 const membership = require('../modals/membership_schema');
 
-
 const trialmembership = async (userid, planid) => {
     const today = new Date();
     const threeMonthsLater = new Date(today);

@@ -219,7 +219,7 @@ const editvoucher = asyncHandler(async (req, res, next) => {
 })
 const getmembership = asyncHandler(async (req, res, next) => {
     // console.log(req.body);
-    const query = await membership.find().populate({
+    const query = await membership.find().sort({ createdAt: -1 }).populate({
         path: 'planid',
         select: 'plan_name price'
     }).populate({
@@ -234,15 +234,39 @@ const getmembership = asyncHandler(async (req, res, next) => {
         data: query
     })
 })
+
 const getusers = asyncHandler(async (req, res, next) => {
-    const query = await users.find().sort({ createdAt: -1 })
-    if (!query) {
-        return next({ status: 400, message: "users not found" });
+    try {
+        let usersList = await users.find().sort({ createdAt: -1 });
+
+        // Map through the users and fetch the latest membership for each user
+        const usersWithMembership = await Promise.all(usersList.map(async (user) => {
+            let latestMembership = await membership.find({ userid: user._id }).sort({ createdAt: -1 }).select({isActive: 1});
+
+            // Convert the Mongoose user document to a plain JS object
+            let userObj = user.toObject();
+
+            if (latestMembership.length > 0) {
+                userObj.membership = latestMembership[0]; // Attach the latest membership
+            }
+            return userObj;
+        }));
+
+
+        if (!usersWithMembership || usersWithMembership.length === 0) {
+            return next({ status: 400, message: "users not found" });
+        }
+
+        return res.status(200).json({
+            data: usersWithMembership
+        });
+    } catch (error) {
+        return next({ status: 500, message: "Error fetching users or memberships" });
     }
-    return res.status(200).json({
-        data: query
-    })
-})
+});
+
+
+
 const editUser = asyncHandler(async (req, res, next) => {
     const { id, name, phone, isverified, isadmin } = req.body;
     const query = await users.findByIdAndUpdate({ _id: id }, { name, phone, isverified, isadmin })

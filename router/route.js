@@ -17,11 +17,13 @@ const member = require('../controller/membership_controller')
 const isadmin = require('../middleware/isadmin_middleware')
 const admin = require('../controller/admin_controller')
 
-app.get('/', (req, res) => {
+const membership = require('../modals/membership_schema.js')
+
+router.route('/').get(async (req, res) => {
   return res.status(200).json({
-    msg: "Welcome to the Battlefiesta Backend"
+    msg: "Welcome to Battlefiesta Backend"
   })
-})
+});
 
 router.route('/signup').post(login.signup, emailauth);    //used
 router.route('/login').post(emailauth, login.login);      //used
