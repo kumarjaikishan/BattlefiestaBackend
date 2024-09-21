@@ -33,8 +33,8 @@ cron.schedule('0 1 * * *', async () => {
 });
 
 // cron.schedule('*/1 * * * *', async () => {
-// cron.schedule('*/10 * * * * *', async () => {
-//     // console.log("database command running")
-//     // databaseBackup('exp');
-//     // databaseRestore('exptest')
-// })
+cron.schedule('*/10 * * * * *', async () => {
+    console.log("database command running")
+    // databaseBackup('exp');
+    // databaseRestore('exptest')
+})
