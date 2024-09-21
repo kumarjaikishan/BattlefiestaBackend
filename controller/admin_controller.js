@@ -52,11 +52,14 @@ const createmembership = asyncHandler(async (req, res, next) => {
             title: `Membership Request ${body.flag}`,
             body: message,
         }
-        await push_notification(query.user._id, mes)
+
+
+        await push_notification(query.user._id, mes,`${process.env.baseUrl}`);
+
         // await addJobToQueue(query.user.email, "Customer Support || BattleFiesta", message)
         await addtoqueue(query.user.email, "Customer Support || BattleFiesta", message)
 
-        return res.status(200).json({
+        res.status(200).json({
             message: "Status Updated"
         })
     }
@@ -93,7 +96,7 @@ const createmembership = asyncHandler(async (req, res, next) => {
             title: 'Membership Request Approved',
             body: message,
         }
-        await push_notification(whichone.user._id, mes, 'https://battlefiesta.vercel.app/profile')
+        await push_notification(whichone.user._id, mes, 'https://battlefiesta.in/profile')
         // await addJobToQueue(whichone.user.email, "Customer Support || BattleFiesta", message)
         await addtoqueue(whichone.user.email, "Customer Support || BattleFiesta", message)
         return res.status(201).json({
@@ -241,7 +244,7 @@ const getusers = asyncHandler(async (req, res, next) => {
 
         // Map through the users and fetch the latest membership for each user
         const usersWithMembership = await Promise.all(usersList.map(async (user) => {
-            let latestMembership = await membership.find({ userid: user._id }).sort({ createdAt: -1 }).select({isActive: 1});
+            let latestMembership = await membership.find({ userid: user._id }).sort({ createdAt: -1 }).select({ isActive: 1 });
 
             // Convert the Mongoose user document to a plain JS object
             let userObj = user.toObject();

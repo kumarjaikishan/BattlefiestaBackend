@@ -37,7 +37,7 @@ const push_notification = async (userid, mes,urle) => {
             image: 'https://res.cloudinary.com/dusxlxlvm/image/upload/v1709654642/battlefiesta/assets/logo/logopng250_vuhy4f.webp',
         },
         data:{
-            url: urle || process.env.FrontUrl
+            url: urle || process.env.baseUrl
         },
         token: tokenid.notification_token,
      };
@@ -47,7 +47,7 @@ const push_notification = async (userid, mes,urle) => {
             console.log('Push Notification sent:', response);
         })
         .catch((error) => {
-            console.error('Push Notification Error:', error);
+            console.error('Push Notification Error:', error.message);
         });
 }
 module.exports = push_notification;
