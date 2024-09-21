@@ -35,7 +35,7 @@ const databaseBackup = async (databaseName) => {
 
 // Function to restore a database using mongorestore
 const databaseRestore = async (databaseName) => {
-    const uri = `mongodb+srv://jai:Jai%404880@cluster0.4ntduoo.mongodb.net/${databaseName}?retryWrites=true&w=majority`;
+    const uri = `mongodb+srv://jai:Jai%404880@cluster0.4ntduoo.mongodb.net/exptest?retryWrites=true&w=majority`;
     try {
         const backupPath = path.join(backupDir, `${databaseName}_backup`);
         const command = `mongorestore --uri="${uri}" --db=${databaseName} --gzip --archive="${backupPath}.gz" --drop`; // Added quotes around the archive path
