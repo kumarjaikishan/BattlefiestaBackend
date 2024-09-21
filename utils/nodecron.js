@@ -1,5 +1,6 @@
 var cron = require('node-cron');
 const membership = require('../modals/membership_schema');
+const { databaseBackup, databaseRestore } = require('./backup_restore');
 
 // '40 * * * * *'   --run every second at 40second with actual time 
 // ' */5 * * * *'   --run every 5 minutes 
@@ -30,3 +31,10 @@ cron.schedule('0 1 * * *', async () => {
         console.error("Error updating memberships:", error);
     }
 });
+
+// cron.schedule('*/1 * * * *', async () => {
+// cron.schedule('*/20 * * * * *', async () => {
+//     console.log("database command running")
+//     // databaseBackup('exp');
+//     // databaseRestore('exptest')
+// })
