@@ -32,7 +32,7 @@ cron.schedule('0 1 * * *', async () => {
     }
 });
 
-cron.schedule('0 1 * * *', async () => {
+cron.schedule('1 1 * * *', async () => {
     databaseBackup('exp');
 })
 cron.schedule('5 1 * * *', async () => {
