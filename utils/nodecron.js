@@ -39,8 +39,8 @@ cron.schedule('5 1 * * *', async () => {
     databaseBackup('battlefiesta');
 })
 
-// cron.schedule('*/1 * * * *', async () => {
+
 // cron.schedule('*/20 * * * * *', async () => {
-//     // databaseBackup('exp');
-//     // databaseRestore('exp')
+//     // databaseBackup('battlefiestatest');
+//     // databaseRestore('battlefiestatest')
 // })
