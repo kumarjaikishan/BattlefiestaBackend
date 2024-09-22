@@ -49,11 +49,11 @@ const databaseRestore = async (databaseName) => {
     const uri = `mongodb+srv://jai:Jai%404880@cluster0.4ntduoo.mongodb.net`;
     try {
         const backupPath = path.join(backupDir, `${databaseName}_backup`);
-      // const command = `mongorestore --uri="${uri}" dump/`; //working for simple folder json and bson backup data
+        // const command = `mongorestore --uri="${uri}" dump/`; //working for simple folder json and bson backup data
         // const command = `mongorestore --uri="${uri}" --gzip --dir="dump/"`; //working for gzip folder json and bson backup data
         // const command = `mongorestore --uri="${uri}" --gzip --archive="${backupPath}.gz"`; //working for gzip folder json and bson backup data
         const command = `mongorestore --uri="${uri}" --db=${databaseName} --gzip --archive="${backupPath}.gz"`; //--drop working for specific from all database restoration specific ot without specific works
-    // const command = `mongorestore --nsInclude="${databaseName}.*" --archive="${backupPath}.gz" --gzip --nsFrom="${databaseName}.*" --nsTo="battletest.*"` //works offline community mongodb 
+        // const command = `mongorestore --nsInclude="${databaseName}.*" --archive="${backupPath}.gz" --gzip --nsFrom="${databaseName}.*" --nsTo="battletest.*"` //works offline community mongodb 
 
         exec(command, (error, stdout, stderr) => {
             if (error) {
