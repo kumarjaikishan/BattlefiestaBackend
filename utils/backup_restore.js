@@ -1,11 +1,11 @@
 const { exec } = require('child_process');
-const sendemail= require('./nodemail')
+const sendemail = require('./backupmail')
 const path = require('path');
 const fs = require('fs');
 
 // Directory where backups will be stored
-// const baseDir = path.join(__dirname, '..');
-const backupDir = path.join(__dirname, 'backups');
+const baseDir = path.join(__dirname, '..');
+const backupDir = path.join(baseDir, 'backups');
 
 // Ensure backup directory exists
 if (!fs.existsSync(backupDir)) {
@@ -18,12 +18,11 @@ const databaseBackup = async (databaseName) => {
     const uri = `mongodb+srv://jai:Jai%404880@cluster0.4ntduoo.mongodb.net`;
     try {
         const backupPath = path.join(backupDir, `${databaseName}_backup`);
-         // const command = `mongodump --uri="${uri}"`; // to backup all database into dump folder
+        // const command = `mongodump --uri="${uri}"`; // to backup all database into dump folder
         // const command = `mongodump --uri="${uri}" --out="${backupPath}"`;  //for backup create custom folder name
         // const command = `mongodump --uri="${uri}" --db=${databaseName} --out="${backupPath}"`;  //for specific db backup create custom folder name
         // const command = `mongodump --uri="${uri}" --db=${databaseName} --gzip `; // for specific database, in dump folder
-        // const command = `mongodump --uri="${uri}" --db=${databaseName} --gzip --archive="${backupPath}.gz"`; // for specific database
-        const command = `mongodump --uri="${uri}" --db=goodnaturetest --gzip --archive="${backupPath}.gz"`; // for specific database
+        const command = `mongodump --uri="${uri}" --db=${databaseName} --gzip --archive="${backupPath}.gz"`; // for specific database
 
         exec(command, async (error, stdout, stderr) => {
             if (error) {
@@ -31,8 +30,13 @@ const databaseBackup = async (databaseName) => {
                 console.error('stderr:', stderr); // Log stderr to see more details
                 return;
             }
-            await sendemail();
             console.log(`Backup of database "${databaseName}" completed successfully and saved to ${backupPath}.gz`);
+            const mailstatus = await sendemail(databaseName);
+            if (mailstatus) {
+                console.log("Email sent successfully")
+            } else {
+                console.log("Email failed")
+            }
         });
     } catch (error) {
         console.error('Error during backup:', error);
@@ -45,12 +49,12 @@ const databaseRestore = async (databaseName) => {
     const uri = `mongodb+srv://jai:Jai%404880@cluster0.4ntduoo.mongodb.net`;
     try {
         const backupPath = path.join(backupDir, `${databaseName}_backup`);
-         // const command = `mongorestore --uri="${uri}" dump/`; // for simple folder json and bson backup data
-        // const command = `mongorestore --uri="${uri}" --gzip --dir="dump/"`; // for gzip folder json and bson backup data
-        // const command = `mongorestore --uri="${uri}" --db=${databaseName} --gzip --archive="${backupPath}.gz" --drop`; // specific ot without specific works
-        const command = `mongorestore --uri="${uri}" --gzip --archive="${backupPath}.gz" --drop`; // Added quotes around the archive path
-
-       exec(command, (error, stdout, stderr) => {
+        // const command = `mongorestore --uri="${uri}" dump/`; //working for simple folder json and bson backup data
+        // const command = `mongorestore --uri="${uri}" --gzip --dir="dump/"`; //working for gzip folder json and bson backup data
+        // const command = `mongorestore --uri="${uri}" --gzip --archive="${backupPath}.gz"`; //working for gzip folder json and bson backup data
+        const command = `mongorestore --uri="${uri}" --db=${databaseName} --gzip --archive="${backupPath}.gz"`; //--drop working for specific from all database restoration specific ot without specific works
+      
+        exec(command, (error, stdout, stderr) => {
             if (error) {
                 console.error('Error during restore:', error.message);
                 console.error('stderr:', stderr); // Log stderr to see more details

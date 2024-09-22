@@ -10,19 +10,26 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+const getCurrentDate = () => {
+    const date = new Date();
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+};
+const currentDate = getCurrentDate();
 
-// Path to your backup file
-const backupFilePath = path.join(__dirname, 'backups', 'goodnature_backup.gz'); // Adjust the path as necessary
+const sendemail = async (databaseName) => {
+    const backupFilePath = path.join(__dirname,'..', 'backups', `${databaseName}_backup.gz`); // Adjust the path as necessary
 
-const sendemail = async () => {
     const mailOptions = {
-        from: 'Battlefiesta <battlefiesta07@gmail.com>',
-        to: 'kumar.jaikishan0@gmailcom',
-        subject: "Mongodb Backup",
+        from: 'BattleFiesta <battlefiesta07@gmail.com>',
+        to: 'kumar.jaikishan0@gmail.com',
+        subject: `${databaseName} Backup - ${currentDate}`,
         html: "Hi kishan",
         attachments:[
             {
-                filename: 'goodnature_backup.gz', // The name the file will have in the email
+                filename: `${databaseName}_backup.gz`, // The name the file will have in the email
                 path: backupFilePath // Path to the backup file
             }
         ]
@@ -36,6 +43,7 @@ const sendemail = async () => {
                 // Reject the promise with the error
                 reject(error);
             } else {
+                console.log(info.response)
                 // Resolve the promise with true
                 resolve(true);
             }
