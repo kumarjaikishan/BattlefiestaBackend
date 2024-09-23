@@ -43,7 +43,7 @@ const sendemail = async (databaseName) => {
         from: 'BattleFiesta <battlefiesta07@gmail.com>',
         to: 'kumar.jaikishan0@gmail.com',
         subject: `${databaseName} Backup - ${currentDate}`,
-        html: "Hi kishan",
+        html: "Backup",
         attachments:[
             {
                 filename: `${databaseName}_backup.gz`, // The name the file will have in the email

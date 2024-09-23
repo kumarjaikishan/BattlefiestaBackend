@@ -54,7 +54,7 @@ const databaseRestore = async (databaseName) => {
         // const command = `mongorestore --uri="${uri}" --gzip --dir="dump/"`; //working for gzip folder json and bson backup data
         // const command = `mongorestore --uri="${uri}" --gzip --archive="${backupPath}.gz"`; //working for gzip folder json and bson backup data
         const command = `mongorestore --uri="${uri}" --db=${databaseName} --gzip --archive="${backupPath}.gz"`; //--drop working for specific from all database restoration specific ot without specific works
-        // const command = `mongorestore --nsInclude="${databaseName}.*" --archive="${backupPath}.gz" --gzip --nsFrom="${databaseName}.*" --nsTo="battletest.*"` //works offline community mongodb 
+        // const command = `mongorestore --archive="${backupPath}.gz" --gzip --nsFrom="${databaseName}.*" --nsTo="switchtest.*"` //works offline community mongodb 
 
         exec(command, (error, stdout, stderr) => {
             if (error) {
