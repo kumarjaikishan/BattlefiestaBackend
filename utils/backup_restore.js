@@ -19,6 +19,7 @@ const databaseBackup = async (databaseName) => {
     try {
         const backupPath = path.join(backupDir, `${databaseName}_backup`);
         // const command = `mongodump --uri="${uri}"`; // to backup all database into dump folder
+        // const command = `mongodump --uri="${uri}" --db=${databaseName}`; // to backup specific one database into default dump folder
         // const command = `mongodump --uri="${uri}" --out="${backupPath}"`;  //for backup create custom folder name
         // const command = `mongodump --uri="${uri}" --db=${databaseName} --out="${backupPath}"`;  //for specific db backup create custom folder name
         // const command = `mongodump --uri="${uri}" --db=${databaseName} --gzip `; // for specific database, in dump folder

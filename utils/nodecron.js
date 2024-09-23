@@ -40,7 +40,7 @@ cron.schedule('5 1 * * *', async () => {
 })
 
 
-// cron.schedule('*/20 * * * * *', async () => {
-//     // databaseBackup('battlefiestatest');
-//     // databaseRestore('battlefiestatest')
+// cron.schedule('*/30 * * * * *', async () => {
+//     // databaseBackup('battlefiesta');
+//     // databaseRestore('switchtest')
 // })
