@@ -7,9 +7,13 @@ const tournament = require('../modals/tournament_schema');
 const voucher = require('../modals/coupon_schema')
 const users = require('../modals/login_schema')
 const sendemail = require('../utils/sendemail')
+const { MongoClient } = require('mongodb');
 const push_notification = require('../utils/push_notification')
 // const { addJobToQueue } = require('../utils/producer')
 const { addtoqueue } = require('../utils/axiosRequest');
+const { exec } = require('child_process');
+const sendemaile = require('../utils/backupmail.js')
+const path = require('path');
 
 const allmembershipentry = asyncHandler(async (req, res, next) => {
     // console.log('yaha par');
@@ -26,6 +30,59 @@ const allmembershipentry = asyncHandler(async (req, res, next) => {
     })
 
 })
+
+
+
+
+const databaseList = asyncHandler(async (req, res, next) => {
+    const uri = process.env.basemongo;
+    const client = new MongoClient(uri);
+    try {
+        await client.connect();
+        const databasesList = await client.db().admin().listDatabases();
+
+        // console.log(databasesList.databases)
+        return res.status(200).json({
+            database: databasesList.databases
+        })
+    } catch (error) {
+        console.error(error);
+    } finally {
+        await client.close();
+    }
+})
+const dbbackup = asyncHandler(async (req, res, next) => {
+    let { dbname } = req.body;
+    const uri = process.env.basemongo;
+
+    const baseDir = path.join(__dirname, '..');
+    const backupDir = path.join(baseDir, 'backups');
+    try {
+        const backupPath = path.join(backupDir, `${dbname}_backup`);
+        // const command = `mongodump --uri="${uri}"`; // to backup all database into dump folder
+        // const command = `mongodump --uri="${uri}" --db=${databaseName}`; // to backup specific one database into default dump folder
+        // const command = `mongodump --uri="${uri}" --out="${backupPath}"`;  //for backup create custom folder name
+        // const command = `mongodump --uri="${uri}" --db=${databaseName} --out="${backupPath}"`;  //for specific db backup create custom folder name
+        // const command = `mongodump --uri="${uri}" --db=${databaseName} --gzip `; // for specific database, in dump folder
+        const command = `mongodump --uri="${uri}" --db=${dbname} --gzip --archive="${backupPath}.gz"`; // for specific database
+
+        exec(command, async (error, stdout, stderr) => {
+            if (error) {
+                console.error('Error during backup:', error.message);
+                console.error('stderr:', stderr); // Log stderr to see more details
+                return;
+            }
+            console.log(`Backup of database "${dbname}" completed successfully and saved to ${backupPath}.gz ✅`);
+            await sendemaile(dbname);
+            return res.status(200).json({
+               message: "Backup Created"
+            })
+        });
+    } catch (error) {
+        console.error('Error during backup:', error);
+    }
+})
+
 const falsee = async (req, res, next) => {
     return res.status(200).json({
         message: 'ok'
@@ -54,7 +111,7 @@ const createmembership = asyncHandler(async (req, res, next) => {
         }
 
 
-        await push_notification(query.user._id, mes,`${process.env.baseUrl}`);
+        await push_notification(query.user._id, mes, `${process.env.baseUrl}`);
 
         // await addJobToQueue(query.user.email, "Customer Support || BattleFiesta", message)
         await addtoqueue(query.user.email, "Customer Support || BattleFiesta", message)
@@ -299,4 +356,4 @@ const deleteuser = asyncHandler(async (req, res, next) => {
 
 
 
-module.exports = { editUser, deleteuser, getvoucher, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };
+module.exports = { editUser, deleteuser, dbbackup, getvoucher, databaseList, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };

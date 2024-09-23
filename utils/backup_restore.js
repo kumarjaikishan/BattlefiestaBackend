@@ -15,7 +15,7 @@ if (!fs.existsSync(backupDir)) {
 // Function to perform a backup using mongodump
 const databaseBackup = async (databaseName) => {
     console.log("enter into mongo database backup")
-    const uri = `mongodb+srv://jai:Jai%404880@cluster0.4ntduoo.mongodb.net`;
+    const uri = process.env.basemongo;
     try {
         const backupPath = path.join(backupDir, `${databaseName}_backup`);
         // const command = `mongodump --uri="${uri}"`; // to backup all database into dump folder
@@ -42,7 +42,7 @@ const databaseBackup = async (databaseName) => {
 // Function to restore a database using mongorestore
 const databaseRestore = async (databaseName) => {
     console.log("enter into mongo database restore")
-    const uri = `mongodb+srv://jai:Jai%404880@cluster0.4ntduoo.mongodb.net`;
+    const uri = process.env.basemongo;
     try {
         const backupPath = path.join(backupDir, `${databaseName}_backup`);
         // const command = `mongorestore --uri="${uri}" dump/`; //working for simple folder json and bson backup data

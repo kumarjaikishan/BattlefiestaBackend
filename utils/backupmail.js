@@ -10,41 +10,43 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+
 const getCurrentDate = () => {
     const date = new Date();
-    
-    // Date
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
-    const year = date.getFullYear();
 
-    // Time
-    let hours = date.getHours();
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    
-    // Convert 24-hour to 12-hour format
-    hours = hours % 12;
-    hours = hours ? hours : 12; // 0 hour should be 12
-    
-    const time = `${hours}:${minutes} ${ampm}`;
-    
-    return `${day}/${month}/${year} ${time}`;
+    // Options for formatting with specific time zone (Asia/Kolkata)
+    const options = {
+        timeZone: 'Asia/Kolkata',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+    };
+
+    // Format the date to IST
+    const formattedDate = new Intl.DateTimeFormat('en-GB', options).format(date);
+
+    return formattedDate.replace(',', ''); // Remove the comma between date and time
 };
+
+
+
 
 // console.log(getCurrentDate());
 
 const currentDate = getCurrentDate();
 
 const sendemail = async (databaseName) => {
-    const backupFilePath = path.join(__dirname,'..', 'backups', `${databaseName}_backup.gz`); // Adjust the path as necessary
+    const backupFilePath = path.join(__dirname, '..', 'backups', `${databaseName}_backup.gz`); // Adjust the path as necessary
 
     const mailOptions = {
         from: 'BattleFiesta <battlefiesta07@gmail.com>',
         to: 'kumar.jaikishan0@gmail.com',
         subject: `${databaseName} Backup - ${currentDate}`,
         html: "Backup",
-        attachments:[
+        attachments: [
             {
                 filename: `${databaseName}_backup.gz`, // The name the file will have in the email
                 path: backupFilePath // Path to the backup file
@@ -60,7 +62,7 @@ const sendemail = async (databaseName) => {
                 // Reject the promise with the error
                 reject(error);
             } else {
-                console.log("Email sent - ",info.response)
+                console.log("Email sent - ", info.response)
                 // Resolve the promise with true
                 resolve(true);
             }

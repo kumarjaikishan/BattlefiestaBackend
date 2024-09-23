@@ -32,98 +32,6 @@ router.route('/').get(async (req, res) => {
   })
 }); 
 
-router.route('/backup').get(async (req, res) => {
-  try {
-    // Connect to MongoDB
-    await client.connect();
-
-    // Select the database
-    const database = client.db('battlefiesta');
-
-    // Get all collections in the database
-    const collections = await database.listCollections().toArray();
-
-    // Initialize an object to store the backup
-    const backup = {};
-
-    // Iterate over each collection
-    for (const collectionInfo of collections) {
-      const collectionName = collectionInfo.name;
-      const collection = database.collection(collectionName);
-
-      // Fetch all documents from the collection
-      const documents = await collection.find({}).toArray();
-
-      // Store the documents in the backup object with the collection name as the key
-      backup[collectionName] = documents;
-    }
-
-    // Convert the backup object to JSON format
-    const jsonBackup = JSON.stringify(backup, null, 2);
-
-    // Compress the JSON backup using zlib
-    const compressedBackup = zlib.gzipSync(jsonBackup);
-
-    // Save the compressed backup to a file
-    fs.writeFileSync('backups/battlefiesta_database_backup.json.gz', compressedBackup);
-
-    console.log('Backup of entire database completed successfully and saved to database_backup.json.gz');
-
-    return res.status(200).json({
-      message: 'Backup of entire database created successfully and compressed',
-    });
-  } catch (error) {
-    console.error('Error during backup:', error);
-    return res.status(500).json({
-      message: 'Error occurred during backup',
-      error: error.message,
-    });
-  } finally {
-    await client.close(); // Close the client connection
-  }
-});
-
-
-
-router.route('/restore').get(async (req, res) => {
-  try {
-    // Read and decompress the backup file
-    const compressedBackup = fs.readFileSync('backups/accusoft_backup.json.gz');
-    const jsonBackup = zlib.gunzipSync(compressedBackup).toString();
-    const backupData = JSON.parse(jsonBackup);
-
-    // Connect to MongoDB
-    await client.connect();
-    const database = client.db('accusoftrestore'); // Your target database
-
-    // Iterate over each collection in the backup data
-    for (const collectionName in backupData) {
-      const collection = database.collection(collectionName);
-      const documents = backupData[collectionName];
-
-      // Only insert if there are documents
-      if (documents.length > 0) {
-        await collection.insertMany(documents);
-      } else {
-        console.log(`No documents to restore for collection: ${collectionName}`);
-      }
-    }
-
-    console.log('Database restored successfully.');
-    return res.status(200).json({
-      message: 'Restore Successfully Completed!',
-    });
-  } catch (error) {
-    console.error('Error during restore:', error);
-    return res.status(500).json({
-      message: 'Error occurred during restore',
-      error: error.message,
-    });
-  } finally {
-    await client.close(); // Ensure the client is closed
-  }
-});
-
 
 router.route('/signup').post(login.signup, emailauth);    //used
 router.route('/login').post(emailauth, login.login);      //used
@@ -187,6 +95,8 @@ router.route('/auto').post(member.auto); //used
 router.route('/delmemberentry').post(authmiddlewre, isadmin, member.delmemberentry); //used
 
 router.route('/isadmin').get(authmiddlewre, isadmin, admin.falsee);
+router.route('/databaseList').get(authmiddlewre, isadmin, admin.databaseList);
+router.route('/dbbackup').post(authmiddlewre, isadmin, admin.dbbackup);
 router.route('/memshipentry').get(authmiddlewre, isadmin, admin.allmembershipentry);
 router.route('/contactformlist').get(authmiddlewre, isadmin, admin.contactformlist);
 router.route('/getvoucher').get(authmiddlewre, isadmin, admin.getvoucher);
