@@ -60,7 +60,7 @@ const sendemail = async (databaseName) => {
                 // Reject the promise with the error
                 reject(error);
             } else {
-                console.log(info.response)
+                console.log("Email sent - ",info.response)
                 // Resolve the promise with true
                 resolve(true);
             }

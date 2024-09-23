@@ -32,12 +32,7 @@ const databaseBackup = async (databaseName) => {
                 return;
             }
             console.log(`Backup of database "${databaseName}" completed successfully and saved to ${backupPath}.gz ✅`);
-            const mailstatus = await sendemail(databaseName);
-            if (mailstatus) {
-                console.log("Email sent successfully")
-            } else {
-                console.log("Email failed")
-            }
+            await sendemail(databaseName);
         });
     } catch (error) {
         console.error('Error during backup:', error);
