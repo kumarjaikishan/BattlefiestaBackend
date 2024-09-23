@@ -1,4 +1,4 @@
-var cron = require('node-cron');
+const cron = require('node-cron');
 const membership = require('../modals/membership_schema');
 const { databaseBackup, databaseRestore } = require('./backup_restore');
 
@@ -43,4 +43,5 @@ cron.schedule('5 1 * * *', async () => {
 // cron.schedule('*/20 * * * * *', async () => {
 //     // databaseBackup('switch');
 //     // databaseRestore('switch')
+//     // databaseRestore('switch',"switchtest")
 // })
