@@ -31,7 +31,7 @@ const databaseBackup = async (databaseName) => {
                 console.error('stderr:', stderr); // Log stderr to see more details
                 return;
             }
-            console.log(`Backup of database "${databaseName}" completed successfully and saved to ${backupPath}.gz`);
+            console.log(`Backup of database "${databaseName}" completed successfully and saved to ${backupPath}.gz ✅`);
             const mailstatus = await sendemail(databaseName);
             if (mailstatus) {
                 console.log("Email sent successfully")
@@ -62,7 +62,7 @@ const databaseRestore = async (databaseName) => {
                 console.error('stderr:', stderr); // Log stderr to see more details
                 return;
             }
-            console.log(`Database "${databaseName}" restored successfully from ${backupPath}.gz`);
+            console.log(`Database "${databaseName}" restored successfully from ${backupPath}.gz ✅`);
         });
     } catch (error) {
         console.error('Error during restore:', error);
