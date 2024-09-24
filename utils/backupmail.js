@@ -32,13 +32,8 @@ const getCurrentDate = () => {
 };
 
 
-
-
-// console.log(getCurrentDate());
-
-const currentDate = getCurrentDate();
-
 const sendemail = async (databaseName) => {
+    const currentDate = getCurrentDate();
     const backupFilePath = path.join(__dirname, '..', 'backups', `${databaseName}_backup.gz`); // Adjust the path as necessary
 
     const mailOptions = {

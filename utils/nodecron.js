@@ -2,14 +2,9 @@ const cron = require('node-cron');
 const membership = require('../modals/membership_schema');
 const { databaseBackup, databaseRestore } = require('./backup_restore');
 
-// '40 * * * * *'   --run every second at 40second with actual time 
-// ' */5 * * * *'   --run every 5 minutes 
-// '10 5 * * *'   --run on 5 min & 10 second every day 
-
-
-// Schedule the task to run every day at 1:00 AM
+// Schedule the task to run every day at 1:00 AM IST
 cron.schedule('0 1 * * *', async () => {
-    console.log('Running a task at 1:00 AM every day');
+    console.log('Running a task at 1:00 AM IST every day');
 
     try {
         let memberships = await membership.find();
@@ -30,18 +25,27 @@ cron.schedule('0 1 * * *', async () => {
     } catch (error) {
         console.error("Error updating memberships:", error);
     }
+}, {
+    timezone: "Asia/Kolkata"
 });
 
 cron.schedule('1 1 * * *', async () => {
     databaseBackup('exp');
-})
+}, {
+    timezone: "Asia/Kolkata"
+});
+
 cron.schedule('5 1 * * *', async () => {
     databaseBackup('battlefiesta');
-})
+}, {
+    timezone: "Asia/Kolkata"
+});
 
-
+// Uncomment and adjust the following if needed
 // cron.schedule('*/20 * * * * *', async () => {
 //     // databaseBackup('switch');
 //     // databaseRestore('switch')
 //     // databaseRestore('switch',"switchtest")
-// })
+// }, {
+//     timezone: "Asia/Kolkata"
+// });
