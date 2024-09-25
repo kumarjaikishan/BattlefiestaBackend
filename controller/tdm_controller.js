@@ -10,7 +10,7 @@ const push_notification = require('../utils/push_notification')
 const gettdm = asyncHandler(async (req, res, next) => {
     // console.log(req.body);
     const query1 = await tournament.findOne({ _id: req.body.tid });
-    if(req.userid != query1.userid){
+    if (req.userid != query1.userid) {
         return res.status(403).json({ isowner: false })
     }
     const query2 = await Tdm_form.findOne({ tournament_id: req.body.tid });
@@ -20,7 +20,7 @@ const gettdm = asyncHandler(async (req, res, next) => {
         tournament: query1,
         settings: query2,
         players: query3,
-        isowner:true
+        isowner: true
     })
 
 })
@@ -70,9 +70,25 @@ const updatetdmtournamentformcontacts = asyncHandler(async (req, res, next) => {
         return next({ status: 500, message: error });
     }
 })
+const tdmseen = asyncHandler(async (req, res, next) => {
+    const { tid } = req.body;
+
+    if (!tid) {
+        return res.status(400).json({ message: "Tournament ID is required" });
+    }
+
+    await player.updateMany({ tournament_id: tid }, { newEntry: false });
+    await tournament.findByIdAndUpdate(tid, { newEntry: false });
+
+    res.status(200).json({
+        message: "Seen status updated successfully"
+    });
+
+});
+
 const TdmTeamregister = async (req, res, next) => {
     // console.log(req.body);
-    const { tid, userid, name, InGameId,category, mobile, email, os, discord, utrno, fps, device } = req.body;
+    const { tid, userid, name, InGameId, category, mobile, email, os, discord, utrno, fps, device } = req.body;
     if (!name || !tid || !userid) {
         return next({ status: 400, message: "All Fields are Required" });
     }
@@ -86,14 +102,14 @@ const TdmTeamregister = async (req, res, next) => {
     if (req.files['paymentss']) {
         paymentss = req.files['paymentss'][0];
     }
-      
+
     try {
-        const query = new player({ tournament_id: tid, userid: userid, name,category, InGameId, mobile, email, os, discord, utrno, fps, device });
+        const query = new player({ tournament_id: tid,newEntry:true, userid: userid, name, category, InGameId, mobile, email, os, discord, utrno, fps, device });
         const savedTournament = await query.save();
-       
+
         // console.log("getting info", savedTournament);
         if (savedTournament) {
-
+            await tournament.findByIdAndUpdate({ _id: tid }, { newEntry: true })
             logo && await cloudinary.uploader.upload(logo.path, { folder: 'battlefiesta/tdm' }, async (error, result) => {
 
                 // console.log(error, result);
@@ -133,7 +149,7 @@ const TdmTeamregister = async (req, res, next) => {
                 title: 'New Player Registered',
                 body: `Hey Creator ${name} has registerd for the tournament`,
             }
-            push_notification(savedTournament.userid,mes,`${process.env.FrontUrl}/tdmsetting/${tid}`)
+            // push_notification(savedTournament.userid, mes, `${process.env.FrontUrl}/tdmsetting/${tid}`)
             return res.status(201).json({
                 message: "Registered"
             })
@@ -213,4 +229,4 @@ const getplayerenteries = asyncHandler(async (req, res, next) => {
 })
 
 
-module.exports = { gettdm, getplayerenteries, gettdmtournamentform, updateTdmTournamentForm, updatetdmtournamentformcontacts, TdmTeamregister, updateplayerstatus, playerdelete, playerupdate }
+module.exports = { gettdm, tdmseen, getplayerenteries, gettdmtournamentform, updateTdmTournamentForm, updatetdmtournamentformcontacts, TdmTeamregister, updateplayerstatus, playerdelete, playerupdate }

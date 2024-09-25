@@ -37,6 +37,12 @@ const playerschema = new mongo.Schema({
         default: "",
         required: false
     },
+    newEntry: {
+        type: Boolean,
+        required: false,
+        enum: [true,false],
+        default: false
+    },
     discord: {
         type: String,
         default: "",

@@ -1,4 +1,6 @@
 const tournament = require('../modals/tournament_schema');
+const Tournament = require('../modals/classic_player_schema.js');
+const tdm = require('../modals/tdm_player_schema.js');
 const registrationformsetting = require('../modals/registration-form-setting_schema');
 const Resgistered = require('../modals/classic_player_schema.js');
 const user = require('../modals/login_schema')
@@ -30,8 +32,23 @@ const addtournament = asyncHandler(async (req, res, next) => {
         slots: parseInt(slots)
     }]
 
-    const query = new tournament({ userid: req.userid, title: name, type, slots, organiser, slotCategory })
+    // 2. Find the latest tournament ID for the current financial year
+    const currentYear = new Date().getFullYear();
+    const nextYear = currentYear + 1;
+    const financialYear = `${currentYear.toString().slice(-2)}${nextYear.toString().slice(-2)}`; // "2425"
+
+    const latestTournament = await tournament.findOne({ tournid: { $regex: `^${financialYear}` } })
+        .sort({ tournid: -1 })
+        .select('tournid');
+
+    const tournid = newIdGenertor(latestTournament)
+    // console.log("latestTournament", tournid)
+
+
+    const query = new tournament({ userid: req.userid, title: name,tournid, type, slots, organiser, slotCategory })
     const result = await query.save();
+
+
 
     if (type == 'tdm') {
         const query = new Tdm_form({ userid: req.userid, tournament_id: result._id })
@@ -49,15 +66,66 @@ const addtournament = asyncHandler(async (req, res, next) => {
     return res.status(201).json({ message: "Tournament Created" })
 })
 
+const newIdGenertor = (prev) => {
+    const currentYear = new Date().getFullYear();
+    const nextYear = currentYear + 1;
+    const financialYear = `${currentYear.toString().slice(-2)}${nextYear.toString().slice(-2)}`; // "2425"
+
+    let newTournId;
+    if (prev) {
+        // const lastId = latestTournament.tournid;
+        const lastId = prev.toString();
+        const sequence = parseInt(lastId.slice(-4)) + 1; // Extract the last 4 digits and increment
+        newTournId = `${financialYear}${sequence.toString().padStart(4, '0')}`; // Ensure it's 8 digits
+    } else {
+        newTournId = `${financialYear}0001`; // Start with 0001 if no tournaments exist for the year
+    }
+    return newTournId
+}
+
 
 const gettournament = asyncHandler(async (req, res, next) => {
-    const query = await tournament.find({ userid: req.userid }).sort({ createdAt: -1 })
-    if (!query) {
-        return next({ status: 400, message: "Error Occured" });
-    } else {
-        return res.status(201).json({ message: "success", data: query })
+    try {
+        // Step 1: Fetch the tournaments for the user
+        const tournaments = await tournament.find({ userid: req.userid }).sort({ createdAt: -1 });
+
+        if (!tournaments) {
+            return next({ status: 400, message: "Error Occurred" });
+        }
+
+        // Step 2: For each tournament, fetch the count of registered teams with "pending" or "approved" status
+        const tournamentData = await Promise.all(
+            tournaments.map(async (tournament) => {
+                let totalTeamsRegistered;
+                if (tournament.type == 'classic') {
+                    totalTeamsRegistered = await Tournament.countDocuments({
+                        tournament_id: tournament._id,
+                        status: { $in: ["pending", "approved"] }
+                    });
+
+                } else {
+                    totalTeamsRegistered = await tdm.countDocuments({
+                        tournament_id: tournament._id,
+                        status: { $in: ["pending", "approved"] }
+                    });
+
+                }
+
+                // Step 3: Attach the totalTeamsRegistered count to the tournament object
+                return {
+                    ...tournament.toObject(), // Convert Mongoose document to plain object
+                    totalTeamsRegistered
+                };
+            })
+        );
+        // Step 4: Return the final result with tournaments and registered teams count
+        return res.status(201).json({ message: "success", data: tournamentData });
+    } catch (error) {
+        // Handle errors properly
+        return next({ status: 500, message: "Server Error", error });
     }
-})
+});
+
 
 const getontournament = asyncHandler(async (req, res, next) => {
     const query = await tournament.findOne({ _id: req.body.tid, userid: req.userid })
@@ -67,6 +135,23 @@ const getontournament = asyncHandler(async (req, res, next) => {
         return res.status(201).json({ message: "success", data: query })
     }
 })
+
+const classicseen = asyncHandler(async (req, res, next) => {
+    const { tid } = req.body;
+
+    if (!tid) {
+        return res.status(400).json({ message: "Tournament ID is required" });
+    }
+
+    await Resgistered.updateMany({ tournament_id: tid }, { newEntry: false });
+    await tournament.findByIdAndUpdate(tid, { newEntry: false });
+
+    res.status(200).json({
+        message: "Seen status updated successfully"
+    });
+
+});
+
 const getclassic = asyncHandler(async (req, res, next) => {
     const query1 = await tournament.findOne({ _id: req.body.tid });
     if (req.userid != query1.userid) {
@@ -74,6 +159,7 @@ const getclassic = asyncHandler(async (req, res, next) => {
     }
     const query2 = await registrationformsetting.findOne({ tournament_id: req.body.tid });
     const query3 = await Resgistered.find({ tournament_id: req.body.tid });
+    // console.log("clasic player", query3)
     res.status(200).json({
         tournament: query1,
         settings: query2,
@@ -99,8 +185,21 @@ const getonetournament = asyncHandler(async (req, res, next) => {
     return res.status(201).json({ data: query, data2: query2 })
 
 })
+const tournamnetsearch = asyncHandler(async (req, res, next) => {
+    const {tournid} = req.body;
+    let query = await tournament.findOne({tournid:tournid }).select('title visibility tournid slots tournment_banner organiser status createdAt type');
+    console.log(query);
+    if(!query){
+        return next({ status: 400, message: "No Tournament Found" });
+    }
+    if(!query.visibility){
+        return next({ status: 400, message: "Tournament Hide by Admin" });
+    }
+    return res.status(201).json({ query})
+})
 const getalltournament = asyncHandler(async (req, res, next) => {
     const query = await tournament.find({ visibility: true }).sort({ createdAt: -1 })
+    .select('title status createdAt type organiser label tournment_logo userid')
     if (!query) {
         return next({ status: 400, message: "Error Occured" });
     } else {
@@ -319,4 +418,4 @@ const torunadelete = async (req, res, next) => {
 }
 
 
-module.exports = { getclassic, pointsystem, addtournament, getonetournament, getontournament, getalltournament, torunadelete, gettournament, getenteries, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };
+module.exports = { getclassic, pointsystem, classicseen,addtournament, getonetournament,tournamnetsearch, getontournament, getalltournament, torunadelete, gettournament, getenteries, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };

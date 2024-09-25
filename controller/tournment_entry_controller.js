@@ -1,5 +1,6 @@
 const cloudinary = require('cloudinary').v2;
-const Tournament = require('../modals/classic_player_schema.js');
+const Team = require('../modals/classic_player_schema.js');
+const tournament = require('../modals/tournament_schema.js')
 const asyncHandler = require('../utils/asyncHandler');
 const fs = require('fs');
 const removePhotoBySecureUrl = require('../utils/cloudinaryremove');
@@ -27,13 +28,13 @@ const register = async (req, res, next) => {
     }
 
     try {
-        const query = new Tournament({ tournament_id: tid, userid: userid, teamName, email, mobile, discordID });
-        // Save the tournament to the database
+        const query = new Team({ tournament_id: tid, newEntry:true, userid: userid, teamName, email, mobile, discordID });
+        // Save the Team to the database
         // console.log(query);
-        const savedTournament = await query.save();
-        // console.log(savedTournament);
-        if (savedTournament) {
-
+        const savedTeam = await query.save();
+        // console.log(savedTeam);
+        if (savedTeam) {
+            await tournament.findByIdAndUpdate({_id: tid},{newEntry:true})
             teamLogoFile && await cloudinary.uploader.upload(teamLogoFile.path, { folder: 'battlefiesta/teamlogo' }, async (error, result) => {
                 
                 // console.log(error, result);
@@ -51,7 +52,7 @@ const register = async (req, res, next) => {
                     }
                 }));
 
-                const query = await Tournament.findByIdAndUpdate({ _id: savedTournament._id }, { teamLogo: imageurl })
+                const query = await Team.findByIdAndUpdate({ _id: savedTeam._id }, { teamLogo: imageurl })
             })
 
             paymentScreenshotFile && await cloudinary.uploader.upload(paymentScreenshotFile.path, { folder: 'battlefiesta/paymentss' }, async (error, result) => {
@@ -72,12 +73,12 @@ const register = async (req, res, next) => {
                     // }
                 }));
 
-                const query = await Tournament.findByIdAndUpdate({ _id: savedTournament._id }, { screenss: imageurl })
+                const query = await Team.findByIdAndUpdate({ _id: savedTeam._id }, { screenss: imageurl })
             })
 
             res.status(201).json({
                 message: "Team created",
-                teamid: savedTournament._id
+                teamid: savedTeam._id
             })
         }
     } catch (error) {
@@ -110,7 +111,7 @@ const playerregister = async (req, res, next) => {
             }));
         })
 
-        const query = await Tournament.findByIdAndUpdate(
+        const query = await Team.findByIdAndUpdate(
             { _id: teamid },
             { $push: { player: { inGameName, inGameID, playerLogo: imageurl, playerId } } },
             { new: true }
@@ -132,7 +133,7 @@ const updateteamstatus = asyncHandler(async (req, res, next) => {
     const reason = req.body.reasone;
     // console.log(req.body);
 
-    const query = await Tournament.findByIdAndUpdate({ _id: teamId }, { status: value, reason })
+    const query = await Team.findByIdAndUpdate({ _id: teamId }, { status: value, reason })
 
     if (!query) {
         return next({ status: 400, message: "Team Id not valid" });
@@ -145,7 +146,7 @@ const updateteamstatus = asyncHandler(async (req, res, next) => {
 
 const teamdelete = async (req, res, next) => {
     const { teamid } = req.body;
-    const query = await Tournament.findOne({ _id: teamid });
+    const query = await Team.findOne({ _id: teamid });
     let arraye = [];
 
     query.teamLogo && arraye.push(query.teamLogo);
@@ -158,7 +159,7 @@ const teamdelete = async (req, res, next) => {
     // console.log(arraye.length);
     try {
         arraye.length > 0 && await removePhotoBySecureUrl(arraye)
-        const deletee = await Tournament.findByIdAndDelete({ _id: teamid });
+        const deletee = await Team.findByIdAndDelete({ _id: teamid });
         return res.status(200).json({
             message: "Team Deleted",
         })
@@ -174,7 +175,7 @@ const Teamupdate = async (req, res, next) => {
         return next({ status: 400, message: "All Fields are Required" });
     }
     try {
-        const query = await Tournament.findByIdAndUpdate({ _id: id }, { teamName, email, mobile, discordID })
+        const query = await Team.findByIdAndUpdate({ _id: id }, { teamName, email, mobile, discordID })
         let fdf = [];
         fdf.push(query.teamLogo);
 
@@ -193,10 +194,10 @@ const Teamupdate = async (req, res, next) => {
                 }
             }));
 
-            const cdsdf = await removePhotoBySecureUrl(fdf);
-            console.log(cdsdf);
+            const Photoremoved = await removePhotoBySecureUrl(fdf);
+            console.log("Photoremoved:", Photoremoved);
 
-            await Tournament.findByIdAndUpdate({ _id: id }, { teamLogo: imageurl })
+            await Team.findByIdAndUpdate({ _id: id }, { teamLogo: imageurl })
         })
 
         res.status(201).json({
@@ -210,7 +211,7 @@ const Teamupdate = async (req, res, next) => {
 
 const playerupdate = async (req, res, next) => {
     const { id, index, inGameName, inGameID } = req.body;
-    const vdfvdf = await Tournament.findById({ _id: id });
+    const vdfvdf = await Team.findById({ _id: id });
 
 
     let currentlogo = vdfvdf.player[index] && vdfvdf.player[index].playerLogo;
@@ -243,7 +244,7 @@ const playerupdate = async (req, res, next) => {
                     playerId: playerId
                 };
 
-                await Tournament.findByIdAndUpdate({ _id: id }, { $set: { [`player.${index}`]: updatedPlayerData } }, { new: true });
+                await Team.findByIdAndUpdate({ _id: id }, { $set: { [`player.${index}`]: updatedPlayerData } }, { new: true });
                 res.status(200).json({
                     message: "Updated"
                 })
@@ -256,7 +257,7 @@ const playerupdate = async (req, res, next) => {
                 playerId: playerId
             };
 
-            !req.file && await Tournament.findByIdAndUpdate({ _id: id }, { $set: { [`player.${index}`]: updatedPlayerData } }, { new: true });
+            !req.file && await Team.findByIdAndUpdate({ _id: id }, { $set: { [`player.${index}`]: updatedPlayerData } }, { new: true });
             res.status(200).json({
                 message: "Updated"
             })

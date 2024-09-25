@@ -48,6 +48,7 @@ router.route('/getclassic').post(authmiddlewre, tournament.getclassic);      //u
 router.route('/gettournament').get(authmiddlewre, tournament.gettournament);      //used
 router.route('/getontournament').post(authmiddlewre, tournament.getontournament);      //used
 router.route('/getonetournament').post(tournament.getonetournament);      //used
+router.route('/tournamnetsearch').post(tournament.tournamnetsearch);      //used
 router.route('/getalltournament').get(tournament.getalltournament);      //used
 router.route('/settournament').post(authmiddlewre, tournament.settournament);      //used
 router.route('/settournamentlogos').post(authmiddlewre, upload.single('image'), tournament.settournamentlogos);      //used
@@ -57,8 +58,10 @@ router.route('/getenteries').post(tournament.getenteries);      //used
 router.route('/updatetournamentform').post(authmiddlewre, tournament.updatetournamentform); //used
 router.route('/updatetournamentformcontacts').post(authmiddlewre, tournament.updatetournamentformcontacts); //used
 router.route('/pointsystem').post(authmiddlewre, tournament.pointsystem); //used
+router.route('/classicseen').post(authmiddlewre, tournament.classicseen); //used
 
 router.route('/gettdm').post(authmiddlewre, tdm.gettdm); //used    //used
+router.route('/tdmseen').post(authmiddlewre, tdm.tdmseen); //used    //used
 router.route('/gettdmtournamentform').post(tdm.gettdmtournamentform); //used
 router.route('/getplayerenteries').post(tdm.getplayerenteries);      //used
 router.route('/updatetdmtournamentform').post(tdm.updateTdmTournamentForm); //used

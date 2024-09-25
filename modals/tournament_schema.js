@@ -14,6 +14,10 @@ const tourna = new mongo.Schema({
         type: String,
         required: true
     },
+    tournid: {
+        type: String,
+        required: true
+    },
     type: {
         type: String,
         required: true,
@@ -56,6 +60,11 @@ const tourna = new mongo.Schema({
     visibility: {
         type: Boolean,
         required: false,
+        default: false
+    },
+    newEntry: {
+        type: Boolean,
+        enum: [true,false],
         default: false
     },
     label: {

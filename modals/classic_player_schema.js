@@ -18,6 +18,12 @@ const tournaform = new mongo.Schema({
         default: "",
         required: false
     },
+    newEntry: {
+        type: Boolean,
+        required: false,
+        enum: [true,false],
+        default: false
+    },
     mobile: {
         type: Number,
         default: "",
