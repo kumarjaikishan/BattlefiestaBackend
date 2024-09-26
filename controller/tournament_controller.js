@@ -193,7 +193,7 @@ const tournamnetsearch = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "No Tournament Found" });
     }
     if(!query.visibility){
-        return next({ status: 400, message: "Tournament Hide by Admin" });
+        return next({ status: 400, message: "Tournament Private by Admin" });
     }
     return res.status(201).json({ query})
 })
