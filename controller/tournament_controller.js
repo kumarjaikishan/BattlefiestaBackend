@@ -42,8 +42,6 @@ const addtournament = asyncHandler(async (req, res, next) => {
         .select('tournid');
 
     const tournid = newIdGenertor(latestTournament)
-    // console.log("latestTournament", tournid)
-
 
     const query = new tournament({ userid: req.userid, title: name,tournid, type, slots, organiser, slotCategory })
     const result = await query.save();
@@ -159,7 +157,7 @@ const getclassic = asyncHandler(async (req, res, next) => {
     }
     const query2 = await registrationformsetting.findOne({ tournament_id: req.body.tid });
     const query3 = await Resgistered.find({ tournament_id: req.body.tid });
-    // console.log("clasic player", query3)
+ 
     res.status(200).json({
         tournament: query1,
         settings: query2,
@@ -169,10 +167,8 @@ const getclassic = asyncHandler(async (req, res, next) => {
 })
 
 const getonetournament = asyncHandler(async (req, res, next) => {
-    // console.log(req.body);
     let query = await tournament.findOne({ _id: req.body.tid }).select('title slots tournment_banner organiser status createdAt type');
     let query2;
-    // console.log(query);
     if (query.type == 'tdm') {
         query2 = await Tdm_form.findOne({ tournament_id: req.body.tid }).select('isopen links publicpost');
     }
@@ -188,7 +184,6 @@ const getonetournament = asyncHandler(async (req, res, next) => {
 const tournamnetsearch = asyncHandler(async (req, res, next) => {
     const {tournid} = req.body;
     let query = await tournament.findOne({tournid:tournid }).select('title visibility tournid slots tournment_banner organiser status createdAt type');
-    console.log(query);
     if(!query){
         return next({ status: 400, message: "No Tournament Found" });
     }
@@ -199,7 +194,7 @@ const tournamnetsearch = asyncHandler(async (req, res, next) => {
 })
 const getalltournament = asyncHandler(async (req, res, next) => {
     const query = await tournament.find({ visibility: true }).sort({ createdAt: -1 })
-    .select('title status createdAt type organiser label tournment_logo userid')
+    .select('title status tournid createdAt type organiser label tournment_logo userid')
     if (!query) {
         return next({ status: 400, message: "Error Occured" });
     } else {
@@ -219,20 +214,18 @@ const settournament = asyncHandler(async (req, res, next) => {
     }
 })
 const settournamentlogos = async (req, res, next) => {
-    // console.log(req.body);
     const oldurl = req.body.oldimage;
     const tid = req.body.tid;
     const folderName = req.body.filed === "tournbanner" ? "battlefiesta/tournbanner" : "battlefiesta/tournlogo";
     // await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/tournlogo' }, async (error, result) => {
     await cloudinary.uploader.upload(req.file.path, { folder: folderName }, async (error, result) => {
-        // console.log(error, result);
+    
         if (error) {
             return next({ status: 500, message: "File not Uploaded" });
         }
 
         const imageurl = result.secure_url;
-        // console.log("photo upload ho gaya", result.public_id);
-
+    
         fs.unlink(req.file.path, (err => {
             if (err) {
                 console.log(err);
@@ -260,7 +253,6 @@ const settournamentlogos = async (req, res, next) => {
 }
 
 const tournamentform = asyncHandler(async (req, res, next) => {
-    //    console.log(req.body.tid);
     const tid = req.body.tid;
     if (tid == "") {
         return next({ status: 400, message: "Tournament Id not found" });
@@ -288,7 +280,6 @@ const tournamentform = asyncHandler(async (req, res, next) => {
 
 
 const gettournamentform = asyncHandler(async (req, res, next) => {
-    //    console.log(req.body.tid);
     const tid = req.body.tid;
     const isformexists = await registrationformsetting.findOne({ tournament_id: tid });
     const enteries = await Resgistered.find({ tournament_id: tid }).select('player reason status teamLogo teamName');
@@ -306,7 +297,6 @@ const gettournamentform = asyncHandler(async (req, res, next) => {
     }
 })
 const getenteries = asyncHandler(async (req, res, next) => {
-    //    console.log(req.body.tid);
     const tid = req.body.tid;
     const enteries = await Resgistered.find({ tournament_id: tid })
 
@@ -318,7 +308,6 @@ const getenteries = asyncHandler(async (req, res, next) => {
 
 
 const updatetournamentform = asyncHandler(async (req, res, next) => {
-    // console.log(req.body);
     const { _id, isopen, description, success_message, ask_email, ask_phone,
         ask_discord, ask_teamlogo, ask_playerlogo,
         ask_payment_ss, show_payment, amount, upi_id, minimum_players, maximum_players } = req.body;
@@ -372,8 +361,7 @@ const torunadelete = async (req, res, next) => {
     try {
         let arraye = [];
         const logos = await tournament.findOne({ _id: tournaid }, { 'tournment_banner': 1, 'tournment_logo': 1 });
-        // console.log(logos);
-        if (logos) {
+       if (logos) {
             if (logos.tournment_banner) {
                 arraye.push(logos.tournment_banner);
             }
@@ -407,7 +395,6 @@ const torunadelete = async (req, res, next) => {
         await Resgistered.deleteMany({ tournament_id: tournaid })
 
         arraye.length > 0 && await removePhotoBySecureUrl(arraye)
-        // console.log(arraye);
         res.status(200).json({
             message: "Tournament Deleted"
         })

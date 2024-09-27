@@ -26,7 +26,7 @@ const contact = async (req, res, next) => {
     }
 }
 const profile = async (req, res, next) => {
-    const profile = await login.findOne({_id:req.userid});
+    const profile = await login.findOne({ _id: req.userid });
     const query = await membership.find({ userid: req.userid }).sort({ createdAt: -1 }).populate({
         path: 'planid',
         select: 'plan_name price create_limit' // Specify the fields you want to select
@@ -35,14 +35,13 @@ const profile = async (req, res, next) => {
     if (query.length > 0) {
         latestmembership = query[0];
     }
-    // console.log('profile', latestmembership);
-    return res.status(200).json({ data: profile, member:latestmembership })
+    return res.status(200).json({ data: profile, member: latestmembership })
 }
 
 const updateprofile = async (req, res, next) => {
-    const { name, username, email, phone,city,state, bio, publicemail, publicphone, sociallinks } = req.body;
+    const { name, username, email, phone, city, state, bio, publicemail, publicphone, sociallinks } = req.body;
     try {
-        const query = await login.findByIdAndUpdate({ _id: req.userid }, { name, username, email, phone,city,state, bio, publicemail, publicphone, sociallinks })
+        const query = await login.findByIdAndUpdate({ _id: req.userid }, { name, username, email, phone, city, state, bio, publicemail, publicphone, sociallinks })
         if (!query) {
             return next({ status: 400, message: "something wrong" });
         }
@@ -56,22 +55,18 @@ const updateprofile = async (req, res, next) => {
 }
 
 const updateprofilepic = async (req, res, next) => {
-    // console.log(req.user);
     let arraye = [];
-    let prev = await login.findOne({_id:req.userid})
+    let prev = await login.findOne({ _id: req.userid })
     let oldimage = prev.imgsrc;
     oldimage != "" && arraye.push(oldimage);
-    // console.log("old image path",oldimage);
 
     try {
         req.file && await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/profilepic' }, async (error, result) => {
-            // console.log(error, result);
             if (error) {
                 return next({ status: 500, message: "File not Uploaded" });
             }
 
             imageurl = result.secure_url;
-            // console.log("photo upload ho gaya", result);
 
             req.file && fs.unlink(req.file.path, (err => {
                 if (err) {

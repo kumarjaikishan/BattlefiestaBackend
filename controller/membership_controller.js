@@ -20,7 +20,6 @@ const manualcheck = asyncHandler(async (req, res, next) => {
     const plane = await plans.findOne({ _id: body.plan_id });
     const discount = Math.ceil((plane.price * couponapplied) / 100);
     const finalpricepaid = plane.price - discount;
-    // console.log("final-",finalpricepaid);
 
     const query = new manualmember({
         user: req.user._id, plan_id: plane._id, txn_no: body.txn_id,
@@ -46,7 +45,6 @@ const manualcheck = asyncHandler(async (req, res, next) => {
 })
 
 const checkcoupon = asyncHandler(async (req, res, next) => {
-    // console.log(req.body);
     const query = await coupon.findOne({ coupon: req.body.coupon });
     if (!query) {
         return next({ status: 400, message: "Not Found" });
@@ -60,8 +58,9 @@ const checkcoupon = asyncHandler(async (req, res, next) => {
 })
 
 const auto = asyncHandler(async (req, res, next) => {
-    // console.log(req.body);
+
 })
+
 const delmemberentry = asyncHandler(async (req, res, next) => {
     const query = await manualmember.findByIdAndDelete({ _id: req.body.ide });
     if (!query) {

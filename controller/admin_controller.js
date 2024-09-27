@@ -16,7 +16,6 @@ const sendemaile = require('../utils/backupmail.js')
 const path = require('path');
 
 const allmembershipentry = asyncHandler(async (req, res, next) => {
-    // console.log('yaha par');
     const query = await manualmember.find().populate({
         path: 'user',
         select: 'name username'
@@ -24,7 +23,6 @@ const allmembershipentry = asyncHandler(async (req, res, next) => {
         path: 'plan_id',
         select: 'plan_name price'
     }).sort({ createdAt: -1 });
-    // console.log(query);
     return res.status(200).json({
         data: query
     })
@@ -41,7 +39,6 @@ const databaseList = asyncHandler(async (req, res, next) => {
         await client.connect();
         const databasesList = await client.db().admin().listDatabases();
 
-        // console.log(databasesList.databases)
         return res.status(200).json({
             database: databasesList.databases
         })
@@ -89,7 +86,6 @@ const falsee = async (req, res, next) => {
     })
 }
 const createmembership = asyncHandler(async (req, res, next) => {
-    // console.log(req.body);
     let body = req.body;
 
     if (body.flag == 'pending' || body.flag == 'rejected') {
@@ -100,7 +96,6 @@ const createmembership = asyncHandler(async (req, res, next) => {
             path: 'user',
             select: 'name email'
         });
-        //    console.log(query);
         if (!query) {
             return next({ status: 400, message: "Error Occured" });
         }
@@ -122,7 +117,6 @@ const createmembership = asyncHandler(async (req, res, next) => {
     }
 
     if (body.flag == 'success') {
-        // console.log("success me aaya");
         const whichone = await manualmember.findOne({ _id: body.id }).populate({
             path: 'plan_id',
             select: 'duration plan_name'
@@ -130,7 +124,6 @@ const createmembership = asyncHandler(async (req, res, next) => {
             path: 'user',
             select: 'name email'
         });
-        // console.log(whichone);
         let { todayDate, expiryDate } = calculateDate(whichone.plan_id.duration)
 
 
@@ -141,7 +134,6 @@ const createmembership = asyncHandler(async (req, res, next) => {
         });
 
         const result = await query.save();
-        // console.log(result);
         if (!result) {
             return next({ status: 400, message: "Error Occured" });
         }
@@ -182,7 +174,6 @@ const calculateDate = (membershipType) => {
         default:
             throw new Error("Invalid membership type.");
     }
-    // console.log(startDate, endDate);
     return {
         todayDate: startDate,
         expiryDate: endDate
@@ -198,12 +189,11 @@ const contactformlist = asyncHandler(async (req, res, next) => {
 
 })
 const emailreply = asyncHandler(async (req, res, next) => {
-    //    console.log("email reply:",req.body);
     // const response = await sendemail(req.body.email, 'Customer Support || BattleFiesta', req.body.reply);
     // await addJobToQueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
     await addtoqueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
 
-    // console.log('email sent check:', response);
+ 
     // if (!response) {
     //     return next({ status: 400, message: "Email not Sent" });
     // }
@@ -230,7 +220,6 @@ const deletevoucher = asyncHandler(async (req, res, next) => {
     if (req.body.id == '') {
         return next({ status: 400, message: "Please send Id to delete" });
     }
-    // console.log(req.body.id);
     const query = await voucher.findByIdAndDelete({ _id: req.body.id })
 
     if (!query) {
@@ -243,7 +232,6 @@ const deletevoucher = asyncHandler(async (req, res, next) => {
 
 const createvoucher = asyncHandler(async (req, res, next) => {
     let planname = req.body.name.trim().toLowerCase();
-    // console.log(req.body);
     const query = new voucher({
         coupon: planname, percent: req.body.percent, isactive: true
     })
@@ -258,7 +246,6 @@ const createvoucher = asyncHandler(async (req, res, next) => {
 })
 const getvoucher = asyncHandler(async (req, res, next) => {
     const query = await voucher.find();
-    // console.log(query);
     if (!query) {
         return next({ status: 400, message: "Voucher not found" });
     }
@@ -267,9 +254,7 @@ const getvoucher = asyncHandler(async (req, res, next) => {
     })
 })
 const editvoucher = asyncHandler(async (req, res, next) => {
-    // console.log(req.body);
     const query = await voucher.findByIdAndUpdate({ _id: req.body.id }, { coupon: req.body.name, percent: req.body.percent, isactive: req.body.isactive });
-    // console.log(query);
     if (!query) {
         return next({ status: 400, message: "Voucher not Edited" });
     }
@@ -278,7 +263,6 @@ const editvoucher = asyncHandler(async (req, res, next) => {
     })
 })
 const getmembership = asyncHandler(async (req, res, next) => {
-    // console.log(req.body);
     const query = await membership.find().sort({ createdAt: -1 }).populate({
         path: 'planid',
         select: 'plan_name price'
@@ -286,7 +270,6 @@ const getmembership = asyncHandler(async (req, res, next) => {
         path: 'userid',
         select: 'name username'
     });
-    // console.log(query);
     if (!query) {
         return next({ status: 400, message: "Memberships not found" });
     }
@@ -340,7 +323,6 @@ const editUser = asyncHandler(async (req, res, next) => {
 })
 
 const deleteuser = asyncHandler(async (req, res, next) => {
-    // console.log(req.body);
     const query = await users.findByIdAndDelete({ _id: req.body.userid })
     const deletemembership = await membership.deleteMany({ userid: req.body.userid })
     const tournamentdelete = await tournament.deleteMany({ userid: req.body.userid })

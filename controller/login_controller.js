@@ -82,7 +82,6 @@ const test = async (req, res, next) => {
 // * User SignUp Logic
 // *--------------------------------------
 const signup = asyncHandler(async (req, res, next) => {
-  // console.log(req.body);
   const { name, email, phone, password } = req.body;
   if (!name || !email || !phone || !password) {
     return next({ status: 400, message: "all fields are required" });
@@ -92,7 +91,6 @@ const signup = asyncHandler(async (req, res, next) => {
     return next({ status: 400, message: "Email Already Exists" });
   }
   const username = email.split('@')[0];
-  // console.log(username);
   const query = new user({ name, email, phone, password, username });
   const result = await query.save();
   if (!result) {
@@ -146,7 +144,6 @@ const passreset = async (req, res, next) => {
 const setpassword = async (req, res, next) => {
   const token = req.query.token;
   const password = req.body.password;
-  //  console.log(token,password);
   try {
     const query = await user.findOne({ temptoken: token });
 
@@ -156,8 +153,6 @@ const setpassword = async (req, res, next) => {
 
     const saltRound = await bcrypt.genSalt(10);
     const hash_password = await bcrypt.hash(password, saltRound);
-    console.log("hash password:", hash_password);
-    console.log("user id:", query._id);
     const passupdated = await user.updateOne({ _id: query._id }, { password: hash_password, temptoken: '' })
 
     if (!passupdated) {
@@ -172,7 +167,6 @@ const setpassword = async (req, res, next) => {
   }
 }
 const checkmail = async (req, res, next) => {
-  // console.log(req.body);
   if (req.body.email == "") {
     return next({ status: 400, message: 'Please send Email' });
   }
@@ -203,7 +197,6 @@ const checkmail = async (req, res, next) => {
 }
 
 const notificationToken = async (req, res, next) => {
-  // console.log(req.body);
   try {
     if (!req.body.notificationtoken) {
       return next({ status: 400, message: "Notification Token is empty" });
