@@ -72,7 +72,7 @@ const dbbackup = asyncHandler(async (req, res, next) => {
             console.log(`Backup of database "${dbname}" completed successfully and saved to ${backupPath}.gz ✅`);
             await sendemaile(dbname);
             return res.status(200).json({
-               message: "Backup Created"
+                message: "Backup Created"
             })
         });
     } catch (error) {
@@ -193,11 +193,19 @@ const emailreply = asyncHandler(async (req, res, next) => {
     // await addJobToQueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
     await addtoqueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
 
- 
+
     // if (!response) {
     //     return next({ status: 400, message: "Email not Sent" });
     // }
     const dfdf = await contactus.findByIdAndUpdate({ _id: req.body.contactid }, { resolve: true, resolvemsg: req.body.reply })
+    return res.status(200).json({
+        message: "Email Sent"
+    })
+
+})
+const emailsend = asyncHandler(async (req, res, next) => {
+    await addtoqueue(req.body.email, 'Customer Support || BattleFiesta', req.body.reply)
+
     return res.status(200).json({
         message: "Email Sent"
     })
@@ -338,4 +346,4 @@ const deleteuser = asyncHandler(async (req, res, next) => {
 
 
 
-module.exports = { editUser, deleteuser, dbbackup, getvoucher, databaseList, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };
+module.exports = { editUser, deleteuser, dbbackup, getvoucher, databaseList,emailsend, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };

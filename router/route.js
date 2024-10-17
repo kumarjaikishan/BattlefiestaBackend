@@ -112,6 +112,7 @@ router.route('/getusers').get(authmiddlewre, isadmin, admin.getusers);
 router.route('/editUser').post(authmiddlewre, isadmin, admin.editUser);
 router.route('/deleteuser').post(authmiddlewre, isadmin, admin.deleteuser);
 router.route('/emailreply').post(authmiddlewre, isadmin, admin.emailreply);
+router.route('/emailsend').post(authmiddlewre, isadmin, admin.emailsend);
 router.route('/contactusdelete').post(authmiddlewre, isadmin, admin.contactusdelete);
 
 module.exports = router;
