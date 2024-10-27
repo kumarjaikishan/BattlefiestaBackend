@@ -29,6 +29,7 @@ cron.schedule('0 1 * * *', async () => {
     timezone: "Asia/Kolkata"
 });
 
+
 cron.schedule('1 1 * * *', async () => {
     databaseBackup('exp');
 }, {

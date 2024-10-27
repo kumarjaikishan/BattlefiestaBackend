@@ -7,6 +7,7 @@ const tournament = require('../modals/tournament_schema');
 const voucher = require('../modals/coupon_schema')
 const users = require('../modals/login_schema')
 const sendemail = require('../utils/sendemail')
+const trialmembership = require('../utils/trial_membership')
 const { MongoClient } = require('mongodb');
 const push_notification = require('../utils/push_notification')
 // const { addJobToQueue } = require('../utils/producer')
@@ -325,6 +326,17 @@ const editUser = asyncHandler(async (req, res, next) => {
     if (!query) {
         return next({ status: 400, message: "users not found" });
     }
+    
+    if (isverified) {
+        const alreadymembership = await membership.findOne({ planid: '65fe7ad58a04a25de33f45b1', userid: id });
+        if (!alreadymembership) {
+            await trialmembership(id, '65fe7ad58a04a25de33f45b1');
+
+            return res.status(200).json({
+                message: "User Updated & Membership Created"
+            })
+        }
+    }
     return res.status(200).json({
         message: "User Updated"
     })
@@ -346,4 +358,4 @@ const deleteuser = asyncHandler(async (req, res, next) => {
 
 
 
-module.exports = { editUser, deleteuser, dbbackup, getvoucher, databaseList,emailsend, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };
+module.exports = { editUser, deleteuser, dbbackup, getvoucher, databaseList, emailsend, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };
