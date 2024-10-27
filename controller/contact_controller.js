@@ -1,6 +1,7 @@
 const user = require('../modals/contact_schema')
 const login = require('../modals/login_schema')
 const membership = require('../modals/membership_schema')
+const tournament = require('../modals/tournament_schema');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 const removePhotoBySecureUrl = require('../utils/cloudinaryremove');
@@ -25,6 +26,31 @@ const contact = async (req, res, next) => {
         return next({ status: 500, message: error });
     }
 }
+const channel = async (req, res, next) => {
+    const { uid } = req.body;
+
+    try {
+        const channel = await login.findOne({ username: uid }).select('name bio imgsrc publicphone publicemail sociallinks');
+        if (!channel) {
+            return next({ status: 400, message: "Username is not valid" });
+        }
+
+        const tournaments = await tournament.find({ userid: channel._id })
+            .sort({ createdAt: -1 })
+            .select('title type slots createdAt tournment_logo organiser status visibility tournid');
+
+        return res.status(200).json({
+            message: "Success",
+            data: channel,
+            tournaments: tournaments
+        });
+    } catch (error) {
+        console.error("Error fetching channel data:", error); // Log the error
+        return next({ status: 500, message: "Server error" });
+    }
+};
+
+
 const profile = async (req, res, next) => {
     const profile = await login.findOne({ _id: req.userid });
     const query = await membership.find({ userid: req.userid }).sort({ createdAt: -1 }).populate({
@@ -92,4 +118,4 @@ const updateprofilepic = async (req, res, next) => {
 }
 
 
-module.exports = { contact, profile, updateprofile, updateprofilepic };
+module.exports = { contact, channel, profile, updateprofile, updateprofilepic };

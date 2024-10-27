@@ -89,6 +89,7 @@ router.route('/deletematch').post(Matches.deletematch);  //used
 router.route('/contact').post(contact.contact); //used
 router.route('/profile').get(authmiddlewre, contact.profile); //used
 router.route('/updateprofile').post(authmiddlewre, contact.updateprofile); //used
+router.route('/channel').post(contact.channel); //used
 router.route('/updateprofilepic').post(authmiddlewre, upload.single('profilepic'), contact.updateprofilepic); //used
 
 router.route('/manualcheck').post(authmiddlewre, member.manualcheck); //used

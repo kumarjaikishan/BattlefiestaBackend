@@ -23,6 +23,10 @@ const log = new mongo.Schema({
         required: false,
         default: ""
     },
+    followers: [{
+        type: mongo.Schema.Types.ObjectId,
+        ref: "user"
+    }],
     state: {
         type: String,
         required: false,
