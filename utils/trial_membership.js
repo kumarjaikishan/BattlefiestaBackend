@@ -3,25 +3,15 @@ const membership = require('../modals/membership_schema');
 const trialmembership = async (userid, planid) => {
     const today = new Date();
     const threeMonthsLater = new Date(today);
-    
-    // Convert to IST
-    const ISTOffset = 330; // IST is UTC+5:30
-    const offset = ISTOffset * 60 * 1000; // Convert offset to milliseconds
-    
-    const todayIST = new Date(today.getTime() + offset);
-    const threeMonthsLaterIST = new Date(threeMonthsLater.getTime() + offset);
-    
-    threeMonthsLaterIST.setMonth(threeMonthsLaterIST.getMonth() + 3);
+    threeMonthsLater.setMonth(today.getMonth() + 3);
 
-    console.log("today IST",todayIST)
-    console.log("3months later IST",threeMonthsLaterIST)
-    
+    // console.log("today",today)
+    // console.log("3 months later",threeMonthsLater)
+
     try {
         const query = new membership({
             userid, planid, txn_no: "Free Trial",
-            buy_date: todayIST,
-            expire_date: threeMonthsLaterIST,
-            coupon: "",
+            buy_date: today, expire_date: threeMonthsLater, coupon: "",
             finalpricepaid: 0
         });
         const result = await query.save();
@@ -31,7 +21,7 @@ const trialmembership = async (userid, planid) => {
         }
     } catch (error) {
         console.log('create trial membership', error);
+        return false;
     }
-};
-
+}
 module.exports = trialmembership;
