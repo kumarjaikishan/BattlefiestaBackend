@@ -30,7 +30,7 @@ const channel = async (req, res, next) => {
     const { uid } = req.body;
 
     try {
-        const channel = await login.findOne({ username: uid }).select('name bio imgsrc publicphone publicemail sociallinks');
+        const channel = await login.findOne({ username: uid }).select('name bio followers imgsrc publicphone publicemail sociallinks');
         if (!channel) {
             return next({ status: 400, message: "Username is not valid" });
         }
@@ -40,7 +40,6 @@ const channel = async (req, res, next) => {
             .select('title type slots createdAt tournment_logo organiser status visibility tournid');
 
         return res.status(200).json({
-            message: "Success",
             data: channel,
             tournaments: tournaments
         });
@@ -49,6 +48,61 @@ const channel = async (req, res, next) => {
         return next({ status: 500, message: "Server error" });
     }
 };
+const loginchannel = async (req, res, next) => {
+    const { uid } = req.body;
+
+    try {
+        const channel = await login.findOne({ username: uid }).select('name bio followers imgsrc publicphone publicemail sociallinks');
+        if (!channel) {
+            return next({ status: 400, message: "Username is not valid" });
+        }
+        const isfollowed = channel.followers.includes(req.userid)
+        const tournaments = await tournament.find({ userid: channel._id })
+            .sort({ createdAt: -1 })
+            .select('title type slots createdAt tournment_logo organiser status visibility tournid');
+
+        return res.status(200).json({
+            data: channel,
+            tournaments: tournaments,
+            isfollowed
+        });
+    } catch (error) {
+        console.error("Error fetching channel data:", error); // Log the error
+        return next({ status: 500, message: "Server error" });
+    }
+};
+const follow = async (req, res, next) => {
+    const { flag, channeluserid } = req.body;
+
+    if (channeluserid == req.userid) {
+        return next({ status: 400, message: "You cannot follow yourself" });
+    }
+
+    try {
+        let update;
+
+        if (flag) {
+            update = { $addToSet: { followers: req.userid } };  // $addToSet ensures no duplicates
+        }
+        else {
+            update = { $pull: { followers: req.userid } };  // $pull removes the user id
+        }
+
+        const channel = await login.findByIdAndUpdate(channeluserid, update, { new: true });
+
+        if (!channel) {
+            return next({ status: 400, message: "Something went wrong or channel not found" });
+        }
+
+        return res.status(200).json({
+            message: flag ? "Following" : "Unfollowed",
+        });
+    } catch (error) {
+        console.error("Error updating channel data:", error); // Log the error
+        return next({ status: 500, message: "Server error" });
+    }
+};
+
 
 
 const profile = async (req, res, next) => {
@@ -67,6 +121,11 @@ const profile = async (req, res, next) => {
 const updateprofile = async (req, res, next) => {
     const { name, username, email, phone, city, state, bio, publicemail, publicphone, sociallinks } = req.body;
     try {
+        const existingUser = await login.findOne({ username, _id: { $ne: req.userid } });
+        if (existingUser) {
+            return next({ status: 400, message: "Username already taken" });
+        }
+        
         const query = await login.findByIdAndUpdate({ _id: req.userid }, { name, username, email, phone, city, state, bio, publicemail, publicphone, sociallinks })
         if (!query) {
             return next({ status: 400, message: "something wrong" });
@@ -75,7 +134,7 @@ const updateprofile = async (req, res, next) => {
             message: "Update"
         })
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
         return next({ status: 500, message: error });
     }
 }
@@ -118,4 +177,4 @@ const updateprofilepic = async (req, res, next) => {
 }
 
 
-module.exports = { contact, channel, profile, updateprofile, updateprofilepic };
+module.exports = { contact, loginchannel,follow, channel, profile, updateprofile, updateprofilepic };
