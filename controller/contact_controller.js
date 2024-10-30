@@ -30,7 +30,7 @@ const channel = async (req, res, next) => {
     const { uid } = req.body;
 
     try {
-        const channel = await login.findOne({ username: uid }).select('name bio followers imgsrc coversrc publicphone publicemail sociallinks city state');
+        const channel = await login.findOne({ username: uid }).select('name username bio followers imgsrc coversrc publicphone publicemail sociallinks city state');
         if (!channel) {
             return next({ status: 400, message: "Username is not valid" });
         }
@@ -52,7 +52,7 @@ const loginchannel = async (req, res, next) => {
     const { uid } = req.body;
 
     try {
-        const channel = await login.findOne({ username: uid }).select('name bio followers imgsrc coversrc publicphone publicemail sociallinks city state');
+        const channel = await login.findOne({ username: uid }).select('name username bio followers imgsrc coversrc publicphone publicemail sociallinks city state');
         if (!channel) {
             return next({ status: 400, message: "Username is not valid" });
         }
@@ -71,38 +71,44 @@ const loginchannel = async (req, res, next) => {
         return next({ status: 500, message: "Server error" });
     }
 };
+
+
 const follow = async (req, res, next) => {
     const { flag, channeluserid } = req.body;
 
-    if (channeluserid == req.userid) {
+    if (channeluserid === req.userid) {
         return next({ status: 400, message: "You cannot follow yourself" });
     }
 
     try {
-        let update;
+        const channelUpdate = flag 
+            ? { $addToSet: { followers: req.userid } } 
+            : { $pull: { followers: req.userid } }; 
 
-        if (flag) {
-            update = { $addToSet: { followers: req.userid } };  // $addToSet ensures no duplicates
-        }
-        else {
-            update = { $pull: { followers: req.userid } };  // $pull removes the user id
-        }
-
-        const channel = await login.findByIdAndUpdate(channeluserid, update, { new: true });
+        const channel = await login.findByIdAndUpdate(channeluserid, channelUpdate, { new: true });
 
         if (!channel) {
-            return next({ status: 400, message: "Something went wrong or channel not found" });
+            return next({ status: 400, message: "Channel not found" });
+        }
+
+        const userUpdate = flag
+            ? { $addToSet: { following: channel._id } }  
+            : { $pull: { following: channel._id } };  
+
+        const updatedUser = await login.findByIdAndUpdate(req.userid, userUpdate, { new: true });
+
+        if (!updatedUser) {
+            return next({ status: 400, message: "User not found" });
         }
 
         return res.status(200).json({
             message: flag ? "Following" : "Unfollowed",
         });
     } catch (error) {
-        console.error("Error updating channel data:", error); // Log the error
+        console.error("Error updating follow data:", error);
         return next({ status: 500, message: "Server error" });
     }
 };
-
 
 
 const profile = async (req, res, next) => {

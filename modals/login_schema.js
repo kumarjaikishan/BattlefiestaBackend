@@ -27,6 +27,10 @@ const log = new mongo.Schema({
         type: mongo.Schema.Types.ObjectId,
         ref: "user"
     }],
+    following: [{
+        type: mongo.Schema.Types.ObjectId,
+        ref: "user"
+    }],
     state: {
         type: String,
         required: false,

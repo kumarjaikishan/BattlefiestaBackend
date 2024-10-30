@@ -326,7 +326,7 @@ const editUser = asyncHandler(async (req, res, next) => {
     if (!query) {
         return next({ status: 400, message: "users not found" });
     }
-    
+
     if (isverified) {
         const alreadymembership = await membership.findOne({ planid: '65fe7ad58a04a25de33f45b1', userid: id });
         if (!alreadymembership) {
@@ -348,6 +348,14 @@ const deleteuser = asyncHandler(async (req, res, next) => {
     const tournamentdelete = await tournament.deleteMany({ userid: req.body.userid })
     const deleteregister = await register.deleteMany({ userid: req.body.userid })
     const detetememberrequest = await manualmember.deleteMany({ user: req.body.userid })
+
+    if (query.following && query.following.length > 0) {
+        await Promise.all(query.following.map(async (ch) => {
+            await users.findByIdAndUpdate(ch, {
+                $pull: { followers: req.body.userid }
+            });
+        }));
+    }
     if (!query) {
         return next({ status: 400, message: "users not found" });
     }
