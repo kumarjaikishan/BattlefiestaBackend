@@ -93,6 +93,7 @@ router.route('/channel').post(contact.channel); //used
 router.route('/loginchannel').post(authmiddlewre,contact.loginchannel); //used
 router.route('/follow').post(authmiddlewre, contact.follow); //used
 router.route('/updateprofilepic').post(authmiddlewre, upload.single('profilepic'), contact.updateprofilepic); //used
+router.route('/updatecoverpic').post(authmiddlewre, upload.single('coverpic'), contact.updatecoverpic); //used
 
 router.route('/manualcheck').post(authmiddlewre, member.manualcheck); //used
 router.route('/checkcoupon').post(member.checkcoupon); //used

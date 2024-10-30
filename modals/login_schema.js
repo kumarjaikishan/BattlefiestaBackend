@@ -60,6 +60,10 @@ const log = new mongo.Schema({
         type: String,
         default: ""
     },
+    coversrc: {
+        type: String,
+        default: ""
+    },
     notification_token: {
         type: String,
         default: "",

@@ -30,7 +30,7 @@ const channel = async (req, res, next) => {
     const { uid } = req.body;
 
     try {
-        const channel = await login.findOne({ username: uid }).select('name bio followers imgsrc publicphone publicemail sociallinks');
+        const channel = await login.findOne({ username: uid }).select('name bio followers imgsrc coversrc publicphone publicemail sociallinks city state');
         if (!channel) {
             return next({ status: 400, message: "Username is not valid" });
         }
@@ -52,7 +52,7 @@ const loginchannel = async (req, res, next) => {
     const { uid } = req.body;
 
     try {
-        const channel = await login.findOne({ username: uid }).select('name bio followers imgsrc publicphone publicemail sociallinks');
+        const channel = await login.findOne({ username: uid }).select('name bio followers imgsrc coversrc publicphone publicemail sociallinks city state');
         if (!channel) {
             return next({ status: 400, message: "Username is not valid" });
         }
@@ -175,6 +175,42 @@ const updateprofilepic = async (req, res, next) => {
         return next({ status: 500, message: error });
     }
 }
+const updatecoverpic = async (req, res, next) => {
+    let arraye = [];
+    let prev = await login.findOne({ _id: req.userid })
+    let oldimage = prev.coversrc;
+    oldimage != "" && arraye.push(oldimage);
+
+    try {
+        req.file && await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/coverpic' }, async (error, result) => {
+            if (error) {
+                return next({ status: 500, message: "File not Uploaded" });
+            }
+
+            coversrc = result.secure_url;
+
+            req.file && fs.unlink(req.file.path, (err => {
+                if (err) {
+                    console.log(err);
+                    return next({ status: 500, message: "Error occured while deleting file" });
+                }
+                //   getFilesInDirectory(); 
+                // }
+            }));
+            arraye.length > 0 && await removePhotoBySecureUrl(arraye)
+
+            await login.findByIdAndUpdate({ _id: req.userid }, { coversrc: coversrc })
+
+            return res.status(200).json({
+                message: "Cover Picture Uploaded",
+                url: coversrc
+            })
+        })
+    } catch (error) {
+        console.log(error);
+        return next({ status: 500, message: error });
+    }
+}
 
 
-module.exports = { contact, loginchannel,follow, channel, profile, updateprofile, updateprofilepic };
+module.exports = { contact, loginchannel,follow, channel, profile, updatecoverpic,updateprofile, updateprofilepic };
