@@ -167,7 +167,10 @@ const getclassic = asyncHandler(async (req, res, next) => {
 })
 
 const getonetournament = asyncHandler(async (req, res, next) => {
-    let query = await tournament.findOne({ _id: req.body.tid }).select('title slots tournment_banner organiser status createdAt type');
+    let query = await tournament.findOne({ _id: req.body.tid }).populate({
+        path: 'userid',
+        select: 'name username'
+    }).select('title slots tournment_banner organiser status createdAt type');
     let query2;
     if (query.type == 'tdm') {
         query2 = await Tdm_form.findOne({ tournament_id: req.body.tid }).select('isopen links publicpost');
@@ -283,7 +286,10 @@ const gettournamentform = asyncHandler(async (req, res, next) => {
     const tid = req.body.tid;
     const isformexists = await registrationformsetting.findOne({ tournament_id: tid });
     const enteries = await Resgistered.find({ tournament_id: tid }).select('player reason status teamLogo teamName');
-    const tournamente = await tournament.findOne({ _id: tid }).select('label organiser slots title visibility');
+    const tournamente = await tournament.findOne({ _id: tid }).populate({
+        path: 'userid',
+        select: 'name username'
+    }).select('label organiser slots title visibility');
 
     if (!isformexists) {
         return next({ status: 400, message: "Tournament Id not Valid" });
@@ -309,13 +315,13 @@ const getenteries = asyncHandler(async (req, res, next) => {
 
 const updatetournamentform = asyncHandler(async (req, res, next) => {
     const { _id, isopen, description, success_message, ask_email, ask_phone,
-        ask_discord, ask_teamlogo, ask_playerlogo,
+        ask_discord, ask_teamlogo, ask_playerlogo,notification,
         ask_payment_ss, show_payment, amount, upi_id, minimum_players, maximum_players } = req.body;
 
     const query = await registrationformsetting.findByIdAndUpdate({ _id }, {
         isopen, description, success_message, ask_email, ask_phone,
         ask_discord, ask_teamlogo, ask_playerlogo,
-        ask_payment_ss, show_payment, amount, upi_id, minimum_players, maximum_players
+        ask_payment_ss, show_payment, amount, upi_id,notification, minimum_players, maximum_players
     })
     if (!query) {
         return next({ status: 400, message: "Tournament Id not Valid" });

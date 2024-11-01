@@ -60,6 +60,11 @@ const tournaform_setting = new mongo.Schema({
         default:false,
         required: false
     },
+    notification: {
+        type: Boolean,
+        default:false,
+        required: false
+    },
     minimum_players: {
         type: Number,
         default:1,
