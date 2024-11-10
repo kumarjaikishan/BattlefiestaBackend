@@ -186,7 +186,7 @@ const getonetournament = asyncHandler(async (req, res, next) => {
 })
 const tournamnetsearch = asyncHandler(async (req, res, next) => {
     const {tournid} = req.body;
-    let query = await tournament.findOne({tournid:tournid }).select('title visibility tournid slots tournment_banner organiser status createdAt type');
+    let query = await tournament.findOne({tournid:tournid }).select('title visibility tournid slots tournment_banner tournment_logo organiser status createdAt type');
     if(!query){
         return next({ status: 400, message: "No Tournament Found" });
     }
