@@ -186,15 +186,39 @@ const getonetournament = asyncHandler(async (req, res, next) => {
 })
 const tournamnetsearch = asyncHandler(async (req, res, next) => {
     const { tournid } = req.body;
-    let query = await tournament.findOne({ tournid: tournid }).select('title visibility tournid slots tournment_banner tournment_logo organiser status createdAt type');
+    let query = await tournament.findOne({ tournid }).select(
+        'title visibility tournid slots tournment_banner tournment_logo organiser status createdAt type'
+    );
     if (!query) {
         return next({ status: 400, message: "No Tournament Found" });
     }
     if (!query.visibility) {
         return next({ status: 400, message: "This Tournament is Private" });
     }
-    return res.status(201).json({ query })
-})
+
+    let totalTeamsRegistered;
+
+    if (query.type === 'classic') {
+        totalTeamsRegistered = await Tournament.countDocuments({
+            tournament_id: query._id,
+            status: { $in: ["pending", "approved"] }
+        });
+    } else {
+        totalTeamsRegistered = await tdm.countDocuments({
+            tournament_id: query._id,
+            status: { $in: ["pending", "approved"] }
+        });
+    }
+
+   const result = {
+        ...query.toObject(),
+        totalTeamsRegistered
+    };
+
+    return res.status(201).json({query: result});
+});
+
+
 const getalltournament = asyncHandler(async (req, res, next) => {
     const query = await tournament.find({ visibility: true }).sort({ createdAt: -1 })
         .select('title status tournid createdAt slots type organiser label tournment_logo userid')
