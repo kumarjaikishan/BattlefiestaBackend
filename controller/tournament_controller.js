@@ -334,7 +334,7 @@ const tournamentform = asyncHandler(async (req, res, next) => {
 const gettournamentform = asyncHandler(async (req, res, next) => {
     const tid = req.body.tid;
     const isformexists = await registrationformsetting.findOne({ tournament_id: tid });
-    const enteries = await Resgistered.find({ tournament_id: tid }).select('player reason status teamLogo teamName');
+    const enteries = await Resgistered.find({ tournament_id: tid }).sort({createdAt:-1}).select('player reason status teamLogo teamName');
     const tournamente = await tournament.findOne({ _id: tid }).populate({
         path: 'userid',
         select: 'name username'
@@ -353,7 +353,7 @@ const gettournamentform = asyncHandler(async (req, res, next) => {
 })
 const getenteries = asyncHandler(async (req, res, next) => {
     const tid = req.body.tid;
-    const enteries = await Resgistered.find({ tournament_id: tid })
+    const enteries = await Resgistered.find({ tournament_id: tid }).sort({createdAt:-1})
 
     res.status(201).json({
         message: "success",
