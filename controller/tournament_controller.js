@@ -41,12 +41,10 @@ const addtournament = asyncHandler(async (req, res, next) => {
         .sort({ tournid: -1 })
         .select('tournid');
 
-    const tournid = newIdGenertor(latestTournament)
+    const tournid = newIdGenertor(latestTournament.tournid)
 
     const query = new tournament({ userid: req.userid, title: name, tournid, type, slots, organiser, slotCategory })
     const result = await query.save();
-
-
 
     if (type == 'tdm') {
         const query = new Tdm_form({ userid: req.userid, tournament_id: result._id })
@@ -78,7 +76,7 @@ const newIdGenertor = (prev) => {
     } else {
         newTournId = `${financialYear}0001`; // Start with 0001 if no tournaments exist for the year
     }
-    return newTournId
+    return newTournId;
 }
 
 
@@ -210,12 +208,12 @@ const tournamnetsearch = asyncHandler(async (req, res, next) => {
         });
     }
 
-   const result = {
+    const result = {
         ...query.toObject(),
         totalTeamsRegistered
     };
 
-    return res.status(201).json({query: result});
+    return res.status(201).json({ query: result });
 });
 
 
@@ -334,7 +332,7 @@ const tournamentform = asyncHandler(async (req, res, next) => {
 const gettournamentform = asyncHandler(async (req, res, next) => {
     const tid = req.body.tid;
     const isformexists = await registrationformsetting.findOne({ tournament_id: tid });
-    const enteries = await Resgistered.find({ tournament_id: tid }).sort({createdAt:-1}).select('player reason status teamLogo teamName');
+    const enteries = await Resgistered.find({ tournament_id: tid }).sort({ createdAt: -1 }).select('player reason status teamLogo teamName');
     const tournamente = await tournament.findOne({ _id: tid }).populate({
         path: 'userid',
         select: 'name username'
@@ -353,7 +351,7 @@ const gettournamentform = asyncHandler(async (req, res, next) => {
 })
 const getenteries = asyncHandler(async (req, res, next) => {
     const tid = req.body.tid;
-    const enteries = await Resgistered.find({ tournament_id: tid }).sort({createdAt:-1})
+    const enteries = await Resgistered.find({ tournament_id: tid }).sort({ createdAt: -1 })
 
     res.status(201).json({
         message: "success",
