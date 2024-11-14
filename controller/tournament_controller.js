@@ -154,7 +154,7 @@ const getclassic = asyncHandler(async (req, res, next) => {
         return res.status(403).json({ isowner: false })
     }
     const query2 = await registrationformsetting.findOne({ tournament_id: req.body.tid });
-    const query3 = await Resgistered.find({ tournament_id: req.body.tid });
+    const query3 = await Resgistered.find({ tournament_id: req.body.tid }).sort({createdAt:-1});
 
     res.status(200).json({
         tournament: query1,
