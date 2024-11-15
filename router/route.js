@@ -79,7 +79,7 @@ router.route('/Teamupdate').post(upload.single('teamLogo'), tournaentry.Teamupda
 router.route('/teamdelete').post(authmiddlewre, tournaentry.teamdelete);      //used
 router.route('/registergpt').post(tournaentry.register);      //used
 router.route('/playerregister').post(upload.single('playerLogo'), tournaentry.playerregister);      //used
-router.route('/playerupdate').post(upload.single('playerLogo'), tournaentry.playerupdate);      //used
+router.route('/classicplayerupdate').post(upload.single('playerLogo'), tournaentry.classicplayerupdate);      //used
 
 router.route('/addmatches').post(authmiddlewre, Matches.addmatches); //used
 router.route('/getmatches').post(Matches.getmatches); //used

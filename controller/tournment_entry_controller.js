@@ -172,10 +172,11 @@ const teamdelete = async (req, res, next) => {
 const Teamupdate = async (req, res, next) => {
     const { id, teamName, email, mobile, discordID } = req.body;
     if (!teamName) {
-        return next({ status: 400, message: "All Fields are Required" });
+        return next({ status: 400, message: "Team Name is Required" });
     }
+    const mobileNumber = mobile === "null" || mobile === "" ? null : Number(mobile);
     try {
-        const query = await Team.findByIdAndUpdate({ _id: id }, { teamName, email, mobile, discordID })
+        const query = await Team.findByIdAndUpdate({ _id: id }, { teamName, email, mobile: mobileNumber, discordID })
         let fdf = [];
         fdf.push(query.teamLogo);
 
@@ -205,11 +206,12 @@ const Teamupdate = async (req, res, next) => {
         })
 
     } catch (error) {
+        console.log(error)
         return next({ status: 500, message: error });
     }
 }
 
-const playerupdate = async (req, res, next) => {
+const classicplayerupdate = async (req, res, next) => {
     const { id, index, inGameName, inGameID } = req.body;
     const vdfvdf = await Team.findById({ _id: id });
 
@@ -267,4 +269,4 @@ const playerupdate = async (req, res, next) => {
     }
 }
 
-module.exports = { register, playerregister, updateteamstatus, teamdelete, Teamupdate, playerupdate }
+module.exports = { register, playerregister, updateteamstatus, teamdelete, Teamupdate, classicplayerupdate }
