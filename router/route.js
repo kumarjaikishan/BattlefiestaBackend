@@ -82,6 +82,7 @@ router.route('/playerregister').post(upload.single('playerLogo'), tournaentry.pl
 router.route('/classicplayerupdate').post(upload.single('playerLogo'), tournaentry.classicplayerupdate);      //used
 
 router.route('/addmatches').post(authmiddlewre, Matches.addmatches); //used
+router.route('/editmatch').post(authmiddlewre,Matches.editmatch); //used
 router.route('/getmatches').post(Matches.getmatches); //used
 router.route('/deletematch').post(Matches.deletematch);  //used
 

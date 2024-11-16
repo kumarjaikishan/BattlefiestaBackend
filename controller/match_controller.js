@@ -42,6 +42,27 @@ const getmatches = asyncHandler(async (req, res, next) => {
         contact: query2
     })
 })
+const editmatch = asyncHandler(async (req, res, next) => {
+    console.log(req.body)
+    const { tid } = req.body;
+    if (!tid) {
+        return next({ status: 400, message: "Please Pass Tournament Id" });
+    }
+    const query = await matches.find({ tournament_id: tid }).sort({ "created_at": 1 });
+    const teame = await teams.find({ tournament_id: tid, status: "approved" });
+    const pointsystem = await Tournament.findOne({ _id: tid }).populate({
+        path: 'userid',
+        select: 'name username'
+    }).select({
+        "pointsystem": 1, "type": 1, "title": 1,
+        "killpoints": 1, "tiepreference": 1, "tournment_banner": 1, "userid": 1, "tournment_logo": 1, "organiser": 1, "_id": 0
+    });
+    return res.status(201).json({
+        matches: query,
+        points: pointsystem,
+        teame
+    })
+})
 
 const deletematch = asyncHandler(async (req, res, next) => {
     const { matchid } = req.body;
@@ -58,4 +79,4 @@ const deletematch = asyncHandler(async (req, res, next) => {
     })
 })
 
-module.exports = { addmatches, getmatches, deletematch };
+module.exports = { addmatches, getmatches, deletematch, editmatch };
