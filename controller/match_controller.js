@@ -9,7 +9,7 @@ const addmatches = asyncHandler(async (req, res, next) => {
 
     const query = new matches({ tournament_id: tid, userid, map, points });
     const result = await query.save();
-    
+
     if (!result) {
         return next({ status: 400, message: "Tournament Id not valid" });
     }
@@ -26,20 +26,20 @@ const getmatches = asyncHandler(async (req, res, next) => {
         return next({ status: 400, message: "Please Pass Tournament Id" });
     }
     const query = await matches.find({ tournament_id: tid }).sort({ "created_at": 1 });
-    const teame = await teams.find({ tournament_id: tid ,status:"approved"});
-   const query2 = await registrationformsetting.findOne({ tournament_id: tid }).select('isopen links');
+    const teame = await teams.find({ tournament_id: tid, status: "approved" });
+    const query2 = await registrationformsetting.findOne({ tournament_id: tid }).select('isopen links');
     const pointsystem = await Tournament.findOne({ _id: tid }).populate({
-         path: 'userid',
+        path: 'userid',
         select: 'name username'
     }).select({
-        "pointsystem": 1, "type": 1, "title":1,
-        "killpoints": 1, "tiepreference": 1, "tournment_banner": 1,"userid":1, "tournment_logo": 1, "organiser": 1, "_id": 0
+        "pointsystem": 1, "type": 1, "title": 1,
+        "killpoints": 1, "tiepreference": 1, "tournment_banner": 1, "userid": 1, "tournment_logo": 1, "organiser": 1, "_id": 0
     });
     return res.status(201).json({
         matches: query,
         rules: pointsystem,
         teamdeatil: teame,
-        contact:query2
+        contact: query2
     })
 })
 
