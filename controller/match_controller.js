@@ -43,7 +43,7 @@ const getmatches = asyncHandler(async (req, res, next) => {
     })
 })
 const editmatch = asyncHandler(async (req, res, next) => {
-    console.log(req.body)
+    // console.log(req.body)
     // const { tid } = req.body;
     if (!req.body.match) {
         return next({ status: 400, message: "Please Pass Tournament Id" });
