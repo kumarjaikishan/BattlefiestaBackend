@@ -7,7 +7,7 @@ const removePhotoBySecureUrl = require('../utils/cloudinaryremove');
 
 cloudinary.config({
     cloud_name: 'dusxlxlvm',
-    api_key: process.env.api_key  ,
+    api_key: process.env.api_key,
     api_secret: process.env.api_secret
 });
 
@@ -28,15 +28,15 @@ const register = async (req, res, next) => {
     }
 
     try {
-        const query = new Team({ tournament_id: tid, newEntry:true, userid: userid, teamName, email, mobile, discordID });
+        const query = new Team({ tournament_id: tid, newEntry: true, userid: userid, teamName, email, mobile, discordID });
         // Save the Team to the database
         // console.log(query);
         const savedTeam = await query.save();
         // console.log(savedTeam);
         if (savedTeam) {
-            await tournament.findByIdAndUpdate({_id: tid},{newEntry:true})
+            await tournament.findByIdAndUpdate({ _id: tid }, { newEntry: true })
             teamLogoFile && await cloudinary.uploader.upload(teamLogoFile.path, { folder: 'battlefiesta/teamlogo' }, async (error, result) => {
-                
+
                 // console.log(error, result);
                 if (error) {
                     return next({ status: 500, message: "File not Uploaded" });
@@ -56,7 +56,7 @@ const register = async (req, res, next) => {
             })
 
             paymentScreenshotFile && await cloudinary.uploader.upload(paymentScreenshotFile.path, { folder: 'battlefiesta/paymentss' }, async (error, result) => {
-                
+
                 if (error) {
                     return next({ status: 500, message: "File not Uploaded" });
                 }
@@ -92,7 +92,7 @@ const playerregister = async (req, res, next) => {
     let imageurl = "";
     try {
         req.file && await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/playerlogo' }, async (error, result) => {
-            
+
             // console.log(error, result);
             if (error) {
                 return next({ status: 500, message: "File not Uploaded" });
@@ -180,8 +180,8 @@ const Teamupdate = async (req, res, next) => {
         let fdf = [];
         fdf.push(query.teamLogo);
 
-        req.file &&  await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/teamlogo' }, async (error, result) => {
-           
+        req.file && await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/teamlogo' }, async (error, result) => {
+
             if (error) {
                 return next({ status: 500, message: "File not Uploaded" });
             }
@@ -212,18 +212,18 @@ const Teamupdate = async (req, res, next) => {
 }
 
 const classicplayerupdate = async (req, res, next) => {
-    const { id, index, inGameName, inGameID } = req.body;
+    const { id, index, inGameName, inGameID,playerId } = req.body;
     const vdfvdf = await Team.findById({ _id: id });
 
-
+    // return console.log(req.body)
     let currentlogo = vdfvdf.player[index] && vdfvdf.player[index].playerLogo;
-    let playerId = vdfvdf.player[index] && vdfvdf.player[index].playerId;
+    // let playerId = vdfvdf.player[index] && vdfvdf.player[index].playerId;
     let fdf = [];
     currentlogo && fdf.push(currentlogo);
 
     try {
         if (req.file) {
-                await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/playerlogo' }, async (error, result) => {
+            await cloudinary.uploader.upload(req.file.path, { folder: 'battlefiesta/playerlogo' }, async (error, result) => {
                 if (error) {
                     return next({ status: 500, message: "File not Uploaded" });
                 }
