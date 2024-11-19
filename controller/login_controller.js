@@ -44,8 +44,8 @@ const login = async (req, res, next) => {
         },
           process.env.jwt_token,
           {
-            // expiresIn: "30d",
-            expiresIn: "10s",
+            expiresIn: "30d",
+            // expiresIn: "10s",
           }
         );
       } catch (error) {
