@@ -58,7 +58,13 @@ router.route('/getenteries').post(tournament.getenteries);      //used
 router.route('/updatetournamentform').post(authmiddlewre, tournament.updatetournamentform); //used
 router.route('/updatetournamentformcontacts').post(authmiddlewre, tournament.updatetournamentformcontacts); //used
 router.route('/pointsystem').post(authmiddlewre, tournament.pointsystem); //used
-router.route('/classicseen').post(authmiddlewre, tournament.classicseen); //used
+router.route('/classicseen').post(authmiddlewre, tournament.classicseen); 
+
+router.route('/jwtcheck').get(authmiddlewre, (req,res)=>{
+  res.status(201).json({
+    message:"ok"
+  })
+}); //used
 
 router.route('/gettdm').post(authmiddlewre, tdm.gettdm); //used    //used
 router.route('/tdmseen').post(authmiddlewre, tdm.tdmseen); //used    //used

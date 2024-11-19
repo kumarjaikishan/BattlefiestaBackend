@@ -17,11 +17,11 @@ const authmiddlewre = async (req, res, next) => {
         req.token = token;
         next();
     } catch (error) {
-        console.log(error.message);
+        // console.log(error.message);
          if (error.name === 'JsonWebTokenError') {
             return res.status(401).json({ message: 'Invalid Token' });
         }
-        res.status(400).json({ message: error.message })
+        res.status(401).json({ message: error.message })
     }
 }
 module.exports = authmiddlewre;
