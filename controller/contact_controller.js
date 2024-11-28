@@ -30,7 +30,7 @@ const channel = async (req, res, next) => {
     const { uid } = req.body;
 
     try {
-        const channel = await login.findOne({ username: uid }).select('name username bio followers imgsrc coversrc publicphone publicemail sociallinks city state');
+        const channel = await login.findOne({ username: uid }).select('name username bio followers bluetick imgsrc coversrc publicphone publicemail sociallinks city state');
         if (!channel) {
             return next({ status: 400, message: "Username is not valid" });
         }
@@ -52,7 +52,7 @@ const loginchannel = async (req, res, next) => {
     const { uid } = req.body;
 
     try {
-        const channel = await login.findOne({ username: uid }).select('name username bio followers imgsrc coversrc publicphone publicemail sociallinks city state');
+        const channel = await login.findOne({ username: uid }).select('name username bio followers bluetick imgsrc coversrc publicphone publicemail sociallinks city state');
         if (!channel) {
             return next({ status: 400, message: "Username is not valid" });
         }

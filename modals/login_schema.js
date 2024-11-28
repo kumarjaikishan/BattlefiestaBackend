@@ -23,6 +23,10 @@ const log = new mongo.Schema({
         required: false,
         default: ""
     },
+    bluetick: {
+        type: Boolean,
+        default: false
+    },
     followers: [{
         type: mongo.Schema.Types.ObjectId,
         ref: "user"
