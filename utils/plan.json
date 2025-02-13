@@ -1,0 +1,57 @@
+[
+  {
+      "_id": { "$oid": "65fe7ad58a04a25de33f45b1" },
+      "plan_name": "Trial",
+      "baseprice": 0,
+      "price": 0,
+      "into": 12,
+      "create_limit": 20,
+      "duration": "3 Month",
+      "notation": "Month",
+      "visible": false
+  },
+  {
+      "_id": { "$oid": "65fc5aa07f1a06efa607eeec" },
+      "plan_name": "Weekly",
+      "baseprice": 29,
+      "price": 29,
+      "into": 1,
+      "create_limit": 10,
+      "duration": "1 Week",
+      "notation": "week",
+      "visible": true
+  },
+  {
+      "_id": { "$oid": "65fc5e427f1a06efa607eeed" },
+      "plan_name": "1 month",
+      "baseprice": 29,
+      "price": 80,
+      "into": 4,
+      "create_limit": 35,
+      "duration": "1 Month",
+      "notation": "Month",
+      "visible": true
+  },
+  {
+      "_id": { "$oid": "65fe7baf8a04a25de33f45b2" },
+      "plan_name": "3 Month",
+      "baseprice": 29,
+      "price": 180,
+      "into": 12,
+      "create_limit": 100,
+      "duration": "3 Month",
+      "notation": "month",
+      "visible": true
+  },
+  {
+      "_id": { "$oid": "65fe7c8a8a04a25de33f45b3" },
+      "plan_name": "6 Month",
+      "baseprice": 29,
+      "price": 300,
+      "into": 24,
+      "create_limit": 200,
+      "duration": "6 Month",
+      "notation": "Month",
+      "visible": true
+  }
+]
