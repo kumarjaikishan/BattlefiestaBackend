@@ -63,7 +63,6 @@ const databaseBackup = async (databaseName) => {
     const command = `mongodump --uri="${uri}" --db=${databaseName} --gzip --archive="${backupPath}.gz"`; // for specific database
 
     execute(command, `Backup of database "${databaseName}" completed successfully and saved to ${backupPath}.gz ✅`, databaseName)
-
 };
 
 // Function to restore a database using mongorestore
