@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const router = express.Router();
 const login = require('../controller/login_controller.js')
-const checkmembership = require('../middleware/checkmembership.js')
 const tournament = require('../controller/tournament_controller')
 const tdm = require('../controller/tdm_controller')
 const tournaentry = require('../controller/tournment_entry_controller')
@@ -11,10 +10,12 @@ const authmiddlewre = require('../middleware/auth_middleware')
 const upload = require('../middleware/multer_middleware')
 const upload2 = require('../middleware/multer2')
 const upload3 = require('../middleware/multer3')
+const checkmembership = require('../middleware/checkmembership.js')
 const emailauth = require('../middleware/email_auth')
+const isadmin = require('../middleware/isadmin_middleware')
+const createAccountLimiter = require('../middleware/ratelimiter.js')
 const contact = require('../controller/contact_controller')
 const member = require('../controller/membership_controller')
-const isadmin = require('../middleware/isadmin_middleware')
 const admin = require('../controller/admin_controller')
 
 const { MongoClient } = require('mongodb');
@@ -33,7 +34,7 @@ router.route('/').get(async (req, res) => {
 }); 
 
 
-router.route('/signup').post(login.signup, emailauth);    //used
+router.route('/signup').post(createAccountLimiter,login.signup, emailauth);    //used
 router.route('/login').post(emailauth, login.login);      //used
 router.route('/verify').get(login.verify);      //used
 router.route('/passreset').get(authmiddlewre, login.passreset);      //used
