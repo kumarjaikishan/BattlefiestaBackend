@@ -1,6 +1,6 @@
 const user = require('../modals/login_schema');
 // const {addJobToQueue} = require('../utils/producer')
-const {addtoqueue} = require('../utils/axiosRequest');
+const { addtoqueue } = require('../utils/axiosRequest');
 const sendmail = require('../utils/sendemail');
 const verificationTemplate = require('../templates/verification');
 
@@ -14,11 +14,11 @@ const emailmiddleware = async (req, res, next) => {
     if (query.isverified) {
       next();
     } else {
-      const message = verificationTemplate(query.name,query._id)
+      const message = verificationTemplate(query.name, query._id)
       await addtoqueue(query.email, 'Email Verification || BattleFiesta', message)
       // await addJobToQueue(query.email, 'Email Verification || BattleFiesta', message)
-    // await sendmail(query.email, 'BattleFiesta || Email Verification', message) ;
-    return res.status(201).json({
+      // await sendmail(query.email, 'Email Verification || BattleFiesta', message) ;
+      return res.status(201).json({
         message: "Email Sent",
       })
     }
