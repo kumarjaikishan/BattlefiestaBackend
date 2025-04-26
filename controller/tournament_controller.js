@@ -41,7 +41,8 @@ const addtournament = asyncHandler(async (req, res, next) => {
         .sort({ tournid: -1 })
         .select('tournid');
 
-    const tournid = newIdGenertor(latestTournament.tournid)
+
+    const tournid = newIdGenertor(latestTournament?.tournid)
 
     const query = new tournament({ userid: req.userid, title: name, tournid, type, slots, organiser, slotCategory })
     const result = await query.save();
@@ -154,7 +155,7 @@ const getclassic = asyncHandler(async (req, res, next) => {
         return res.status(403).json({ isowner: false })
     }
     const query2 = await registrationformsetting.findOne({ tournament_id: req.body.tid });
-    const query3 = await Resgistered.find({ tournament_id: req.body.tid }).sort({createdAt:-1});
+    const query3 = await Resgistered.find({ tournament_id: req.body.tid }).sort({ createdAt: -1 });
 
     res.status(200).json({
         tournament: query1,
