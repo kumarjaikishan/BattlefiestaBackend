@@ -31,16 +31,21 @@ cron.schedule('0 1 * * *', async () => {
 
 
 cron.schedule('1 1 * * *', async () => {
-    databaseBackup('exp');
+    await Promise.all([
+        databaseBackup('exp'),
+        databaseBackup('battlefiesta')
+    ]);
+    // await databaseBackup('exp');
+    // await databaseBackup('battlefiesta');
 }, {
     timezone: "Asia/Kolkata"
 });
 
-cron.schedule('5 1 * * *', async () => {
-    databaseBackup('battlefiesta');
-}, {
-    timezone: "Asia/Kolkata"
-});
+// cron.schedule('5 1 * * *', async () => {
+//     databaseBackup('battlefiesta');
+// }, {
+//     timezone: "Asia/Kolkata"
+// });
 
 // Uncomment and adjust the following if needed
 // cron.schedule('*/20 * * * * *', async () => {
