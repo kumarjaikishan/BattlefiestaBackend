@@ -169,7 +169,7 @@ const getonetournament = asyncHandler(async (req, res, next) => {
     let query = await tournament.findOne({ _id: req.body.tid }).populate({
         path: 'userid',
         select: 'name username'
-    }).select('title slots tournment_banner organiser status createdAt type');
+    }).select('title slots tournment_banner tournid organiser status createdAt type');
     let query2;
     if (query.type == 'tdm') {
         query2 = await Tdm_form.findOne({ tournament_id: req.body.tid }).select('isopen links publicpost');
