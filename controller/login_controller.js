@@ -1,7 +1,7 @@
 const user = require('../modals/login_schema')
 const membership = require('../modals/membership_schema')
 const NodeCache = require('node-cache');
-const myCache = new NodeCache();
+// const myCache = new NodeCache();
 const bcrypt = require('bcrypt');
 const fs = require('fs');
 const cloudinary = require('cloudinary').v2;
@@ -97,7 +97,7 @@ const signup = asyncHandler(async (req, res, next) => {
   if (!result) {
     return next({ status: 400, message: "Something went wrong" });
   }
-  myCache.del("allusers");
+  // myCache.del("allusers");
   next();
   // res.status(201).json({
   //   message: "Verify you Email"
