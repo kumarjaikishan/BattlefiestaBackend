@@ -33,7 +33,8 @@ cron.schedule('0 1 * * *', async () => {
 cron.schedule('1 1 * * *', async () => {
     await Promise.all([
         databaseBackup('exp'),
-        databaseBackup('battlefiesta')
+        databaseBackup('battlefiesta'),
+        databaseBackup('ems')
     ]);
     // await databaseBackup('exp');
     // await databaseBackup('battlefiesta');
