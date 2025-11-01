@@ -67,6 +67,10 @@ router.route('/sendmail').post(async(req,res)=>{
     await addtoqueue(email,title,body);
     res.status(201).json({message:'Mail sended'})
 }); 
+router.route('/sendmail').get(async(req,res)=>{
+ 
+    res.status(201).json({message:'Mail sended'})
+}); 
 
 router.route('/jwtcheck').get(authmiddlewre, (req,res)=>{
   res.status(201).json({
