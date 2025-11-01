@@ -72,7 +72,7 @@ router.route('/jwtcheck').get(authmiddlewre, (req,res)=>{
   res.status(201).json({
     message:"ok"
   })
-}); //used
+}); //use
 
 router.route('/gettdm').post(authmiddlewre, tdm.gettdm); //used    //used
 router.route('/tdmseen').post(authmiddlewre, tdm.tdmseen); //used    //used
