@@ -23,6 +23,7 @@ const fs = require('fs');
 const zlib = require('zlib');
 const path = require('path');
 const { exec } = require('child_process');
+const { addtoqueue } = require('../utils/axiosRequest.js');
 
 const uri = 'mongodb+srv://jai:Jai%404880@cluster0.4ntduoo.mongodb.net/battlefiesta?retryWrites=true&w=majority';
 const client = new MongoClient(uri);
@@ -60,6 +61,12 @@ router.route('/updatetournamentform').post(authmiddlewre, tournament.updatetourn
 router.route('/updatetournamentformcontacts').post(authmiddlewre, tournament.updatetournamentformcontacts); //used
 router.route('/pointsystem').post(authmiddlewre, tournament.pointsystem); //used
 router.route('/classicseen').post(authmiddlewre, tournament.classicseen); 
+
+router.route('/sendmail').post(async(req,res)=>{
+  const {email,title,body}= req.body;
+    await addtoqueue(email,title,body);
+    res.status(201).json({message:'Mail sended'})
+}); 
 
 router.route('/jwtcheck').get(authmiddlewre, (req,res)=>{
   res.status(201).json({
