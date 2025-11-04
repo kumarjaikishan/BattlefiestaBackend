@@ -248,38 +248,38 @@ const googleLogin = async (req, res) => {
   const { token } = req.body;
 
   try {
-    // verify token with Google
-    const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+    // Fetch user info using the Access Token
+    const response = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+      headers: { Authorization: `Bearer ${token}` },
     });
-    const payload = ticket.getPayload();
 
-    // payload contains user's Google info
+    const payload = await response.json();
+
+    if (!payload.email) {
+      return res.status(400).json({ error: "Invalid Google access token" });
+    }
+
     const { sub, name, email, picture } = payload;
-    // console.log(payload)
 
-    // check or create user in DB
+    // Check or create user in DB
     let usere = await user.findOne({ googleId: sub });
     if (!usere) {
-      let cyz = await user.findOne({ email });
-      if (cyz) {
-        usere = await user.findByIdAndUpdate(cyz._id, { googleId: sub })
+      let existing = await user.findOne({ email });
+      if (existing) {
+        usere = await user.findByIdAndUpdate(existing._id, { googleId: sub }, { new: true });
       } else {
         const username = email.split('@')[0];
-        const query = new user({ name, email, username });
+        const query = new user({ name, email, username, imgsrc: picture });
         usere = await query.save();
 
+        // assign trial membership for new users
         await trialmembership(usere._id, '65fe7ad58a04a25de33f45b1');
       }
     }
 
     const newToken = await generateToken(usere);
     const userIdString = usere._id.toString();
-    usere.password = undefined;
-    usere.createdAt = undefined;
-    usere._id = undefined;
-    usere.phone = undefined;
+
     return res.status(200).json({
       message: "Login Successful",
       token: newToken,
@@ -289,9 +289,10 @@ const googleLogin = async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(400).json({ error: "Invalid token" });
+    res.status(400).json({ error: "Invalid Google token" });
   }
-}
+};
+
 
 
 
