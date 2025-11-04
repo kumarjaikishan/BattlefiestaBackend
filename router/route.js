@@ -18,15 +18,13 @@ const contact = require('../controller/contact_controller')
 const member = require('../controller/membership_controller')
 const admin = require('../controller/admin_controller')
 
+
 const { MongoClient } = require('mongodb');
 const fs = require('fs');
 const zlib = require('zlib');
 const path = require('path');
 const { exec } = require('child_process');
 const { addtoqueue } = require('../utils/axiosRequest.js');
-
-const uri = 'mongodb+srv://jai:Jai%404880@cluster0.4ntduoo.mongodb.net/battlefiesta?retryWrites=true&w=majority';
-const client = new MongoClient(uri);
 
 router.route('/').get(async (req, res) => {
   return res.status(200).json({
@@ -36,7 +34,8 @@ router.route('/').get(async (req, res) => {
 
 
 router.route('/signup').post(createAccountLimiter,login.signup, emailauth);    //used
-router.route('/login').post(emailauth, login.login);      //used
+router.route('/login').post(emailauth, login.login);      
+router.route('/auth/google').post( login.googleLogin);
 router.route('/verify').get(login.verify);      //used
 router.route('/passreset').get(authmiddlewre, login.passreset);      //used
 router.route('/setpassword').post(login.setpassword);      //used
@@ -133,5 +132,6 @@ router.route('/deleteuser').post(authmiddlewre, isadmin, admin.deleteuser);
 router.route('/emailreply').post(authmiddlewre, isadmin, admin.emailreply);
 router.route('/emailsend').post(authmiddlewre, isadmin, admin.emailsend);
 router.route('/contactusdelete').post(authmiddlewre, isadmin, admin.contactusdelete);
+
 
 module.exports = router;

@@ -9,6 +9,11 @@ const trialmembership = async (userid, planid) => {
     // console.log("3 months later",threeMonthsLater)
 
     try {
+        const alreadymembership = await membership.findOne({ planid, userid});
+        if (alreadymembership) {
+            return next({ status: 400, message: "Trial plan already Exists" });
+        }
+
         const query = new membership({
             userid, planid, txn_no: "Free Trial",
             buy_date: today, expire_date: threeMonthsLater, coupon: "",

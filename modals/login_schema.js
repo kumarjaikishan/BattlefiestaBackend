@@ -18,6 +18,7 @@ const log = new mongo.Schema({
         required: false,
         default: ""
     },
+    googleId: { type: String, unique: true },
     city: {
         type: String,
         required: false,
@@ -57,7 +58,6 @@ const log = new mongo.Schema({
     },
     password: {
         type: String,
-        required: true
     },
     username: {
         type: String,
@@ -101,20 +101,26 @@ const log = new mongo.Schema({
 
 
 // secure the password
-log.pre("save", async function () {
+log.pre("save", async function (next) {
     const user = this;
-    if (!user.isModified("password")) {
-        return next();
-    }
+
+    // If there's no password (like Google signup), skip hashing
+    if (!user.password) return next();
+
+    // If password not modified, skip hashing
+    if (!user.isModified("password")) return next();
+
     try {
         const saltRound = await bcrypt.genSalt(10);
         const hash_password = await bcrypt.hash(user.password, saltRound);
         user.password = hash_password;
+        next();
     } catch (error) {
-        console.log(error);
+        console.error(error);
         next(error);
     }
-})
+});
+
 
 log.methods.generateToken = async function () {
     try {

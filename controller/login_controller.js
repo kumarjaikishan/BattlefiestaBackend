@@ -11,6 +11,9 @@ const trialmembership = require('../utils/trial_membership')
 // const {addJobToQueue} = require('../utils/producer');
 const { addtoqueue } = require('../utils/axiosRequest');
 const success = require('../templates/success')
+const { OAuth2Client } = require('google-auth-library')
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 cloudinary.config({
   cloud_name: 'dusxlxlvm',
@@ -18,6 +21,25 @@ cloudinary.config({
   api_secret: process.env.api_secret
 });
 
+const generateToken = async (result) => {
+  try {
+    return jwt.sign({
+      _id: result._id.toString(),
+      userId: result._id.toString(),
+      email: result.email,
+      isAdmin: result.isadmin,
+      name: result.name
+    },
+      process.env.jwt_token,
+      {
+        expiresIn: "60d",
+        // expiresIn: "10s",
+      }
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 // *--------------------------------------
 // * User Login 1st method with nodecache Logic
@@ -33,25 +55,7 @@ const login = async (req, res, next) => {
     if (!isUser) {
       return next({ status: 400, message: "User not found" });
     }
-    const generateToken = async (result) => {
-      try {
-        return jwt.sign({
-          _id: result._id.toString(),
-          userId: result._id.toString(),
-          email: result.email,
-          isAdmin: result.isadmin,
-          name:result.name
-        },
-          process.env.jwt_token,
-          {
-            expiresIn: "60d",
-            // expiresIn: "10s",
-          }
-        );
-      } catch (error) {
-        console.error(error);
-      }
-    }
+
 
     if (await bcrypt.compare(password, isUser.password)) {
       const newToken = await generateToken(isUser);
@@ -227,10 +231,7 @@ const verify = async (req, res, next) => {
     if (query.isverified) {
       return next({ status: 400, message: "Already verified" });
     }
-    const alreadymembership = await membership.findOne({ planid: '65fe7ad58a04a25de33f45b1', userid: req.query.id });
-    if (alreadymembership) {
-      return next({ status: 400, message: "Trial plan already Exists" });
-    }
+   
     await trialmembership(req.query.id, '65fe7ad58a04a25de33f45b1');
     // return res.status(201).send(`<html><h2> Hi ${query.name} , Email Verified Successfully, <button onclick="location.href = 'https://esport-bgmi.vercel.app';">Login Now</button> </h2></html>`)
     return res.status(201).send(success)
@@ -243,6 +244,55 @@ const verify = async (req, res, next) => {
   }
 }
 
+const googleLogin = async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    // verify token with Google
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+
+    // payload contains user's Google info
+    const { sub, name, email, picture } = payload;
+    // console.log(payload)
+
+    // check or create user in DB
+    let usere = await user.findOne({ googleId: sub });
+    if (!usere) {
+      let cyz = await user.findOne({ email });
+      if (cyz) {
+        usere = await user.findByIdAndUpdate(cyz._id, { googleId: sub })
+      } else {
+        const username = email.split('@')[0];
+        const query = new user({ name, email, username });
+        usere = await query.save();
+
+        await trialmembership(usere._id, '65fe7ad58a04a25de33f45b1');
+      }
+    }
+
+    const newToken = await generateToken(usere);
+    const userIdString = usere._id.toString();
+    usere.password = undefined;
+    usere.createdAt = undefined;
+    usere._id = undefined;
+    usere.phone = undefined;
+    return res.status(200).json({
+      message: "Login Successful",
+      token: newToken,
+      userId: userIdString,
+      isadmin: usere.isadmin
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: "Invalid token" });
+  }
+}
 
 
-module.exports = { test, signup, notificationToken, checkmail, login, verify, passreset, setpassword };
+
+module.exports = { test, signup, notificationToken, checkmail, googleLogin, login, verify, passreset, setpassword };
