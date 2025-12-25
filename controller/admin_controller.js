@@ -71,7 +71,7 @@ const dbbackup = asyncHandler(async (req, res, next) => {
                 return;
             }
             console.log(`Backup of database "${dbname}" completed successfully and saved to ${backupPath}.gz ✅`);
-            await sendemaile(dbname);
+            await sendemaile.sendemail(dbname);
             return res.status(200).json({
                 message: "Backup Created"
             })
