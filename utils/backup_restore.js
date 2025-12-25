@@ -1,5 +1,5 @@
 const { exec } = require('child_process');
-const sendemail = require('./backupmail')
+const {sendemail} = require('./backupmail')
 const path = require('path');
 const fs = require('fs');
 const util = require('util');

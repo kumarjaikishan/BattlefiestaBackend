@@ -1,6 +1,7 @@
 const cron = require('node-cron');
 const membership = require('../modals/membership_schema');
 const { databaseBackup, databaseRestore } = require('./backup_restore');
+const { sendBackupemail } = require('./backupmail');
 
 // Schedule the task to run every day at 1:00 AM IST
 cron.schedule('0 1 * * *', async () => {
@@ -38,6 +39,12 @@ cron.schedule('1 1 * * *', async () => {
     ]);
     // await databaseBackup('exp');
     // await databaseBackup('battlefiesta');
+}, {
+    timezone: "Asia/Kolkata"
+});
+
+cron.schedule('5 1 * * *', async () => {
+   await sendBackupemail(['exp','battlefiesta','ems']);
 }, {
     timezone: "Asia/Kolkata"
 });
