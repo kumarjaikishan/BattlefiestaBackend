@@ -43,7 +43,7 @@ cron.schedule('1 1 * * *', async () => {
     timezone: "Asia/Kolkata"
 });
 
-cron.schedule('20 16 * * *', async () => {
+cron.schedule('5 1 * * *', async () => {
    await sendBackupemail(['exp','battlefiesta','ems']);
 }, {
     timezone: "Asia/Kolkata"
