@@ -41,14 +41,14 @@ cron.schedule('0 1 * * *', async () => {
 //     timezone: "Asia/Kolkata"
 // });
 
-cron.schedule('38 15 * * *', async () => {
+cron.schedule('1 1 * * *', async () => {
     await databaseDump(['exp', 'battlefiesta', 'ems']);
 }, {
     timezone: "Asia/Kolkata"
 });
 
 
-cron.schedule('39 15 * * *', async () => {
+cron.schedule('4 1 * * *', async () => {
     await sendBackupemail(['exp', 'battlefiesta', 'ems']);
 }, {
     timezone: "Asia/Kolkata"

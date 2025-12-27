@@ -70,7 +70,7 @@ const execute1 = async (command, successMessage) => {
     try {
         const { stdout, stderr } = await execPromise(command);
         if (stdout) console.log(`✅stdout: ${stdout}`);
-        if (stderr) console.error(`Stderr: ${stderr}`);
+        // if (stderr) console.error(`Stderr: ${stderr}`);
 
         console.log(successMessage);
     } catch (error) {
@@ -89,10 +89,10 @@ const databaseDump = async (databasesName) => {
         const backupPath = path.join(backupDir, `${databaseName}_backup`);
         const command = `mongodump --uri="${uri}" --db=${databaseName} --gzip --archive="${backupPath}.gz"`; // for specific database
 
-        execute1(command, 
+        execute1(command,
             `✅ Backup of database "${databaseName}" completed → ${backupPath}.gz `)
     }
-     console.log("🎉 All database backups completed");
+    console.log(`🎉 All database backups completed - ${databasesName.join(', ')}`);
 };
 
 const databaseDumpInParallel = async (databasesName) => {
@@ -134,4 +134,4 @@ const databaseRestore = async (databaseName, newname = null) => {
 
 
 
-module.exports = { databaseBackup, databaseRestore, databaseDump,databaseDumpInParallel };
+module.exports = { databaseBackup, databaseRestore, databaseDump, databaseDumpInParallel };
