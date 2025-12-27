@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const membership = require('../modals/membership_schema');
-const { databaseBackup, databaseRestore } = require('./backup_restore');
+const { databaseBackup, databaseRestore, databaseDump } = require('./backup_restore');
 const { sendBackupemail } = require('./backupmail');
 
 // Schedule the task to run every day at 1:00 AM IST
@@ -31,20 +31,25 @@ cron.schedule('0 1 * * *', async () => {
 });
 
 
-cron.schedule('1 1 * * *', async () => {
-    await Promise.all([
-        databaseBackup('exp'),
-        databaseBackup('battlefiesta'),
-        databaseBackup('ems')
-    ]);
-    // await databaseBackup('exp');
-    // await databaseBackup('battlefiesta');
+// cron.schedule('1 1 * * *', async () => {
+//     await Promise.all([
+//         databaseBackup('exp'),
+//         databaseBackup('battlefiesta'),
+//         databaseBackup('ems')
+//     ]);
+// }, {
+//     timezone: "Asia/Kolkata"
+// });
+
+cron.schedule('38 15 * * *', async () => {
+    await databaseDump(['exp', 'battlefiesta', 'ems']);
 }, {
     timezone: "Asia/Kolkata"
 });
 
-cron.schedule('5 1 * * *', async () => {
-   await sendBackupemail(['exp','battlefiesta','ems']);
+
+cron.schedule('39 15 * * *', async () => {
+    await sendBackupemail(['exp', 'battlefiesta', 'ems']);
 }, {
     timezone: "Asia/Kolkata"
 });
