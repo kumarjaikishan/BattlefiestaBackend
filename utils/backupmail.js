@@ -64,6 +64,32 @@ const sendemail = async (databaseName) => {
         });
     });
 }
+
+const dbEmailSend = async (databaseNames, email) => {
+    const currentDate = getCurrentDate();
+    // console.log('email sending order:',databaseNames, email)
+
+    const mailOptions = {
+        from: 'BattleFiesta <battlefiesta07@gmail.com>',
+        to: email,
+        subject: `DataBase Backup - ${currentDate}`,
+        html: "Backup",
+        attachments: databaseNames.map((dbname) => {
+            const backupFilePath = path.join(__dirname, '..', 'backups', `${dbname}_backup.gz`);
+            return {
+                filename: `${dbname}_backup.gz`,
+                path: backupFilePath
+            }
+        })
+    };
+
+    // clean async/await (no manual Promise)
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent -", info.response);
+
+    return true;
+}
+
 const sendBackupemail = async (databaseNames) => {
     const currentDate = getCurrentDate();
 
@@ -89,4 +115,4 @@ const sendBackupemail = async (databaseNames) => {
     return true;
 }
 
-module.exports = { sendemail, sendBackupemail };
+module.exports = { sendemail, sendBackupemail, dbEmailSend };

@@ -1,5 +1,5 @@
 const { exec } = require('child_process');
-const { sendemail } = require('./backupmail')
+const { sendemail, dbEmailSend } = require('./backupmail')
 const path = require('path');
 const fs = require('fs');
 const util = require('util');
@@ -37,12 +37,27 @@ if (!fs.existsSync(backupDir)) {
 
 const execute = async (command, successMessage, email = null) => {
     try {
+
+        // return console.log("emil final:",email)
         const { stdout, stderr } = await execPromise(command);
         if (stdout) console.log(`✅stdout: ${stdout}`);
         if (stderr) console.error(`Stderr: ${stderr}`);
 
         // Send email if email parameter is provided
         if (email) await sendemail(email);
+        console.log(successMessage);
+    } catch (error) {
+        console.error(`Error executing command: ${command}\nError: ${error.message}`);
+    }
+};
+const execute3 = async (command, successMessage, email = null, dbname) => {
+    try {
+        const { stdout, stderr } = await execPromise(command);
+        if (stdout) console.log(`✅stdout: ${stdout}`);
+        if (stderr) console.error(`Stderr: ${stderr}`);
+
+        // Send email if email parameter is provided
+        if (email) await dbEmailSend(dbname, email);
         console.log(successMessage);
     } catch (error) {
         console.error(`Error executing command: ${command}\nError: ${error.message}`);
@@ -78,6 +93,7 @@ const execute1 = async (command, successMessage) => {
         throw error;
     }
 };
+
 // Function to perform a backup using mongodump
 const databaseDump = async (databasesName) => {
     console.log("🔄 Starting MongoDB backup...");
@@ -92,6 +108,28 @@ const databaseDump = async (databasesName) => {
         execute1(command,
             `✅ Backup of database "${databaseName}" completed → ${backupPath}.gz `)
     }
+
+    console.log(`🎉 All database backups completed - ${databasesName.join(', ')}`);
+};
+
+// Function to perform a backup using mongodump
+const databaseDumpAutoMation = async (databasesName, email = null) => {
+    console.log("🔄 Starting MongoDB backup...", databasesName, email);
+
+    const uri = process.env.basemongo;
+    if (!uri) throw new Error("MongoDB URI not found in env");
+
+    for (const databaseName of databasesName) {
+        const backupPath = path.join(backupDir, `${databaseName}_backup`);
+        const command = `mongodump --uri="${uri}" --db=${databaseName} --gzip --archive="${backupPath}.gz"`; // for specific database
+
+       await execute1(
+            command,
+            ``
+            // `✅ Backup of database "${databaseName}" completed → ${backupPath}.gz `
+        )
+    }
+    if (email) await dbEmailSend(databasesName, email);
     console.log(`🎉 All database backups completed - ${databasesName.join(', ')}`);
 };
 
@@ -134,4 +172,4 @@ const databaseRestore = async (databaseName, newname = null) => {
 
 
 
-module.exports = { databaseBackup, databaseRestore, databaseDump, databaseDumpInParallel };
+module.exports = { databaseBackup, databaseRestore, databaseDumpAutoMation, databaseDump, databaseDumpInParallel };

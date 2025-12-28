@@ -15,6 +15,7 @@ const { addtoqueue } = require('../utils/axiosRequest');
 const { exec } = require('child_process');
 const sendemaile = require('../utils/backupmail.js')
 const path = require('path');
+const { getMongoClient } = require('../conn/MongoAdmin.js');
 
 const allmembershipentry = asyncHandler(async (req, res, next) => {
     const query = await manualmember.find().populate({
@@ -34,10 +35,9 @@ const allmembershipentry = asyncHandler(async (req, res, next) => {
 
 
 const databaseList = asyncHandler(async (req, res, next) => {
-    const uri = process.env.basemongo;
-    const client = new MongoClient(uri);
+   
     try {
-        await client.connect();
+        const client = await getMongoClient();
         const databasesList = await client.db().admin().listDatabases();
 
         return res.status(200).json({
@@ -49,6 +49,7 @@ const databaseList = asyncHandler(async (req, res, next) => {
         await client.close();
     }
 })
+
 const dbbackup = asyncHandler(async (req, res, next) => {
     let { dbname } = req.body;
     const uri = process.env.basemongo;

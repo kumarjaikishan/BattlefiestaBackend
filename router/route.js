@@ -17,6 +17,7 @@ const createAccountLimiter = require('../middleware/ratelimiter.js')
 const contact = require('../controller/contact_controller')
 const member = require('../controller/membership_controller')
 const admin = require('../controller/admin_controller')
+const backup = require('../controller/backup_controller.js')
 
 
 const { MongoClient } = require('mongodb');
@@ -60,6 +61,12 @@ router.route('/updatetournamentform').post(authmiddlewre, tournament.updatetourn
 router.route('/updatetournamentformcontacts').post(authmiddlewre, tournament.updatetournamentformcontacts); //used
 router.route('/pointsystem').post(authmiddlewre, tournament.pointsystem); //used
 router.route('/classicseen').post(authmiddlewre, tournament.classicseen); 
+
+
+router.route('/backup-schedules').get(authmiddlewre, backup.getSchedules); 
+router.route('/backup-schedules').post(authmiddlewre, backup.createSchedules); 
+router.route('/backup-schedules/:id').put(authmiddlewre, backup.editSchedules); 
+router.route('/backup-schedules/:id').delete(authmiddlewre, backup.deleteSchedules); 
 
 router.route('/sendmail').post(async(req,res)=>{
   const {email,title,body}= req.body;
