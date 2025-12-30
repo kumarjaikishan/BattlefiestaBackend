@@ -63,6 +63,7 @@ router.route('/pointsystem').post(authmiddlewre, tournament.pointsystem); //used
 router.route('/classicseen').post(authmiddlewre, tournament.classicseen); 
 
 
+router.route('/getJobStatus').get(authmiddlewre, backup.getJobStatus); 
 router.route('/backup-schedules').get(authmiddlewre, backup.getSchedules); 
 router.route('/backup-schedules').post(authmiddlewre, backup.createSchedules); 
 router.route('/backup-schedules/:id').put(authmiddlewre, backup.editSchedules); 

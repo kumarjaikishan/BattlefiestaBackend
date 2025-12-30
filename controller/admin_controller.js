@@ -32,8 +32,6 @@ const allmembershipentry = asyncHandler(async (req, res, next) => {
 })
 
 
-
-
 const databaseList = asyncHandler(async (req, res, next) => {
    
     try {
@@ -45,9 +43,7 @@ const databaseList = asyncHandler(async (req, res, next) => {
         })
     } catch (error) {
         console.error(error);
-    } finally {
-        await client.close();
-    }
+    } 
 })
 
 const dbbackup = asyncHandler(async (req, res, next) => {
