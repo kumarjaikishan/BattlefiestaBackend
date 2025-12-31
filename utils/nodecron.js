@@ -41,18 +41,18 @@ cron.schedule('0 1 * * *', async () => {
 //     timezone: "Asia/Kolkata"
 // });
 
-cron.schedule('1 1 * * *', async () => {
-    await databaseDump(['exp', 'battlefiesta', 'ems']);
-}, {
-    timezone: "Asia/Kolkata"
-});
+// cron.schedule('1 1 * * *', async () => {
+//     await databaseDump(['exp', 'battlefiesta', 'ems']);
+// }, {
+//     timezone: "Asia/Kolkata"
+// });
 
 
-cron.schedule('4 1 * * *', async () => {
-    await sendBackupemail(['exp', 'battlefiesta', 'ems']);
-}, {
-    timezone: "Asia/Kolkata"
-});
+// cron.schedule('4 1 * * *', async () => {
+//     await sendBackupemail(['exp', 'battlefiesta', 'ems']);
+// }, {
+//     timezone: "Asia/Kolkata"
+// });
 
 // cron.schedule('5 1 * * *', async () => {
 //     databaseBackup('battlefiesta');
