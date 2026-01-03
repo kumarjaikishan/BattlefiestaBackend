@@ -127,7 +127,6 @@ const getJobStatus = (req, res) => {
   });
 };
 
-
 function createCronJob(schedule) {
   if (!cron.validate(schedule.cron)) {
     console.log(`Invalid cron: ${schedule.cron}`);
@@ -181,7 +180,6 @@ function createCronJob(schedule) {
   jobs.set(jobId, task);
 }
 
-
 async function loadAllCronJobs() {
   console.log('loadAllCronJobs called')
   const schedules = await BackupSchedule.find({ enabled: true });
@@ -190,7 +188,7 @@ async function loadAllCronJobs() {
 }
 
 // call this once when server starts
-loadAllCronJobs();
+// loadAllCronJobs();
 
 async function startCronLog({ jobId, cron }) {
   return CronRunLog.create({

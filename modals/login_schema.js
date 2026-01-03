@@ -1,152 +1,185 @@
-const mongo = require('mongoose');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken')
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-const log = new mongo.Schema({
+const userSchema = new mongoose.Schema(
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
+      trim: true,
     },
+
     email: {
-        type: String,
-        required: [true, "Email is required"],
-        unique: true,
-        index: true
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+      index: true,
+      lowercase: true,
+      trim: true,
     },
+
     publicemail: {
-        type: String,
-        required: false,
-        default: ""
+      type: String,
+      default: "",
     },
-    googleId: { type: String, unique: true },
+
+    // 🔑 Google login (OPTIONAL + UNIQUE only when exists)
+    googleId: {
+      type: String,
+    },
+
     city: {
-        type: String,
-        required: false,
-        default: ""
+      type: String,
+      default: "",
     },
+
     bluetick: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
-    followers: [{
-        type: mongo.Schema.Types.ObjectId,
-        ref: "user"
-    }],
-    following: [{
-        type: mongo.Schema.Types.ObjectId,
-        ref: "user"
-    }],
+
+    followers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+      },
+    ],
+
+    following: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+      },
+    ],
+
     state: {
-        type: String,
-        required: false,
-        default: ""
+      type: String,
+      default: "",
     },
+
     phone: {
-        type: Number,
-        required: false,
-        unique: true
+      type: Number,
+      unique: true,
+      sparse: true, // allows multiple null values
     },
+
     publicphone: {
-        type: Number,
-        required: false,
-        default: ""
+      type: Number,
+      default: "",
     },
+
     tourn_created: {
-        type: Number,
-        required: false,
-        default: 0
+      type: Number,
+      default: 0,
     },
+
     password: {
-        type: String,
+      type: String,
     },
+
     username: {
-        type: String,
-        required: false,
-        unique: true
+      type: String,
+      unique: true,
+      sparse: true, // allows null usernames
+      trim: true,
     },
+
     imgsrc: {
-        type: String,
-        default: ""
+      type: String,
+      default: "",
     },
+
     coversrc: {
-        type: String,
-        default: ""
+      type: String,
+      default: "",
     },
+
     notification_token: {
-        type: String,
-        default: "",
-        required: false,
+      type: String,
+      default: "",
     },
+
     bio: {
-        type: String,
-        default: ""
+      type: String,
+      default: "",
     },
+
     temptoken: {
-        type: String,
-        default: ""
+      type: String,
+      default: "",
     },
+
     sociallinks: {
-        type: Array,
-        default: []
+      type: Array,
+      default: [],
     },
+
     isadmin: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
+
     isverified: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
-}, { timestamps: true })
+  },
+  { timestamps: true }
+);
 
+/**
+ * ✅ UNIQUE Google ID only if present
+ * Prevents duplicate null index error
+ */
+userSchema.index(
+  { googleId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      googleId: { $exists: true, $ne: null },
+    },
+  }
+);
 
-// secure the password
-log.pre("save", async function (next) {
-    const user = this;
+/**
+ * 🔐 Hash password before save
+ */
+userSchema.pre("save", async function (next) {
+  if (!this.password) return next();
+  if (!this.isModified("password")) return next();
 
-    // If there's no password (like Google signup), skip hashing
-    if (!user.password) return next();
-
-    // If password not modified, skip hashing
-    if (!user.isModified("password")) return next();
-
-    try {
-        const saltRound = await bcrypt.genSalt(10);
-        const hash_password = await bcrypt.hash(user.password, saltRound);
-        user.password = hash_password;
-        next();
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
-
-log.methods.generateToken = async function () {
-    try {
-        return jwt.sign({
-            userId: this._id.toString(),
-            email: this.email,
-            isAdmin: this.isadmin
-        },
-            process.env.jwt_token,
-            {
-                expiresIn: "30d",
-            }
-        );
-    } catch (error) {
-        console.error(error);
-    }
+/**
+ * 🔑 JWT Token
+ */
+userSchema.methods.generateToken = function () {
+  return jwt.sign(
+    {
+      userId: this._id.toString(),
+      email: this.email,
+      isAdmin: this.isadmin,
+    },
+    process.env.jwt_token,
+    { expiresIn: "30d" }
+  );
 };
 
-
-log.methods.checkpassword = async function (pass) {
-    try {
-        return await bcrypt.compare(pass, this.password);
-    } catch (error) {
-        console.error(error);
-    }
+/**
+ * 🔐 Compare password
+ */
+userSchema.methods.checkpassword = async function (password) {
+  if (!this.password) return false;
+  return bcrypt.compare(password, this.password);
 };
 
-const user = new mongo.model("user", log);
-module.exports = user;
+const User = mongoose.model("user", userSchema);
+module.exports = User;

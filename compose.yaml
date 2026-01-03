@@ -1,8 +1,0 @@
-services:
-  mongo:
-    image: mongo:latest
-    container_name: kishanMongo
-    ports:
-      - "27018:27017"
-    volumes:
-      - "C:/Users/good nature/OneDrive/Desktop/dockermongo:/data/db"

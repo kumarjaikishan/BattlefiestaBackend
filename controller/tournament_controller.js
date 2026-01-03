@@ -27,6 +27,9 @@ const addtournament = asyncHandler(async (req, res, next) => {
     if (!name || !type || !slots || !organiser) {
         return next({ status: 400, message: "All Fields are Required" });
     }
+    if (slots < 1) return next({ status: 400, message: "Minimum 1 slot Required" });
+    if (slots > 64) return next({ status: 400, message: "Maximum 64 slots Allowed" });
+
     let slotCategory = [{
         category: "All",
         slots: parseInt(slots)
@@ -220,6 +223,41 @@ const tournamnetsearch = asyncHandler(async (req, res, next) => {
 
 const getalltournament = asyncHandler(async (req, res, next) => {
     const query = await tournament.find({ visibility: true }).sort({ createdAt: -1 })
+        .select('title status tournid createdAt slots type organiser label tournment_logo userid')
+    if (!query) {
+        return next({ status: 400, message: "Error Occured" });
+    }
+
+    const tournamentData = await Promise.all(
+        query.map(async (tournament) => {
+            let totalTeamsRegistered;
+            if (tournament.type == 'classic') {
+                totalTeamsRegistered = await Tournament.countDocuments({
+                    tournament_id: tournament._id,
+                    status: { $in: ["pending", "approved"] }
+                });
+
+            } else {
+                totalTeamsRegistered = await tdm.countDocuments({
+                    tournament_id: tournament._id,
+                    status: { $in: ["pending", "approved"] }
+                });
+
+            }
+
+            // Step 3: Attach the totalTeamsRegistered count to the tournament object
+            return {
+                ...tournament.toObject(), // Convert Mongoose document to plain object
+                totalTeamsRegistered
+            };
+        })
+    );
+
+    res.status(201).json({ message: "success", data: tournamentData })
+})
+
+const getalltournamentadmin = asyncHandler(async (req, res, next) => {
+    const query = await tournament.find().sort({ createdAt: -1 })
         .select('title status tournid createdAt slots type organiser label tournment_logo userid')
     if (!query) {
         return next({ status: 400, message: "Error Occured" });
@@ -459,4 +497,4 @@ const torunadelete = async (req, res, next) => {
 }
 
 
-module.exports = { getclassic, pointsystem, classicseen, addtournament, getonetournament, tournamnetsearch, getontournament, getalltournament, torunadelete, gettournament, getenteries, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };
+module.exports = { getclassic, pointsystem, classicseen, getalltournamentadmin,addtournament, getonetournament, tournamnetsearch, getontournament, getalltournament, torunadelete, gettournament, getenteries, settournament, settournamentlogos, tournamentform, updatetournamentform, updatetournamentformcontacts, gettournamentform };

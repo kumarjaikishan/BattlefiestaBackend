@@ -1,9 +1,17 @@
-FROM node:alpine
+FROM node:18-alpine
 
-RUN mkdir -p /app
-
+# Create app directory
 WORKDIR /app
 
-COPY . /app
+# Install dependencies
+COPY package*.json ./
+RUN npm install --production
 
-CMD ["node", "/app/index.js"]
+# Copy source
+COPY . .
+
+# Expose backend port
+EXPOSE 5000
+
+# Start server
+CMD ["npm", "start"]

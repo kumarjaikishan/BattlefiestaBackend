@@ -52,6 +52,7 @@ router.route('/getontournament').post(authmiddlewre, tournament.getontournament)
 router.route('/getonetournament').post(tournament.getonetournament);      //used
 router.route('/tournamnetsearch').post(tournament.tournamnetsearch);      //used
 router.route('/getalltournament').get(tournament.getalltournament);      //used
+router.route('/getalltournamentadmin').get(tournament.getalltournamentadmin);      //used
 router.route('/settournament').post(authmiddlewre, tournament.settournament);      //used
 router.route('/settournamentlogos').post(authmiddlewre, upload.single('image'), tournament.settournamentlogos);      //used
 router.route('/tournamentform').post(authmiddlewre, tournament.tournamentform);      //used
