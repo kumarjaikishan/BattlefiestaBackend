@@ -183,7 +183,7 @@ function createCronJob(schedule) {
 async function loadAllCronJobs() {
   console.log('loadAllCronJobs called')
   const schedules = await BackupSchedule.find({ enabled: true });
-
+  if(!schedules) return console.log("No Active Scheduled Jobs Found")
   schedules.forEach(createCronJob);
 }
 
