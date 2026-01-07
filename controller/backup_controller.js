@@ -117,10 +117,10 @@ const getJobStatus = (req, res) => {
   for (const [jobId, job] of jobs.entries()) {
     jobStatuses.push({
       jobId,
-      running: job.running
     });
   }
-  console.log(jobStatuses)
+  // console.log(jobStatuses)
+
   res.json({
     success: true,
     jobs: jobStatuses
@@ -184,6 +184,8 @@ async function loadAllCronJobs() {
   console.log('loadAllCronJobs called')
   const schedules = await BackupSchedule.find({ enabled: true });
   if(!schedules) return console.log("No Active Scheduled Jobs Found")
+
+    // console.log(schedules)
   schedules.forEach(createCronJob);
 }
 
