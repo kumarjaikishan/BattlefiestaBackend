@@ -187,8 +187,7 @@ async function loadAllCronJobs() {
   schedules.forEach(createCronJob);
 }
 
-// call this once when server starts
-// loadAllCronJobs();
+
 
 async function startCronLog({ jobId, cron }) {
   return CronRunLog.create({
@@ -225,4 +224,4 @@ async function keepLast10Logs(jobId) {
 }
 
 
-module.exports = { getSchedules, createSchedules, editSchedules, deleteSchedules, getJobStatus };
+module.exports = { getSchedules, createSchedules, editSchedules, deleteSchedules, getJobStatus,loadAllCronJobs };

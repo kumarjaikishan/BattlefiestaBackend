@@ -31,12 +31,12 @@ router.route('/').get(async (req, res) => {
   return res.status(200).json({
     msg: "Welcome to Battlefiesta Backend"
   })
-}); 
+});
 
 
-router.route('/signup').post(createAccountLimiter,login.signup, emailauth);    //used
-router.route('/login').post(emailauth, login.login);      
-router.route('/auth/google').post( login.googleLogin);
+router.route('/signup').post(createAccountLimiter, login.signup, emailauth);    //used
+router.route('/login').post(emailauth, login.login);
+router.route('/auth/google').post(login.googleLogin);
 router.route('/verify').get(login.verify);      //used
 router.route('/passreset').get(authmiddlewre, login.passreset);      //used
 router.route('/setpassword').post(login.setpassword);      //used
@@ -61,24 +61,24 @@ router.route('/getenteries').post(tournament.getenteries);      //used
 router.route('/updatetournamentform').post(authmiddlewre, tournament.updatetournamentform); //used
 router.route('/updatetournamentformcontacts').post(authmiddlewre, tournament.updatetournamentformcontacts); //used
 router.route('/pointsystem').post(authmiddlewre, tournament.pointsystem); //used
-router.route('/classicseen').post(authmiddlewre, tournament.classicseen); 
+router.route('/classicseen').post(authmiddlewre, tournament.classicseen);
 
 
-router.route('/getJobStatus').get(authmiddlewre, backup.getJobStatus); 
-router.route('/backup-schedules').get(authmiddlewre, backup.getSchedules); 
-router.route('/backup-schedules').post(authmiddlewre, backup.createSchedules); 
-router.route('/backup-schedules/:id').put(authmiddlewre, backup.editSchedules); 
-router.route('/backup-schedules/:id').delete(authmiddlewre, backup.deleteSchedules); 
+router.route('/getJobStatus').get(authmiddlewre, backup.getJobStatus);
+router.route('/backup-schedules').get(authmiddlewre, backup.getSchedules);
+router.route('/backup-schedules').post(authmiddlewre, backup.createSchedules);
+router.route('/backup-schedules/:id').put(authmiddlewre, backup.editSchedules);
+router.route('/backup-schedules/:id').delete(authmiddlewre, backup.deleteSchedules);
 
-router.route('/sendmail').post(async(req,res)=>{
-  const {email,title,body}= req.body;
-    await addtoqueue(email,title,body);
-    res.status(201).json({message:'Mail sended'})
-}); 
+router.route('/sendmail').post(async (req, res) => {
+  const { email, title, body } = req.body;
+  await addtoqueue(email, title, body);
+  res.status(201).json({ message: 'Mail sended' })
+});
 
-router.route('/jwtcheck').get(authmiddlewre, (req,res)=>{
+router.route('/jwtcheck').get(authmiddlewre, (req, res) => {
   res.status(201).json({
-    message:"ok"
+    message: "ok"
   })
 });
 
@@ -104,7 +104,7 @@ router.route('/playerregister').post(upload.single('playerLogo'), tournaentry.pl
 router.route('/classicplayerupdate').post(upload.single('playerLogo'), tournaentry.classicplayerupdate);      //used
 
 router.route('/addmatches').post(authmiddlewre, Matches.addmatches); //used
-router.route('/editmatch').post(authmiddlewre,Matches.editmatch); //used
+router.route('/editmatch').post(authmiddlewre, Matches.editmatch); //used
 router.route('/getmatches').post(Matches.getmatches); //used
 router.route('/deletematch').post(Matches.deletematch);  //used
 
@@ -113,7 +113,7 @@ router.route('/contact').post(contact.contact); //used
 router.route('/profile').get(authmiddlewre, contact.profile); //used
 router.route('/updateprofile').post(authmiddlewre, contact.updateprofile); //used
 router.route('/channel').post(contact.channel); //used
-router.route('/loginchannel').post(authmiddlewre,contact.loginchannel); //used
+router.route('/loginchannel').post(authmiddlewre, contact.loginchannel); //used
 router.route('/follow').post(authmiddlewre, contact.follow); //used
 router.route('/updateprofilepic').post(authmiddlewre, upload.single('profilepic'), contact.updateprofilepic); //used
 router.route('/updatecoverpic').post(authmiddlewre, upload.single('coverpic'), contact.updatecoverpic); //used
@@ -141,6 +141,18 @@ router.route('/deleteuser').post(authmiddlewre, isadmin, admin.deleteuser);
 router.route('/emailreply').post(authmiddlewre, isadmin, admin.emailreply);
 router.route('/emailsend').post(authmiddlewre, isadmin, admin.emailsend);
 router.route('/contactusdelete').post(authmiddlewre, isadmin, admin.contactusdelete);
+
+
+router.route('/who').get(((req, res) => {
+//  let x=0;
+//   for (let i = 0; i < 100000; i++) {
+//     x += i
+//   }
+  res.json({
+    container: process.env.HOSTNAME,
+    pid: process.pid
+  });
+}))
 
 
 module.exports = router;
