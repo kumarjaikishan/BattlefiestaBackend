@@ -169,7 +169,7 @@ router.route("/deploy/:project").get(authmiddlewre,isadmin,(req, res) => {
 
     console.log("Deployment stdout:", stdout);
     return res.json({
-      message: "Deployment triggered successfully!",
+      message: `Deployed ${project} successfully!`,
       logs: stdout,
     });
   });
