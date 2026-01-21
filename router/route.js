@@ -143,11 +143,44 @@ router.route('/emailsend').post(authmiddlewre, isadmin, admin.emailsend);
 router.route('/contactusdelete').post(authmiddlewre, isadmin, admin.contactusdelete);
 
 
+const deploy_script = {
+  office: '/home/ubuntu/office.sh',
+  accusoft: '/home/ubuntu/accusoft.sh',
+  battlefiesta: '/home/ubuntu/battlefiesta.sh',
+  portfolio: '/home/ubuntu/portfolio.sh',
+}
+
+router.route("/deploy/:project").get(authmiddlewre,isadmin,(req, res) => {
+  const { project } = req.params;
+  // console.log(deploy_script[project])
+  exec(`bash ${deploy_script[project]}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error("Deployment error:", error.message);
+      return res.status(500).json({
+        success: false,
+        message: "Deployment failed",
+        error: error.message,
+      });
+    }
+
+    if (stderr) {
+      console.error("Deployment stderr:", stderr);
+    }
+
+    console.log("Deployment stdout:", stdout);
+    return res.json({
+      message: "Deployment triggered successfully!",
+      logs: stdout,
+    });
+  });
+});
+
+
 router.route('/who').get(((req, res) => {
-//  let x=0;
-//   for (let i = 0; i < 100000; i++) {
-//     x += i
-//   }
+  //  let x=0;
+  //   for (let i = 0; i < 100000; i++) {
+  //     x += i
+  //   }
   res.json({
     container: process.env.HOSTNAME,
     pid: process.pid

@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const authmiddlewre = async (req, res, next) => {
     const bearertoken = req.header('Authorization');
+    // console.log(bearertoken)
     if (!bearertoken) {
         return next({ status: 401, message: "Unauthorizes HTTP, token not provided" });
     }
