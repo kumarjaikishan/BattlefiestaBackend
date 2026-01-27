@@ -50,6 +50,7 @@ const execute = async (command, successMessage, email = null) => {
         console.error(`Error executing command: ${command}\nError: ${error.message}`);
     }
 };
+
 const execute3 = async (command, successMessage, email = null, dbname) => {
     try {
         const { stdout, stderr } = await execPromise(command);
@@ -148,7 +149,6 @@ const databaseDumpInParallel = async (databasesName) => {
 
     await Promise.all(tasks);
 };
-
 
 // Function to restore a database using mongorestore
 const databaseRestore = async (databaseName, newname = null) => {

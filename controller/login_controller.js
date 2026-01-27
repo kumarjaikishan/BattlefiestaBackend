@@ -11,7 +11,8 @@ const trialmembership = require('../utils/trial_membership')
 // const {addJobToQueue} = require('../utils/producer');
 const { addtoqueue } = require('../utils/axiosRequest');
 const success = require('../templates/success')
-const { OAuth2Client } = require('google-auth-library')
+const { OAuth2Client } = require('google-auth-library');
+const User = require('../modals/login_schema');
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -27,6 +28,7 @@ const generateToken = async (result) => {
       _id: result._id.toString(),
       userId: result._id.toString(),
       email: result.email,
+      userType: result.userType,
       isAdmin: result.isadmin,
       name: result.name
     },
@@ -171,6 +173,7 @@ const setpassword = async (req, res, next) => {
     return next({ status: 500, message: error });
   }
 }
+
 const checkmail = async (req, res, next) => {
   if (req.body.email == "") {
     return next({ status: 400, message: 'Please send Email' });
@@ -293,7 +296,16 @@ const googleLogin = async (req, res) => {
   }
 };
 
+const allUserRoleAssign = async () => {
+  await user.updateMany(
+    {},                         // 🔍 filter (all users)
+    { $set: { userType: 'user' } } // ✏️ update
+  );
 
+  console.log("done");
+};
+
+// allUserRoleAssign()
 
 
 module.exports = { test, signup, notificationToken, checkmail, googleLogin, login, verify, passreset, setpassword };

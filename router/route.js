@@ -12,7 +12,7 @@ const upload2 = require('../middleware/multer2')
 const upload3 = require('../middleware/multer3')
 const checkmembership = require('../middleware/checkmembership.js')
 const emailauth = require('../middleware/email_auth')
-const isadmin = require('../middleware/isadmin_middleware')
+const { authorizationMiddleware} = require('../middleware/isadmin_middleware')
 const createAccountLimiter = require('../middleware/ratelimiter.js')
 const contact = require('../controller/contact_controller')
 const member = require('../controller/membership_controller')
@@ -38,14 +38,14 @@ router.route('/signup').post(createAccountLimiter, login.signup, emailauth);    
 router.route('/login').post(emailauth, login.login);
 router.route('/auth/google').post(login.googleLogin);
 router.route('/verify').get(login.verify);      //used
-router.route('/passreset').get(authmiddlewre, login.passreset);      //used
+router.route('/passreset').get(authmiddlewre,authorizationMiddleware(['admin']), login.passreset);      //used
 router.route('/setpassword').post(login.setpassword);      //used
 router.route('/checkmail').post(login.checkmail);      //used
 router.route('/notificationToken').post(authmiddlewre, login.notificationToken);      //used
 router.route('/test').get(login.test);      //used
 
 router.route('/addtournament').post(authmiddlewre, checkmembership, tournament.addtournament);      //used
-router.route('/torunadelete').post(authmiddlewre, tournament.torunadelete);      //used
+router.route('/torunadelete').post(authmiddlewre,authorizationMiddleware(['admin','user']), tournament.torunadelete);      //used
 router.route('/getclassic').post(authmiddlewre, tournament.getclassic);      //used
 router.route('/gettournament').get(authmiddlewre, tournament.gettournament);      //used
 router.route('/getontournament').post(authmiddlewre, tournament.getontournament);      //used
@@ -98,7 +98,7 @@ router.route('/updateteamstatus').post(authmiddlewre, tournaentry.updateteamstat
 // router.route('/Teamregister').post(upload.single('teamLogo'),tournaentry.register);      //used
 router.route('/Teamregister').post(upload2.fields([{ name: 'teamLogo', maxCount: 1 }, { name: 'paymentScreenshot', maxCount: 1 }]), tournaentry.register);      //used
 router.route('/Teamupdate').post(upload.single('teamLogo'), tournaentry.Teamupdate);      //used
-router.route('/teamdelete').post(authmiddlewre, tournaentry.teamdelete);      //used
+router.route('/teamdelete').post(authmiddlewre,authorizationMiddleware(['admin','user']), tournaentry.teamdelete);      //used
 router.route('/registergpt').post(tournaentry.register);      //used
 router.route('/playerregister').post(upload.single('playerLogo'), tournaentry.playerregister);      //used
 router.route('/classicplayerupdate').post(upload.single('playerLogo'), tournaentry.classicplayerupdate);      //used
@@ -111,36 +111,36 @@ router.route('/deletematch').post(Matches.deletematch);  //used
 
 router.route('/contact').post(contact.contact); //used
 router.route('/profile').get(authmiddlewre, contact.profile); //used
-router.route('/updateprofile').post(authmiddlewre, contact.updateprofile); //used
+router.route('/updateprofile').post(authmiddlewre,authorizationMiddleware(['admin','user']), contact.updateprofile); //used
 router.route('/channel').post(contact.channel); //used
 router.route('/loginchannel').post(authmiddlewre, contact.loginchannel); //used
 router.route('/follow').post(authmiddlewre, contact.follow); //used
-router.route('/updateprofilepic').post(authmiddlewre, upload.single('profilepic'), contact.updateprofilepic); //used
-router.route('/updatecoverpic').post(authmiddlewre, upload.single('coverpic'), contact.updatecoverpic); //used
+router.route('/updateprofilepic').post(authmiddlewre,authorizationMiddleware(['admin','user']), upload.single('profilepic'), contact.updateprofilepic); //used
+router.route('/updatecoverpic').post(authmiddlewre,authorizationMiddleware(['admin','user']), upload.single('coverpic'), contact.updatecoverpic); //used
 
 router.route('/manualcheck').post(authmiddlewre, member.manualcheck); //used
 router.route('/checkcoupon').post(member.checkcoupon); //used
 router.route('/plan').get(member.plan); //used
 router.route('/auto').post(member.auto); //used
-router.route('/delmemberentry').post(authmiddlewre, isadmin, member.delmemberentry); //used
+router.route('/delmemberentry').post(authmiddlewre, authorizationMiddleware(['admin']), member.delmemberentry); //used
 
-router.route('/isadmin').get(authmiddlewre, isadmin, admin.falsee);
-router.route('/databaseList').get(authmiddlewre, isadmin, admin.databaseList);
-router.route('/dbbackup').post(authmiddlewre, isadmin, admin.dbbackup);
-router.route('/memshipentry').get(authmiddlewre, isadmin, admin.allmembershipentry);
-router.route('/contactformlist').get(authmiddlewre, isadmin, admin.contactformlist);
-router.route('/getvoucher').get(authmiddlewre, isadmin, admin.getvoucher);
-router.route('/editvoucher').post(authmiddlewre, isadmin, admin.editvoucher);
-router.route('/createvoucher').post(authmiddlewre, isadmin, admin.createvoucher);
-router.route('/deletevoucher').post(authmiddlewre, isadmin, admin.deletevoucher);
-router.route('/createmembership').post(authmiddlewre, isadmin, admin.createmembership);
-router.route('/getmembership').get(authmiddlewre, isadmin, admin.getmembership);
-router.route('/getusers').get(authmiddlewre, isadmin, admin.getusers);
-router.route('/editUser').post(authmiddlewre, isadmin, admin.editUser);
-router.route('/deleteuser').post(authmiddlewre, isadmin, admin.deleteuser);
-router.route('/emailreply').post(authmiddlewre, isadmin, admin.emailreply);
-router.route('/emailsend').post(authmiddlewre, isadmin, admin.emailsend);
-router.route('/contactusdelete').post(authmiddlewre, isadmin, admin.contactusdelete);
+router.route('/isadmin').get(authmiddlewre, authorizationMiddleware(['admin']), admin.falsee);
+router.route('/databaseList').get(authmiddlewre, authorizationMiddleware(['admin']), admin.databaseList);
+router.route('/dbbackup').post(authmiddlewre, authorizationMiddleware(['admin']), admin.dbbackup);
+router.route('/memshipentry').get(authmiddlewre, authorizationMiddleware(['admin']), admin.allmembershipentry);
+router.route('/contactformlist').get(authmiddlewre, authorizationMiddleware(['admin']), admin.contactformlist);
+router.route('/getvoucher').get(authmiddlewre, authorizationMiddleware(['admin']), admin.getvoucher);
+router.route('/editvoucher').post(authmiddlewre, authorizationMiddleware(['admin']), admin.editvoucher);
+router.route('/createvoucher').post(authmiddlewre, authorizationMiddleware(['admin']), admin.createvoucher);
+router.route('/deletevoucher').post(authmiddlewre, authorizationMiddleware(['admin']), admin.deletevoucher);
+router.route('/createmembership').post(authmiddlewre, authorizationMiddleware(['admin']), admin.createmembership);
+router.route('/getmembership').get(authmiddlewre, authorizationMiddleware(['admin']), admin.getmembership);
+router.route('/getusers').get(authmiddlewre, authorizationMiddleware(['admin']), admin.getusers);
+router.route('/editUser').post(authmiddlewre, authorizationMiddleware(['admin']), admin.editUser);
+router.route('/deleteuser').post(authmiddlewre, authorizationMiddleware(['admin']), admin.deleteuser);
+router.route('/emailreply').post(authmiddlewre, authorizationMiddleware(['admin']), admin.emailreply);
+router.route('/emailsend').post(authmiddlewre, authorizationMiddleware(['admin']), admin.emailsend);
+router.route('/contactusdelete').post(authmiddlewre, authorizationMiddleware(['admin']), admin.contactusdelete);
 
 
 const deploy_script = {
@@ -150,7 +150,7 @@ const deploy_script = {
   portfolio: '/home/ubuntu/portfolio.sh',
 }
 
-router.route("/deploy/:project").get(authmiddlewre,isadmin,(req, res) => {
+router.route("/deploy/:project").get(authmiddlewre,authorizationMiddleware(['admin']),(req, res) => {
   const { project } = req.params;
   // console.log(deploy_script[project])
   exec(`bash ${deploy_script[project]}`, (error, stdout, stderr) => {

@@ -1,12 +1,19 @@
-const User = require('../modals/login_schema');
-
-const adminmiddleware = async (req, res, next) => {
-    // console.log('admin check',req.user);
-    if(!req.user.isAdmin){
-        return next({ status: 403, message: "Forbidden: You are not an Admin" });
-    }else{
-        next();
+const authorizationMiddleware = (accept = []) => {
+  return async (req, res, next) => {
+    if (!req.user || !req.user.userType) {
+      return res.status(401).json({
+        message: "Unauthorized"
+      });
     }
-}
 
-module.exports = adminmiddleware;
+    if (accept.includes(req.user.userType)) {
+      return next();
+    }
+
+    return res.status(403).json({
+      message: "Access Denied!"
+    });
+  };
+};
+
+module.exports = { authorizationMiddleware};

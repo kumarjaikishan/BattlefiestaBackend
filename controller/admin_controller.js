@@ -16,6 +16,7 @@ const { exec } = require('child_process');
 const sendemaile = require('../utils/backupmail.js')
 const path = require('path');
 const { getMongoClient } = require('../conn/MongoAdmin.js');
+const { databaseDumpAutoMation } = require('../utils/backup_restore.js');
 
 const allmembershipentry = asyncHandler(async (req, res, next) => {
     const query = await manualmember.find().populate({
@@ -33,7 +34,7 @@ const allmembershipentry = asyncHandler(async (req, res, next) => {
 
 
 const databaseList = asyncHandler(async (req, res, next) => {
-   
+
     try {
         const client = await getMongoClient();
         const databasesList = await client.db().admin().listDatabases();
@@ -43,46 +44,27 @@ const databaseList = asyncHandler(async (req, res, next) => {
         })
     } catch (error) {
         console.error(error);
-    } 
+    }
 })
 
 const dbbackup = asyncHandler(async (req, res, next) => {
     let { dbname } = req.body;
-    const uri = process.env.basemongo;
+    // console.log(dbname)
+    await databaseDumpAutoMation(dbname,'kumar.jaikishan0@gmail.com')
+    return res.status(200).json({
+        message: "Backup Created"
+    })
 
-    const baseDir = path.join(__dirname, '..');
-    const backupDir = path.join(baseDir, 'backups');
-    try {
-        const backupPath = path.join(backupDir, `${dbname}_backup`);
-        // const command = `mongodump --uri="${uri}"`; // to backup all database into dump folder
-        // const command = `mongodump --uri="${uri}" --db=${databaseName}`; // to backup specific one database into default dump folder
-        // const command = `mongodump --uri="${uri}" --out="${backupPath}"`;  //for backup create custom folder name
-        // const command = `mongodump --uri="${uri}" --db=${databaseName} --out="${backupPath}"`;  //for specific db backup create custom folder name
-        // const command = `mongodump --uri="${uri}" --db=${databaseName} --gzip `; // for specific database, in dump folder
-        const command = `mongodump --uri="${uri}" --db=${dbname} --gzip --archive="${backupPath}.gz"`; // for specific database
-
-        exec(command, async (error, stdout, stderr) => {
-            if (error) {
-                console.error('Error during backup:', error.message);
-                console.error('stderr:', stderr); // Log stderr to see more details
-                return;
-            }
-            console.log(`Backup of database "${dbname}" completed successfully and saved to ${backupPath}.gz ✅`);
-            await sendemaile.sendemail(dbname);
-            return res.status(200).json({
-                message: "Backup Created"
-            })
-        });
-    } catch (error) {
-        console.error('Error during backup:', error);
-    }
 })
 
 const falsee = async (req, res, next) => {
+
+   
     return res.status(200).json({
         message: 'ok'
     })
 }
+
 const createmembership = asyncHandler(async (req, res, next) => {
     let body = req.body;
 
@@ -152,6 +134,7 @@ const createmembership = asyncHandler(async (req, res, next) => {
         })
     }
 })
+
 const calculateDate = (membershipType) => {
     let startDate = new Date(); // Current date
     let endDate = new Date(); // Initialize end date as current date
@@ -209,6 +192,7 @@ const emailsend = asyncHandler(async (req, res, next) => {
     })
 
 })
+
 const contactusdelete = asyncHandler(async (req, res, next) => {
     if (req.body.id == '') {
         return next({ status: 400, message: "Id is Empty" });
@@ -250,6 +234,7 @@ const createvoucher = asyncHandler(async (req, res, next) => {
     })
 
 })
+
 const getvoucher = asyncHandler(async (req, res, next) => {
     const query = await voucher.find();
     if (!query) {
@@ -259,6 +244,7 @@ const getvoucher = asyncHandler(async (req, res, next) => {
         data: query
     })
 })
+
 const editvoucher = asyncHandler(async (req, res, next) => {
     const query = await voucher.findByIdAndUpdate({ _id: req.body.id }, { coupon: req.body.name, percent: req.body.percent, isactive: req.body.isactive });
     if (!query) {
@@ -268,6 +254,7 @@ const editvoucher = asyncHandler(async (req, res, next) => {
         message: 'Voucher Edited'
     })
 })
+
 const getmembership = asyncHandler(async (req, res, next) => {
     const query = await membership.find().sort({ createdAt: -1 }).populate({
         path: 'planid',
@@ -313,8 +300,6 @@ const getusers = asyncHandler(async (req, res, next) => {
         return next({ status: 500, message: "Error fetching users or memberships" });
     }
 });
-
-
 
 const editUser = asyncHandler(async (req, res, next) => {
     const { id, name, phone, isverified, isadmin } = req.body;
@@ -363,4 +348,4 @@ const deleteuser = asyncHandler(async (req, res, next) => {
 
 
 
-module.exports = { editUser, deleteuser, dbbackup, getvoucher, databaseList, emailsend, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };
+module.exports = { editUser, deleteuser, dbbackup,  getvoucher, databaseList, emailsend, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };

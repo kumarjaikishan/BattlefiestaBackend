@@ -119,7 +119,11 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-
+    userType: {
+      type: String,
+      enum: ['admin', 'user', 'demo'],
+      default: 'user'
+    },
     isverified: {
       type: Boolean,
       default: false,
