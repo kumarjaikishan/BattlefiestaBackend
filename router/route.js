@@ -143,17 +143,12 @@ router.route('/emailsend').post(authmiddlewre, authorizationMiddleware(['admin']
 router.route('/contactusdelete').post(authmiddlewre, authorizationMiddleware(['admin']), admin.contactusdelete);
 
 
-const deploy_script = {
-  office: '/home/ubuntu/office.sh',
-  accusoft: '/home/ubuntu/accusoft.sh',
-  battlefiesta: '/home/ubuntu/battlefiesta.sh',
-  portfolio: '/home/ubuntu/portfolio.sh',
-}
-
 router.route("/deploy/:project").get(authmiddlewre,authorizationMiddleware(['admin']),(req, res) => {
   const { project } = req.params;
-  // console.log(deploy_script[project])
-  exec(`bash ${deploy_script[project]}`, (error, stdout, stderr) => {
+  let projectname =`/home/ubuntu/${project}.sh`
+  // console.log(projectname)
+
+  exec(`bash ${projectname}`, (error, stdout, stderr) => {
     if (error) {
       console.error("Deployment error:", error.message);
       return res.status(500).json({
