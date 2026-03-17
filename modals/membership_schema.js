@@ -9,32 +9,49 @@ const memberschema = new mongo.Schema({
         type: mongo.Schema.Types.ObjectId,
         ref: 'plan',
     },
-    txn_no: {
+    status: {
         type: String,
-        required: true
+        enum: ["PENDING", "ACTIVE", "EXPIRED", "CANCELLED"],
+        default: "PENDING",
     },
-    buy_date: {
+    amount: {
+        type: Number, // in paise
+        required: true,
+    },
+    currency: {
         type: String,
-        required: true
+        default: "INR",
     },
-    expire_date: {
+    conf_type: {
         type: String,
-        required: true
+        enum: ["FRONTEND", "WEBHOOK", "NODECRON", "NOT_CONFIRMED"],
+        default: "NOT_CONFIRMED",
     },
-    isActive: {
-        type: Boolean,
-        required: false,
-        default:true
+    orderId: {
+        type: String, // Razorpay order_id
+    }, paymentId: {
+        type: String, // Razorpay payment_id
+    },
+    startDate: {
+        type: Date,
+    },
+    endDate: {
+        type: Date,
+    },
+    durationInDays: {
+        type: Number,
+        default: 30,
     },
     coupon: {
         type: String,
-        default:'',
+        default: '',
         required: false
     },
     finalpricepaid: {
         type: Number,
         required: true
     }
+
 }, { timestamps: true });
 
 const membership = new mongo.model("membership", memberschema);

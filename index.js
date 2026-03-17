@@ -10,9 +10,17 @@ const cors = require('cors');
 const route = require('./router/route');
 const errorHandle = require('./utils/error_util');
 const { loadAllCronJobs } = require('./controller/backup_controller.js');
+const { webhook } = require('./services/payment.js');
+
+app.use(cors());
+
+app.post(
+  "/api/webhook",
+  express.raw({ type: "application/json" }),
+  webhook
+);
 
 app.use(express.json());
-app.use(cors());
 // app.use(limiter);
 app.use("/api", route);
 app.use(errorHandle);

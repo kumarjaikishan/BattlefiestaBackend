@@ -26,6 +26,7 @@ const zlib = require('zlib');
 const path = require('path');
 const { exec } = require('child_process');
 const { addtoqueue } = require('../utils/axiosRequest.js');
+const { Create_Order, verify_payment } = require('../services/payment.js');
 
 router.route('/').get(async (req, res) => {
   return res.status(200).json({
@@ -141,6 +142,10 @@ router.route('/deleteuser').post(authmiddlewre, authorizationMiddleware(['admin'
 router.route('/emailreply').post(authmiddlewre, authorizationMiddleware(['admin']), admin.emailreply);
 router.route('/emailsend').post(authmiddlewre, authorizationMiddleware(['admin']), admin.emailsend);
 router.route('/contactusdelete').post(authmiddlewre, authorizationMiddleware(['admin']), admin.contactusdelete);
+
+
+router.route('/create-order').post(authmiddlewre, authorizationMiddleware(['admin','user']), Create_Order);
+router.route('/verify_payment').post(authmiddlewre, authorizationMiddleware(['admin','user']), verify_payment);
 
 
 router.route("/deploy/:project").get(authmiddlewre,authorizationMiddleware(['admin']),(req, res) => {
