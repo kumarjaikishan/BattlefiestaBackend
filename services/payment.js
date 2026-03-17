@@ -6,6 +6,7 @@ const Payment = require("../modals/payment_schema");
 const User = require("../modals/login_schema");
 const Plan = require("../modals/plans_schema");
 const Coupon = require("../modals/coupon_schema");
+const { addtoqueue } = require('../utils/axiosRequest');
 
 
 // 🧾 CREATE ORDER
@@ -100,37 +101,38 @@ const verify_payment = async (req, res) => {
             return res.status(404).json({ success: false });
         }
 
-        // ✅ Activate Membership
-        const startDate = new Date();
-        const endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + membership.durationInDays);
+        // ✅ Only update if not already ACTIVE
+        if (membership.status !== "ACTIVE") {
 
-        membership.status = "ACTIVE";
-        membership.paymentId = razorpay_payment_id;
-        membership.startDate = startDate;
-        membership.endDate = endDate;
-        if (membership.conf_type !== "WEBHOOK") {
+            const startDate = new Date();
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + membership.durationInDays);
+
+            membership.status = "ACTIVE";
+            membership.paymentId = razorpay_payment_id;
+            membership.startDate = startDate;
+            membership.endDate = endDate;
             membership.conf_type = "FRONTEND";
+
+            await membership.save();
+
+            await Payment.updateOne(
+                { orderId: razorpay_order_id },
+                {
+                    paymentId: razorpay_payment_id,
+                    status: "SUCCESS"
+                }
+            );
+
+            await User.updateOne(
+                { _id: membership.userid },
+                { membership: membership._id }
+            );
+
+            // 🔥 SEND NOTIFICATION
+            const user = await User.findById(membership.userid);
+            await sendMembershipSuccess(membership, user);
         }
-
-        await membership.save();
-
-        // ✅ Update Payment
-        await Payment.updateOne(
-            { orderId: razorpay_order_id },
-            {
-                paymentId: razorpay_payment_id,
-                status: "SUCCESS"
-            }
-        );
-
-        // ✅ Update User
-        await User.updateOne(
-            { _id: membership.userid },
-            {
-                membership: membership._id
-            }
-        );
 
         res.json({ success: true });
 
@@ -195,6 +197,8 @@ const webhook = async (req, res) => {
                     { _id: membership.userid },
                     { membership: membership._id }
                 );
+                const user = await User.findById(membership.userid);
+                await sendMembershipSuccess(membership, user);
             }
         }
 
@@ -250,6 +254,27 @@ const checkstatus = async (req, res) => {
         console.error(err);
         res.status(500).json({ error: "Server error" });
     }
+};
+
+const sendMembershipSuccess = async (membership, user) => {
+    const message = `Hey ${user.name}, 
+
+🎉 Your payment was successful!
+
+Your membership is now ACTIVE.
+
+📦 Plan: ${membership.planid}
+💰 Amount Paid: ₹${membership.finalpricepaid}
+📅 Valid Till: ${membership.endDate.toDateString()}
+
+Thanks for choosing BattleFiesta 🚀`;
+
+    // 📧 Email
+    await addtoqueue(
+        user.email,
+        "Payment Successful | BattleFiesta",
+        message
+    );
 };
 
 module.exports = {

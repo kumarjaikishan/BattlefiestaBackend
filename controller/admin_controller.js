@@ -50,7 +50,7 @@ const databaseList = asyncHandler(async (req, res, next) => {
 const dbbackup = asyncHandler(async (req, res, next) => {
     let { dbname } = req.body;
     // console.log(dbname)
-    await databaseDumpAutoMation(dbname,'kumar.jaikishan0@gmail.com')
+    await databaseDumpAutoMation(dbname, 'kumar.jaikishan0@gmail.com')
     return res.status(200).json({
         message: "Backup Created"
     })
@@ -59,81 +59,115 @@ const dbbackup = asyncHandler(async (req, res, next) => {
 
 const falsee = async (req, res, next) => {
 
-   
+
     return res.status(200).json({
         message: 'ok'
     })
 }
 
 const createmembership = asyncHandler(async (req, res, next) => {
-    let body = req.body;
+    const body = req.body;
 
-    if (body.flag == 'pending' || body.flag == 'rejected') {
-        const query = await manualmember.findByIdAndUpdate({ _id: body.id }, { status: body.flag, remarks: body.remarks }).populate({
-            path: 'plan_id',
-            select: 'duration plan_name'
-        }).populate({
-            path: 'user',
-            select: 'name email'
-        });
+    // ❌ REJECT / PENDING
+    if (body.flag === 'pending' || body.flag === 'rejected') {
+
+        const query = await manualmember.findByIdAndUpdate(
+            body.id,
+            { status: body.flag, remarks: body.remarks },
+            { new: true }
+        ).populate("plan_id", "duration plan_name")
+            .populate("user", "name email");
+
         if (!query) {
             return next({ status: 400, message: "Error Occured" });
         }
-        const message = ` Hey ${query.user.name}, Your Membership request for plan-${query.plan_id.plan_name} of Rs.${query.finalpricepaid} txn no-${query.txn_no} has been ${body.flag}😔, Reason-${body.remarks}`
-        const mes = {
-            title: `Membership Request ${body.flag}`,
-            body: message,
-        }
 
+        const message = `Hey ${query.user.name}, Your Membership request for plan-${query.plan_id.plan_name} of Rs.${query.finalpricepaid} has been ${body.flag}. Reason: ${body.remarks}`;
 
-        await push_notification(query.user._id, mes, `${process.env.baseUrl}`);
+        // await push_notification(query.user._id, {
+        //     title: `Membership ${body.flag}`,
+        //     body: message
+        // });
 
-        // await addJobToQueue(query.user.email, "Customer Support || BattleFiesta", message)
-        await addtoqueue(query.user.email, "Customer Support || BattleFiesta", message)
+        await addtoqueue(query.user.email, "Customer Support || BattleFiesta", message);
 
-        res.status(200).json({
-            message: "Status Updated"
-        })
+        return res.status(200).json({ message: "Status Updated" });
     }
 
-    if (body.flag == 'success') {
-        const whichone = await manualmember.findOne({ _id: body.id }).populate({
-            path: 'plan_id',
-            select: 'duration plan_name'
-        }).populate({
-            path: 'user',
-            select: 'name email'
-        });
-        let { todayDate, expiryDate } = calculateDate(whichone.plan_id.duration)
 
+    // ✅ SUCCESS (CREATE MEMBERSHIP)
+    if (body.flag === 'success') {
 
-        const query = new membership({
-            userid: whichone.user, planid: whichone.plan_id._id, txn_no: whichone.txn_no,
-            buy_date: todayDate, expire_date: expiryDate, coupon: whichone.coupon,
-            finalpricepaid: whichone.finalpricepaid
-        });
+        const whichone = await manualmember.findById(body.id)
+            .populate("plan_id", "duration plan_name durationInDays price")
+            .populate("user", "name email");
 
-        const result = await query.save();
-        if (!result) {
-            return next({ status: 400, message: "Error Occured" });
+        if (!whichone) {
+            return next({ status: 404, message: "Request not found" });
         }
-        await manualmember.findByIdAndUpdate({ _id: whichone._id }, { membershipId: query._id, status: body.flag })
-        await users.findByIdAndUpdate({ _id: whichone._id }, { $set: { tourn_created: 0 } })
 
-        const message = ` Hey ${whichone.user.name}, Your Membership request for ${whichone.plan_id.plan_name} of Rs.${whichone.finalpricepaid} has been Approved having Txn Id- ${whichone.txn_no}.Thanks for Choosing BattleFiesta.👍`
-        const mes = {
-            title: 'Membership Request Approved',
-            body: message,
-        }
-        await push_notification(whichone.user._id, mes, 'https://battlefiesta.in/profile')
-        // await addJobToQueue(whichone.user.email, "Customer Support || BattleFiesta", message)
-        await addtoqueue(whichone.user.email, "Customer Support || BattleFiesta", message)
+        // 🔥 Calculate dates
+        const startDate = new Date();
+
+        const durationDays =
+            whichone.plan_id.durationInDays ||
+            (whichone.plan_id.duration * 30) || 30;
+
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + durationDays);
+
+        // 🔥 Convert to paise
+        const amountInPaise = whichone.finalpricepaid * 100;
+
+        // ✅ CREATE MEMBERSHIP
+        const newMembership = await membership.create({
+            userid: whichone.user._id,
+            planid: whichone.plan_id._id,
+
+            status: "ACTIVE",
+            conf_type: "MANUAL",
+
+            amount: amountInPaise,
+            finalpricepaid: whichone.finalpricepaid,
+
+            startDate,
+            endDate,
+            durationInDays: durationDays,
+
+            coupon: whichone.coupon || '',
+
+            // manual → no razorpay ids
+            orderId: null,
+            paymentId: null
+        });
+
+        // ✅ Update manual request
+        await manualmember.findByIdAndUpdate(whichone._id, {
+            membershipId: newMembership._id,
+            status: "success"
+        });
+
+        // ✅ Update user
+        await User.findByIdAndUpdate(whichone.user._id, {
+            membership: newMembership._id
+        });
+
+        // 📩 Notification
+        const message = `Hey ${whichone.user.name}, Your Membership for ${whichone.plan_id.plan_name} of Rs.${whichone.finalpricepaid} has been Approved. 🎉`;
+
+        await push_notification(whichone.user._id, {
+            title: 'Membership Approved',
+            body: message
+        });
+
+        await addtoqueue(whichone.user.email, "Customer Support || BattleFiesta", message);
+
         return res.status(201).json({
             message: 'Membership Created',
-            membershipid: query._id
-        })
+            membershipid: newMembership._id
+        });
     }
-})
+});
 
 const calculateDate = (membershipType) => {
     let startDate = new Date(); // Current date
@@ -348,4 +382,4 @@ const deleteuser = asyncHandler(async (req, res, next) => {
 
 
 
-module.exports = { editUser, deleteuser, dbbackup,  getvoucher, databaseList, emailsend, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };
+module.exports = { editUser, deleteuser, dbbackup, getvoucher, databaseList, emailsend, getusers, getmembership, editvoucher, createvoucher, deletevoucher, contactusdelete, emailreply, allmembershipentry, falsee, createmembership, contactformlist };
