@@ -34,7 +34,6 @@ router.route('/').get(async (req, res) => {
   })
 });
 
-
 router.route('/signup').post(createAccountLimiter, login.signup, emailauth);    //used
 router.route('/login').post(emailauth, login.login);
 router.route('/auth/google').post(login.googleLogin);

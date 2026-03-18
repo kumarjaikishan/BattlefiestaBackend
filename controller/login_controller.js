@@ -265,8 +265,10 @@ const googleLogin = async (req, res) => {
 
     // Check or create user in DB
     let usere = await user.findOne({ googleId: sub });
+
     if (!usere) {
       let existing = await user.findOne({ email });
+      
       if (existing) {
         usere = await user.findByIdAndUpdate(existing._id, { googleId: sub }, { new: true });
       } else {
@@ -275,7 +277,7 @@ const googleLogin = async (req, res) => {
         usere = await query.save();
 
         // assign trial membership for new users
-        await trialmembership(usere._id, '65fe7ad58a04a25de33f45b1');
+        await trialmembership(usere._id);
       }
     }
 
