@@ -235,7 +235,7 @@ const verify = async (req, res, next) => {
       return next({ status: 400, message: "Already verified" });
     }
    
-    await trialmembership(req.query.id, '65fe7ad58a04a25de33f45b1');
+    await trialmembership(req.query.id);
     // return res.status(201).send(`<html><h2> Hi ${query.name} , Email Verified Successfully, <button onclick="location.href = 'https://esport-bgmi.vercel.app';">Login Now</button> </h2></html>`)
     return res.status(201).send(success)
   } catch (error) {

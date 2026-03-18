@@ -4,10 +4,12 @@ const memberschema = new mongo.Schema({
     userid: {
         type: mongo.Schema.Types.ObjectId,
         ref: 'user',
+        required:true
     },
     planid: {
         type: mongo.Schema.Types.ObjectId,
         ref: 'plan',
+        required:true
     },
     status: {
         type: String,
