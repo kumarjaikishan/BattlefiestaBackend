@@ -95,7 +95,11 @@ const verify_payment = async (req, res) => {
             return res.status(400).json({ success: false });
         }
 
-        const membership = await Membership.findOne({ orderId: razorpay_order_id });
+        const membership = await Membership.findOne({ orderId: razorpay_order_id })
+            .populate({
+                path: 'planid',
+                select: 'plan_name'
+            });
 
         if (!membership) {
             return res.status(404).json({ success: false });
@@ -134,7 +138,7 @@ const verify_payment = async (req, res) => {
             await sendMembershipSuccess(membership, user);
         }
 
-        res.json({ success: true });
+        res.json({ success: true, membership });
 
     } catch (err) {
         console.error("❌ VERIFY ERROR:", err);

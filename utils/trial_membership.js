@@ -6,15 +6,15 @@ const trialmembership = async (userid) => {
 
     const today = new Date();
 
-    // ✅ 3 months trial
-    const threeMonthsLater = new Date(today);
-    threeMonthsLater.setMonth(today.getMonth() + 3);
+    // ✅ 2 months trial
+    const sixtyDaysLater = new Date(today);
+    sixtyDaysLater.setDate(today.getDate() + 60);
 
     try {
 
-        let gettrialplan = await plan.findOne({plan_name:'Trial'});
-        gettrialplan= gettrialplan?._id.toString()
-       
+        let gettrialplan = await plan.findOne({ plan_name: 'Trial' });
+        gettrialplan = gettrialplan?._id.toString()
+
         // ❗ check if user already has membership for this plan
         const alreadymembership = await membership.findOne({ userid, gettrialplan });
 
@@ -24,7 +24,7 @@ const trialmembership = async (userid) => {
 
         const query = new membership({
             userid,
-            planid:gettrialplan,
+            planid: gettrialplan,
             gettrialplan,
 
             // ✅ status directly ACTIVE (trial doesn't need payment)
@@ -44,9 +44,9 @@ const trialmembership = async (userid) => {
             conf_type: "NODECRON", // or "FRONTEND" if instant
 
             startDate: today,
-            endDate: threeMonthsLater,
+            endDate: sixtyDaysLater,
 
-            durationInDays: 90,
+            durationInDays: 60,
 
             coupon: ""
         });
